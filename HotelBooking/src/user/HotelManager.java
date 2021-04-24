@@ -2,8 +2,8 @@ package user;
 
 public class HotelManager extends HotelEmployees {
 
-	public HotelManager() {
-		super();
+	public HotelManager(int user_id) {
+		super(user_id);
 	}
 	
 	public void addRoom() {

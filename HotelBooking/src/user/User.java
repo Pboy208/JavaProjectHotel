@@ -1,34 +1,17 @@
 package user;
-
 public class User {
 	
-	private String accountName;
-	private String accountPassword;
 	private int userID;
 	private String name;
 	private String email;
 	private String phoneNumber;
 	
+	public User(int userID) {
+		this.userID=userID;
+	}
 	public User() {
 	}
 	
-	
-	public String getAccountName() {
-		return accountName;
-	}
-
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
-	}
-
-	public String getAccountPassword() {
-		return accountPassword;
-	}
-
-	public void setAccountPassword(String accountPassword) {
-		this.accountPassword = accountPassword;
-	}
-
 	public int getId() {
 		return userID;
 	}
@@ -74,9 +57,8 @@ public class User {
 	public void checkReservingStatus() {
 		
 	}
-	public int login() {
-		//checking account in DB
-		return 0;
+	public void getUserInfo() {
+		
 	}
 	
 	
