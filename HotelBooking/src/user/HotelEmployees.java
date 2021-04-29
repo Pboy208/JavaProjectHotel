@@ -1,26 +1,20 @@
 package user;
 
-public class HotelEmployees extends User {
+import database.Postgresql;
 
-	private int departmentID; // ???
-	private String departmentName;
-	private int employeesID;
+public class HotelEmployees extends User implements Postgresql {
+
+	private int hotelID; // ???
 	
-	public HotelEmployees() {
-		super();
+	public HotelEmployees(int user_id) {
+		super(user_id);
 	}
 	
-	public int getDepartmentID() {
-		return departmentID;
+	public int getHotelID() {
+		return hotelID;
 	}
-	public void setDepartmentID(int departmentID) {
-		this.departmentID = departmentID;
-	}
-	public String getDepartmentName() {
-		return departmentName;
-	}
-	public void setDepartmentName(String departmentName) {
-		this.departmentName = departmentName;
+	public void setHotelID(int departmentID) {
+		this.hotelID = departmentID;
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------------------
@@ -42,5 +36,8 @@ public class HotelEmployees extends User {
 	}
 	public void updateRoomStatus() {
 		
+	}
+	public void printInfo() {
+		System.out.println(this.getName()+"/"+this.getPhoneNumber()+"/"+this.getEmail()+"/"+this.hotelID);
 	}
 }

@@ -1,9 +1,11 @@
 package user;
 
-public class Clients extends User {
+import database.Postgresql;
+
+public class Clients extends User implements Postgresql {
 	
-	public Clients() {
-		super();
+	public Clients(int user_id) {
+		super(user_id);
 	}
 	
 	//-------------------------------------------------------------------------------------------------------
@@ -31,5 +33,9 @@ public class Clients extends User {
 	}
 	public void checkRoomByName() {
 		
+	}
+	
+	public void printInfo() {
+		System.out.println(this.getName()+"/"+this.getPhoneNumber()+"/"+this.getEmail());
 	}
 }
