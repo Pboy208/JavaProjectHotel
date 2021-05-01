@@ -25,8 +25,8 @@ public class FilterDB {
 				flagHotelNameEmpty=0;
 			if(filter.getDestination()!=null)
 				flagDestinationEmpty=0;
-			queryStatement = queryStatement.concat(" join hotel on hotel.hotel_id = hotelinfo.hotel_id"
-												 + " join province on province.province_id = hotel.province_id");
+			queryStatement = queryStatement.concat(" JOIN hotel ON hotel.hotel_id = hotelinfo.hotel_id"
+												 + " JOIN province ON province.province_id = hotel.province_id");
 		}
 		
 
@@ -40,36 +40,37 @@ public class FilterDB {
 		
 		if(flagExtensionEmpty==0){//not empty
 			values=valuesForQuery(filter);
-			queryStatement = queryStatement.concat(" where " +values);
+			queryStatement = queryStatement.concat(" WHERE " +values);
 			if(flagDestinationEmpty==0) {
-				queryStatement=queryStatement.concat(" and province.name = '" + filter.getDestination() + "'");
+				queryStatement=queryStatement.concat(" AND province.name = '" + filter.getDestination() + "'");
 			}
 			if(flagHotelNameEmpty == 0) {
-				queryStatement=queryStatement.concat(" and hotel.name like '%" + filter.getHotelName() + "%'"
-													+ " or hotel.name like '" + filter.getHotelName()+"%'"	
-													+ " or hotel.name like '%" + filter.getHotelName() + "'"
-													+ " or hotel.name like '"+ filter.getHotelName() + "'");
+				queryStatement=queryStatement.concat(" AND ( hotel.name like '%" + filter.getHotelName() + "%'"
+						+ " OR hotel.name LIKE '" + filter.getHotelName()+"%'"	
+						+ " OR hotel.name LIKE '%" + filter.getHotelName() + "'"
+						+ " OR hotel.name LIKE '"+ filter.getHotelName() + "')");
 			}
 			System.out.println("check1");
 		}
 		//------------------------- 
 		else{	//Extension empty
 			if(flagDestinationEmpty==0 || flagHotelNameEmpty == 0)
-				queryStatement=queryStatement.concat(" where");
+				queryStatement=queryStatement.concat(" WHERE");
 			if(flagDestinationEmpty==0) 
 				queryStatement=queryStatement.concat(" province.name = '" + filter.getDestination() + "'");
 			if(flagDestinationEmpty == 0 && flagHotelNameEmpty ==0)
-				queryStatement=queryStatement.concat(" and hotel.name like '%" + filter.getHotelName() + "%'"
-						+ " or hotel.name like '" + filter.getHotelName()+"%'"	
-						+ " or hotel.name like '%" + filter.getHotelName() + "'"
-						+ " or hotel.name like '"+ filter.getHotelName() + "'");
+				queryStatement=queryStatement.concat(" AND ( hotel.name like '%" + filter.getHotelName() + "%'"
+						+ " OR hotel.name LIKE '" + filter.getHotelName()+"%'"	
+						+ " OR hotel.name LIKE '%" + filter.getHotelName() + "'"
+						+ " OR hotel.name LIKE '"+ filter.getHotelName() + "')");
 			else if(flagDestinationEmpty == 1 && flagHotelNameEmpty ==0)
 				queryStatement=queryStatement.concat(" hotel.name like '%" + filter.getHotelName() + "%'"
-						+ " or hotel.name like '" + filter.getHotelName()+"%'"	
-						+ " or hotel.name like '%" + filter.getHotelName() + "'"
-						+ " or hotel.name like '"+ filter.getHotelName() + "'");
+						+ " OR hotel.name LIKE '" + filter.getHotelName()+"%'"	
+						+ " OR hotel.name LIKE '%" + filter.getHotelName() + "'"
+						+ " OR hotel.name LIKE '"+ filter.getHotelName() + "'");
 			
 		}
+		
 		
 		//------------------------- 
 		Connection connection= Postgre.makeConnection();
