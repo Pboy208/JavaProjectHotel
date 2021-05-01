@@ -173,6 +173,8 @@ public class FilterController implements Initializable {
 		if(TMP == null) {
 			Label noResult =new Label("No hotel meets your filter");
 			recommendHotels.setPlaceholder(noResult);
+			ObservableList<Hotel> tableListNull =FXCollections.observableArrayList();
+			recommendHotels.setItems(tableListNull);
 			return;
 		}
 		ObservableList<Hotel> tableList =FXCollections.observableArrayList(TMP);

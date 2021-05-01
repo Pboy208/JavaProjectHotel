@@ -13,7 +13,7 @@ public class FilterDB {
 
 	public static ArrayList<Hotel> queryHotelsByFilter(Filter filter) throws SQLException {
 		String values= null;
-		String queryStatement = "SELECT hotel.hotel_id FROM hotelinfo";
+		String queryStatement = "SELECT hotelinfo.hotel_id FROM hotelinfo";
 		ArrayList<Integer> hotel_IDs = new ArrayList<>();
 		int flagExtensionEmpty=1;
 		int flagDestinationEmpty=1;
@@ -39,7 +39,7 @@ public class FilterDB {
 		}
 		
 		if(flagExtensionEmpty==0){//not empty
-			valuesForQuery(filter);
+			values=valuesForQuery(filter);
 			queryStatement = queryStatement.concat(" where " +values);
 			if(flagDestinationEmpty==0) {
 				queryStatement=queryStatement.concat(" and province.name = '" + filter.getDestination() + "'");
@@ -50,6 +50,7 @@ public class FilterDB {
 													+ " or hotel.name like '%" + filter.getHotelName() + "'"
 													+ " or hotel.name like '"+ filter.getHotelName() + "'");
 			}
+			System.out.println("check1");
 		}
 		//------------------------- 
 		else{	//Extension empty
@@ -111,6 +112,7 @@ public class FilterDB {
 			}
 		}
 		values=values.substring(0,values.length()-5);
+		System.out.println("Values:"+values);
 		return values;
 	}
 
