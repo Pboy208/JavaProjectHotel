@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FilterController">
+   <children>
+      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="888.0">
+         <items>
+            <Button alignment="CENTER" mnemonicParsing="false" text="Back" />
+            <Button mnemonicParsing="false" onAction="#searchButton" text="Sign Out" />
+         </items>
+      </ToolBar>
+      <Pane layoutY="36.0" prefHeight="220.0" prefWidth="200.0">
+         <children>
+            <TextField alignment="CENTER" layoutX="13.0" layoutY="25.0" prefHeight="26.0" prefWidth="174.0" promptText="Username" />
+            <TextField alignment="CENTER" layoutX="14.0" layoutY="66.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="382.0" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER" />
+            <TextField alignment="CENTER" layoutX="14.0" layoutY="102.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
+            <TextField alignment="CENTER" layoutX="13.0" layoutY="141.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="181.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Save Change" />
+         </children>
+      </Pane>
+      <Pane layoutY="256.0" prefHeight="225.0" prefWidth="200.0">
+         <children>
+            <Button layoutX="45.0" layoutY="154.0" mnemonicParsing="false" text="Change Password" />
+            <PasswordField layoutX="14.0" layoutY="42.0" prefHeight="25.0" prefWidth="174.0" promptText="Old Password" />
+            <PasswordField layoutX="14.0" layoutY="77.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password" />
+            <PasswordField layoutX="14.0" layoutY="110.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password Confirmation" />
+         </children>
+      </Pane>
+      <Pane layoutX="200.0" layoutY="36.0" prefHeight="260.0" prefWidth="690.0">
+         <children>
+            <TableView prefHeight="199.0" prefWidth="690.0">
+               <columns>
+                  <TableColumn prefWidth="84.79998779296875" text="Hotel Name" />
+                  <TableColumn prefWidth="262.3999938964844" text="Hotel Address" />
+                  <TableColumn prefWidth="82.39996337890625" text="Checkin Date" />
+                  <TableColumn prefWidth="89.60003662109375" text="Checkout Date" />
+                  <TableColumn prefWidth="88.79998779296875" text="Booking Date" />
+                  <TableColumn minWidth="0.0" prefWidth="84.0" text="Price" />
+               </columns>
+            </TableView>
+            <Button layoutX="483.0" layoutY="204.0" mnemonicParsing="false" text="Cancel Receipt" />
+            <Button layoutX="599.0" layoutY="204.0" mnemonicParsing="false" text="View Hotel " />
+         </children>
+      </Pane>
+      <Pane layoutX="200.0" layoutY="297.0" prefHeight="185.0" prefWidth="690.0">
+         <children>
+            <TextField layoutX="29.0" layoutY="1.0" promptText="Hotel Name" />
+            <TextField layoutX="29.0" layoutY="33.0" promptText="Hotel Address" />
+            <TextField layoutX="29.0" layoutY="67.0" promptText="Website" />
+            <TextField layoutX="29.0" layoutY="101.0" promptText="Price" />
+            <TextField layoutX="507.0" layoutY="21.0" promptText="Update Room ID" />
+            <ScrollPane layoutX="197.0" layoutY="5.0" prefHeight="89.0" prefWidth="160.0">
+               <content>
+                  <VBox prefHeight="222.0" prefWidth="143.0">
+                     <children>
+                        <RadioButton fx:id="radio1" mnemonicParsing="false" text="Breakfast" />
+                        <RadioButton fx:id="radio2" mnemonicParsing="false" text="Free Wifi" />
+                        <RadioButton fx:id="radio3" mnemonicParsing="false" text="Car Parking" />
+                        <RadioButton fx:id="radio4" mnemonicParsing="false" prefHeight="18.0" prefWidth="146.0" text="Airport Transportation" />
+                        <RadioButton fx:id="radio5" mnemonicParsing="false" text="Restaurant" />
+                        <RadioButton fx:id="radio6" mnemonicParsing="false" text="Deposit Box" />
+                        <RadioButton fx:id="radio7" mnemonicParsing="false" text="Baby Service" />
+                        <RadioButton fx:id="radio8" mnemonicParsing="false" text="Bar" />
+                        <RadioButton fx:id="radio9" mnemonicParsing="false" text="Laundry" />
+                        <RadioButton fx:id="radio10" mnemonicParsing="false" text="Tour " />
+                        <RadioButton fx:id="radio11" mnemonicParsing="false" text="Spa" />
+                        <RadioButton fx:id="radio12" mnemonicParsing="false" text="Pool" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <ComboBox fx:id="star" layoutX="29.0" layoutY="138.0" prefHeight="26.0" prefWidth="149.0" promptText="Hotel Star" />
+            <Button layoutX="507.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Add Room" />
+            <Button layoutX="507.0" layoutY="89.0" mnemonicParsing="false" text="Delete Room" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

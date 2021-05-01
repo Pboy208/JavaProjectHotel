@@ -1,13 +1,16 @@
 package rooms;
 
+import javafx.scene.control.CheckBox;
+
 public class Filter {
-	
 	private int extensions[] = new int[12]; //1,0 ?
 	private String location;
-	
-	
-	private static String[] extensionLibrary = {"breakfast","wifi","carpark","airport",
-			"restaurant","deposit_box","baby","bar","laundry","tour","spa","pool"};
+	private String destination;
+	private String hotelName;
+	private int star;
+
+	public static final String[] extensionLibrary = {"have_breakfast","free_wifi","car_park","airport_transport",
+			"restaurant","deposit","baby_service","bar","laundry","tour","spa","pool"};
 	
 	public Filter() {
 		
@@ -40,6 +43,21 @@ public class Filter {
 	public void setStar(int star) {
 		this.star = star;
 	}
+	
+	public String getDestination() {
+		return destination;
+	}
 
-	private int star;
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public String getHotelName() {
+		return hotelName;
+	}
+
+	public void setHotelName(String hotelName) {
+		this.hotelName = hotelName;
+	}
+	
 }

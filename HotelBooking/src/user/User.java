@@ -60,6 +60,9 @@ public class User {
 	public void getUserInfo() {
 		
 	}
+	public void printInfo() {
+		
+	}
 	
 	
 
