@@ -1,5 +1,6 @@
 package rooms;
 
+import javafx.beans.property.SimpleStringProperty;
 
 public class Hotel {
 	private float latNum;
@@ -12,17 +13,83 @@ public class Hotel {
 	private String streetID;
 	private String name;
 	private int star;
+	private float rating;
+	
+	public String getNameProperty() {
+		return nameProperty.get();
+	}
 
-	public Hotel(int hotel_ID,String name,String address,int star_number) {
+	public void setNameProperty(SimpleStringProperty nameProperty) {
+		this.nameProperty = nameProperty;
+	}
+
+	public String getAddressProperty() {
+		return addressProperty.get();
+	}
+
+	public void setAddressProperty(SimpleStringProperty addressProperty) {
+		this.addressProperty = addressProperty;
+	}
+
+	public String getRoomsAvailableProperty() {
+		return roomsAvailableProperty.get();
+	}
+
+	public void setRoomsAvailableProperty(SimpleStringProperty roomsAvailableProperty) {
+		this.roomsAvailableProperty = roomsAvailableProperty;
+	}
+	private SimpleStringProperty nameProperty;
+	private SimpleStringProperty addressProperty;
+	private SimpleStringProperty roomsAvailableProperty;
+	private SimpleStringProperty starProperty;
+	private SimpleStringProperty ratingProperty;
+	
+	public Hotel(int hotel_ID,String name,String address,int star_number,float rating) {
 		setHotelID(hotel_ID);
 		setAddress(address);
 		setName(name);
 		setStar(star_number);
+		setRating(rating);
+		
+		this.nameProperty=new SimpleStringProperty(this.name);
+		this.addressProperty=new SimpleStringProperty(this.address);
+		this.roomsAvailableProperty=new SimpleStringProperty(Integer.toString(getAvailableRooms()));
+		this.ratingProperty=new SimpleStringProperty(Float.toString(this.rating));
+		this.starProperty=new SimpleStringProperty(Integer.toString(star));
 	}
 	
+	public float getRating() {
+		return rating;
+	}
+
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+
+	public String getStarProperty() {
+		return starProperty.get();
+	}
+
+	public void setStarProperty(SimpleStringProperty starProperty) {
+		this.starProperty = starProperty;
+	}
+
+	public String getRatingProperty() {
+		return ratingProperty.get();
+	}
+
+	public void setRatingProperty(SimpleStringProperty ratingProperty) {
+		this.ratingProperty = ratingProperty;
+	}
+
 	public void prinInfo() {
 		System.out.println(this.name+"/"+this.address+"/"+this.star);
 	}
+	
+	public int getAvailableRooms() {
+		return 1;
+	}
+	
 	
 	public String getName() {
 		return name;
