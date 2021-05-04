@@ -2,13 +2,13 @@ package controller;
 
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+
 import database.CheckPasswordDB;
 import database.ClientDB;
 import database.HotelEmployeesDB;
 import javafx.stage.Stage;
 import user.User;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,39 +59,65 @@ public class LoginController {
 	private CheckBox employeesType;
 	
 	
+	public static void signOut() {
+		user = null;
+	}
+	
 	@FXML
 	public void signInButtonOnAction(ActionEvent event) throws Exception{
 		String password=txtPassword.getText();
 		String username=txtUserName.getText();
-		int user_id = CheckPasswordDB.checkPassword(username, password);
+		int user_id = 0;
 		if(!clientType.isSelected() && !employeesType.isSelected())
 		{
 			lblMessage.setText("Please choose a user type");
 			return;
 		}
-		if(user_id==-1) {
-			lblMessage.setText("Wrong user name or password");
-			return;
-		}
+		
 		
 		if(clientType.isSelected()) {
+			user_id=CheckPasswordDB.checkPasswordClients(username, password);
+			if(user_id==-1) {
+				lblMessage.setText("Wrong user name or password");
+				return;
+			}
 			user=ClientDB.queryClientInfo(user_id);
-			System.out.println("Login succesfully!");
+			user.setUsername(username);
+			user.setPassword(password);
+			System.out.println("Login succesfully client!");
+			user.printInfo();
+			changeScene(event,"Filter.fxml");
 		}
 		else if(employeesType.isSelected()) {
+			user_id=CheckPasswordDB.checkPasswordHotels(username, password);
+			if(user_id==-1) {
+				lblMessage.setText("Wrong user name or password");
+				return;
+			}
 			user=HotelEmployeesDB.queryEmployeeInfo(user_id);
-			System.out.println("Login succesfully!");
+			user.setUsername(username);
+			user.setPassword(password);
+			System.out.println("Login succesfully manager!");
+			user.printInfo();
+			changeScene(event,"HotelPage.fxml");
+			
 		}
-		user.printInfo();
-		changeScene(event,"Filter.fxml");
-		System.out.println("ChangedScene");
+
+	}
+	
+	public static User getUser() {
+		return user;
+	}
+	
+	public static void setUser(String name,String phone,String email,String password) {
+		user.setEmail(email);
+		user.setName(name);
+		user.setPassword(password);
+		user.setPhoneNumber(phone);
 	}
 	
 	@FXML 
-	public void signUpButtonOnAction(ActionEvent e) throws Exception{
-		Parent root = FXMLLoader.load(getClass().getResource("/application/SignUp.fxml"));
-		Stage window = (Stage)signUpButton.getScene().getWindow();
-		Scene scene = new Scene(root, 500, 400);
-		window.setScene(scene);
+	public void signUpButtonOnAction(ActionEvent event) throws Exception{
+		changeScene(event,"SignUp.fxml");
 	}
 }

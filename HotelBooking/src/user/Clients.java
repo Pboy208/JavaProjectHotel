@@ -4,10 +4,15 @@ import database.Postgresql;
 
 public class Clients extends User implements Postgresql {
 	
-	public Clients(int user_id) {
-		super(user_id);
+	public Clients(String name,String phone,String email) {
+		super(name,phone,email);
 	}
-	
+	public Clients(int userID) {
+		super(userID);
+	}
+	public Clients() {
+		super();
+	}
 	//-------------------------------------------------------------------------------------------------------
 	public void checkReservedRoom() {
 		

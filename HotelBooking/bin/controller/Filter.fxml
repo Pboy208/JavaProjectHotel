@@ -17,18 +17,15 @@
    <children>
       <ToolBar layoutY="-2.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="38.0" prefWidth="1026.0">
          <items>
-            <Button fx:id="logOut" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Log Out" />
-            <Button fx:id="receipts" alignment="CENTER" mnemonicParsing="false" text="Receipts" />
-            <Button fx:id="userInfo" alignment="CENTER" mnemonicParsing="false" text="User Info" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#signOut" text="Sign Out" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#receipts" text="Receipts" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#clientInfo" text="User Info" />
          </items>
       </ToolBar>
       <Pane layoutY="36.0" prefHeight="434.0" prefWidth="200.0">
          <children>
             <TextField fx:id="destination" alignment="CENTER" layoutX="13.0" layoutY="25.0" prefHeight="26.0" prefWidth="174.0" promptText="Your Destination" />
             <TextField fx:id="hotelName" alignment="CENTER" layoutX="14.0" layoutY="66.0" prefHeight="26.0" prefWidth="174.0" promptText="Hotel Name" />
-            <ComboBox fx:id="star" layoutX="33.0" layoutY="308.0" prefHeight="26.0" prefWidth="136.0" promptText="Hotel Star" />
-            <Button fx:id="search" layoutX="73.0" layoutY="350.0" mnemonicParsing="false" onAction="#searchButton" text="Search " />
-            <Label fx:id="label" alignment="CENTER" layoutX="10.0" layoutY="382.0" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER" />
             <ScrollPane layoutX="21.0" layoutY="172.0" prefHeight="105.0" prefWidth="160.0">
                <content>
                   <VBox prefHeight="211.0" prefWidth="143.0">
@@ -49,9 +46,12 @@
                   </VBox>
                </content>
             </ScrollPane>
+            <ComboBox fx:id="star" layoutX="33.0" layoutY="308.0" prefHeight="26.0" prefWidth="136.0" promptText="Hotel Star" />
+            <Button layoutX="73.0" layoutY="350.0" mnemonicParsing="false" onAction="#searchButton" text="Search " />
+            <Label fx:id="label" alignment="CENTER" layoutX="10.0" layoutY="382.0" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER" />
          </children>
       </Pane>
-      <TableView fx:id="recommendHotels" layoutX="200.0" layoutY="36.0" prefHeight="558.0" prefWidth="826.0">
+      <TableView fx:id="recommendHotels" layoutX="200.0" layoutY="35.0" prefHeight="558.0" prefWidth="825.0">
         <columns>
           <TableColumn fx:id="nameHotel" prefWidth="148.79998779296875" text="Hotel Name" />
           <TableColumn fx:id="addressHotel" prefWidth="416.800048828125" text="Address" />
@@ -60,5 +60,6 @@
             <TableColumn fx:id="roomsAvailable" prefWidth="105.5999755859375" text="Rooms available" />
         </columns>
       </TableView>
+      <Button layoutX="960.0" layoutY="605.0" mnemonicParsing="false" onAction="#book" text="Book" />
    </children>
 </AnchorPane>

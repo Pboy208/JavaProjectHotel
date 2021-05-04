@@ -14,11 +14,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FilterController">
+<AnchorPane style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HotelInfoController">
    <children>
       <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="888.0">
          <items>
-            <Button alignment="CENTER" mnemonicParsing="false" text="Back" />
             <Button mnemonicParsing="false" onAction="#searchButton" text="Sign Out" />
          </items>
       </ToolBar>

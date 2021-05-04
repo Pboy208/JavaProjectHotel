@@ -21,11 +21,33 @@ public class HotelDB {
 //		user.setPhoneNumber(tmp.getString("phone"));	
 //		user.setHotelID(tmp.getInt("hotel_id"));
 //	}
+	public static int checkExistName(String name) throws SQLException {
+		Connection connection= Postgre.makeConnection();
+		Statement statement= connection.createStatement();
+		String queryStatement = "SELECT * FROM hotel where name ='"+name+"'" ;
+		ResultSet count = statement.executeQuery(queryStatement);
+		if(count.next()==false) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
+	}
 	
-	
-	public static void queryHotelInfo(int hotel_id) {
-		//query by hotelID
+	public static int insertHotel(String name,String address) throws SQLException {
+		if(checkExistName(name)==1)
+			return -1;
 		
+		Connection connection= Postgre.makeConnection();
+		Statement statement= connection.createStatement();
+		String queryStatement = "SELECT max(hotel_id) FROM hotel" ;
+		ResultSet count = statement.executeQuery(queryStatement);
+		count.next();
+		int newID = count.getInt(1)+1;
+		
+		String insertStatement = "INSERT INTO hotel(hotel_id,name,address) VALUES ("+newID+",'"+name+"','"+address+"')" ;
+		statement.executeUpdate(insertStatement);
+		return newID;
 	}
 	
 	public static ArrayList<Hotel> queryHotelInfo(int[] hotel_ids) throws SQLException {

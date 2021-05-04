@@ -1,6 +1,7 @@
 package controller;
 
 
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,12 +18,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -51,15 +49,6 @@ public class FilterController implements Initializable {
 	private TextField destination;
 	@FXML
 	private TextField hotelName;
-	@FXML
-	private Button logOut;
-	@FXML
-	private Button receipts;
-	@FXML
-	private Button search;
-	@FXML
-	private Button userInfo;
-	
 	@FXML
 	private Label label;
 	//-------------------------------------------------------------------
@@ -104,9 +93,6 @@ public class FilterController implements Initializable {
 	@FXML
 	private TableColumn<Hotel, String> ratingHotel;
 	
-	private ObservableList<Filter> filterList= FXCollections.observableArrayList();
-	
-	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		recommendHotels.setPlaceholder(new Label("Please fill in your filter"));
@@ -129,8 +115,22 @@ public class FilterController implements Initializable {
 //		recommendHotels.setItems(tableList);
 	}
 	
+	public void signOut(ActionEvent event) {
+		changeScene(event,"Login.fxml");
+		LoginController.signOut();
+	}
+	
+	
 	public void book(ActionEvent e) {
 		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
+	}
+	
+	public void receipts(ActionEvent event) {
+		
+	}
+	
+	public void clientInfo(ActionEvent event) {
+		changeScene(event, "ClientInfo.fxml");
 	}
 	
 	public void searchButton(ActionEvent e) throws SQLException {

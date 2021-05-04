@@ -8,41 +8,56 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<AnchorPane prefHeight="656.0" prefWidth="1185.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
    <children>
-      <Button layoutX="148.0" mnemonicParsing="false" text="Back" />
-      <Button mnemonicParsing="false" text="Clients" />
-      <Button layoutX="52.0" mnemonicParsing="false" text="Hotel Manager" />
-      <Pane layoutY="60.0" prefHeight="370.0" prefWidth="507.0" visible="false">
+      <Button layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#back" text="Back to login page" />
+      <Button layoutX="146.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeHotelManagers" text="Hotel Manager" />
+      <Button layoutX="260.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeClients" text="Clients" />
+      <Label fx:id="beginLabel" layoutX="465.0" layoutY="315.0" text="Please choose a type of user ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="alertMissing" layoutX="505.0" layoutY="587.0" text="You still have some fields missing" textFill="RED" visible="false" />
+      <Label fx:id="alertPW" layoutX="510.0" layoutY="587.0" text="Wrong Password Comfirmation" textFill="RED" visible="false" />
+      <Label fx:id="alertExistAccount" layoutX="531.0" layoutY="587.0" text="Username already exist" textFill="RED" visible="false" />
+      <Label fx:id="succesfullySignUp" layoutX="533.0" layoutY="587.0" text="Your Account Is Ready" textFill="RED" visible="false" />
+      <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0" visible="false">
          <children>
-            <Button layoutX="358.0" layoutY="235.0" mnemonicParsing="false" text="Sign Up" />
-            <PasswordField layoutX="74.0" layoutY="156.0" promptText="Password comfirmation" />
-            <PasswordField layoutX="74.0" layoutY="131.0" promptText="Password" />
-            <TextField layoutX="74.0" layoutY="207.0" promptText="Email Address" />
-            <Label layoutX="195.0" layoutY="40.0" text="Sign Up">
+            <Label layoutX="340.0" layoutY="38.0" text="Account Signing Up For Clients">
                <font>
                   <Font name="Barlow Condensed ExtraBold" size="37.0" />
                </font>
             </Label>
-            <TextField layoutX="74.0" layoutY="106.0" promptText="Username" />
-            <TextField layoutX="74.0" layoutY="182.0" promptText="Phone Number" />
+            <TextField fx:id="usernameC" alignment="CENTER" layoutX="500.0" layoutY="113.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
+            <PasswordField fx:id="pwC" alignment="CENTER" layoutX="500.0" layoutY="163.0" prefHeight="39.0" prefWidth="186.0" promptText="Password" />
+            <PasswordField fx:id="pwConfirmationC" alignment="CENTER" layoutX="500.0" layoutY="216.0" prefHeight="39.0" prefWidth="186.0" promptText="Password comfirmation" />
+            <TextField fx:id="nameC" alignment="CENTER" layoutX="500.0" layoutY="269.0" prefHeight="39.0" prefWidth="186.0" promptText="Your Name" />
+            <TextField fx:id="phoneC" alignment="CENTER" layoutX="500.0" layoutY="324.0" prefHeight="39.0" prefWidth="186.0" promptText="Phone Number" />
+            <TextField fx:id="emailC" alignment="CENTER" layoutX="500.0" layoutY="375.0" prefHeight="39.0" prefWidth="186.0" promptText="Email Address" />
+            <Button layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#signUpClient" text="Sign Up" />
          </children>
       </Pane>
-      <Pane layoutY="67.0" prefHeight="370.0" prefWidth="507.0" visible="false">
+      <Pane fx:id="paneH" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0" visible="false">
          <children>
-            <Button layoutX="358.0" layoutY="235.0" mnemonicParsing="false" text="Sign Up" />
-            <PasswordField layoutX="74.0" layoutY="156.0" promptText="Password comfirmation" />
-            <PasswordField layoutX="74.0" layoutY="131.0" promptText="Password" />
-            <TextField layoutX="74.0" layoutY="207.0" promptText="Email Address" />
-            <Label layoutX="131.0" layoutY="14.0" text="Hotel Manager">
+            <Label layoutX="264.0" layoutY="33.0" text="Account Signing Up For Hotel Managers">
                <font>
                   <Font name="Barlow Condensed ExtraBold" size="37.0" />
                </font>
             </Label>
-            <TextField layoutX="74.0" layoutY="106.0" promptText="Username" />
-            <TextField layoutX="74.0" layoutY="182.0" promptText="Phone Number" />
-            <TextField layoutX="74.0" layoutY="232.0" promptText="Hotel Name" />
+            <TextField fx:id="usernameH" alignment="CENTER" layoutX="378.0" layoutY="130.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
+            <PasswordField fx:id="pwH" alignment="CENTER" layoutX="378.0" layoutY="197.0" prefHeight="39.0" prefWidth="186.0" promptText="Password" />
+            <PasswordField fx:id="pwConfirmationH" alignment="CENTER" layoutX="378.0" layoutY="265.0" prefHeight="39.0" prefWidth="186.0" promptText="Password comfirmation" />
+            <TextField fx:id="nameH" alignment="CENTER" layoutX="622.0" layoutY="130.0" prefHeight="39.0" prefWidth="186.0" promptText="Your Name" />
+            <TextField fx:id="phoneH" alignment="CENTER" layoutX="622.0" layoutY="197.0" prefHeight="39.0" prefWidth="186.0" promptText="Phone Number" />
+            <TextField fx:id="emailH" alignment="CENTER" layoutX="622.0" layoutY="265.0" prefHeight="39.0" prefWidth="186.0" promptText="Email Address" />
+            <TextField fx:id="hotelNameH" alignment="CENTER" layoutX="378.0" layoutY="334.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Name" />
+            <Label layoutX="460.0" layoutY="459.0" text="Information about your hotel will be set as default" />
+            <Button layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#signUpHotelManager" text="Sign Up" />
+            <TextField fx:id="hotelAddressH" alignment="CENTER" layoutX="622.0" layoutY="334.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Address" />
          </children>
       </Pane>
+      <Label fx:id="alertExistPhone" layoutX="525.0" layoutY="587.0" text="Phone already been used" textFill="RED" visible="false" />
+      <Label fx:id="alertExistHotelName" layoutX="505.0" layoutY="587.0" text="Hotel Already Exist In The System" textFill="RED" visible="false" />
    </children>
 </AnchorPane>
