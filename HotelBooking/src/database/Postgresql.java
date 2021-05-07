@@ -40,6 +40,5 @@ public interface Postgresql {
 		}
 		return connectionA;
 	}
-	
 }
 
