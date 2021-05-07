@@ -28,7 +28,7 @@ public interface Postgresql {
 	public static final Connection connection = makeConnection();
 	public static Connection makeConnection() {
 		String username="postgres";
-		String password="Nguyentuandung2901";
+		String password="005868";
 		String jdbcUrl="jdbc:postgresql://localhost:5432/Hotel";
 		Connection connectionA = null;
 		try {

@@ -11,8 +11,8 @@ public class Postgre {
 		if(connection==null)
 		{
 			String username="postgres";
-			String password="Nguyentuandung2901";
-			String jdbcUrl="jdbc:postgresql://localhost:5432/Hotel";
+			String password="005868";
+			String jdbcUrl="jdbc:postgresql://localhost:5432/bk";
 			try {
 				connection=DriverManager.getConnection(jdbcUrl,username,password);
 				System.out.println("Connection extablished");
