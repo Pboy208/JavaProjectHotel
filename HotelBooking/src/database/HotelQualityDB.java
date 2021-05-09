@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class HotelQualityDB {
 
-	public static float queryOverallScore(int hotel_id) throws SQLException {
-		String queryStatement = "SELECT overall_score FROM hotelquality where hotel_id = " + hotel_id ;
+	public static float queryOverallScore(int hotelID) throws SQLException {
+		String queryStatement = "SELECT overall_score FROM hotelquality where hotel_id = " + hotelID ;
 		Connection connection= Postgre.makeConnection();
 		Statement statement= connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);

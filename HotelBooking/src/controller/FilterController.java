@@ -1,7 +1,5 @@
 package controller;
 
-
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -123,12 +120,11 @@ public class FilterController implements Initializable {
 	
 	public void book(ActionEvent e) {
 		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
-	}
-	
-	public void receipts(ActionEvent event) {
+		hotel.printInfo();
 		
 	}
 	
+
 	public void clientInfo(ActionEvent event) {
 		changeScene(event, "ClientInfo.fxml");
 	}

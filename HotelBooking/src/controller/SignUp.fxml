@@ -22,14 +22,14 @@
       <Label fx:id="alertPW" layoutX="510.0" layoutY="587.0" text="Wrong Password Comfirmation" textFill="RED" visible="false" />
       <Label fx:id="alertExistAccount" layoutX="531.0" layoutY="587.0" text="Username already exist" textFill="RED" visible="false" />
       <Label fx:id="succesfullySignUp" layoutX="533.0" layoutY="587.0" text="Your Account Is Ready" textFill="RED" visible="false" />
-      <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0" visible="false">
+      <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0">
          <children>
             <Label layoutX="340.0" layoutY="38.0" text="Account Signing Up For Clients">
                <font>
                   <Font name="Barlow Condensed ExtraBold" size="37.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameC" alignment="CENTER" layoutX="500.0" layoutY="113.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
+            <TextField fx:id="accountNameC" alignment="CENTER" layoutX="500.0" layoutY="113.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
             <PasswordField fx:id="pwC" alignment="CENTER" layoutX="500.0" layoutY="163.0" prefHeight="39.0" prefWidth="186.0" promptText="Password" />
             <PasswordField fx:id="pwConfirmationC" alignment="CENTER" layoutX="500.0" layoutY="216.0" prefHeight="39.0" prefWidth="186.0" promptText="Password comfirmation" />
             <TextField fx:id="nameC" alignment="CENTER" layoutX="500.0" layoutY="269.0" prefHeight="39.0" prefWidth="186.0" promptText="Your Name" />
@@ -45,7 +45,7 @@
                   <Font name="Barlow Condensed ExtraBold" size="37.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameH" alignment="CENTER" layoutX="378.0" layoutY="130.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
+            <TextField fx:id="accountNameH" alignment="CENTER" layoutX="378.0" layoutY="130.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" />
             <PasswordField fx:id="pwH" alignment="CENTER" layoutX="378.0" layoutY="197.0" prefHeight="39.0" prefWidth="186.0" promptText="Password" />
             <PasswordField fx:id="pwConfirmationH" alignment="CENTER" layoutX="378.0" layoutY="265.0" prefHeight="39.0" prefWidth="186.0" promptText="Password comfirmation" />
             <TextField fx:id="nameH" alignment="CENTER" layoutX="622.0" layoutY="130.0" prefHeight="39.0" prefWidth="186.0" promptText="Your Name" />

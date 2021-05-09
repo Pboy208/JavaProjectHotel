@@ -18,7 +18,6 @@
       <ToolBar layoutY="-2.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="38.0" prefWidth="1026.0">
          <items>
             <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#signOut" text="Sign Out" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#receipts" text="Receipts" />
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#clientInfo" text="User Info" />
          </items>
       </ToolBar>

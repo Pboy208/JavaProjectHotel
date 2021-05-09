@@ -23,7 +23,7 @@
             <TextField fx:id="name" layoutX="13.0" layoutY="64.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
             <TextField fx:id="email" layoutX="14.0" layoutY="102.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
             <TextField fx:id="phone" layoutX="13.0" layoutY="141.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
-            <Label fx:id="username" layoutX="13.0" layoutY="35.0" text="Username:" />
+            <Label fx:id="accountName" layoutX="13.0" layoutY="35.0" text="Username:" />
          </children>
       </Pane>
       <Pane layoutY="200.0" prefHeight="302.0" prefWidth="200.0">

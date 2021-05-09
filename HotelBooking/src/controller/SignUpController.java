@@ -3,9 +3,6 @@ package controller;
 
 import java.sql.SQLException;
 
-import javax.security.auth.login.FailedLoginException;
-
-import database.CheckPasswordDB;
 import database.ClientDB;
 import database.HotelDB;
 import database.HotelEmployeesDB;
@@ -14,14 +11,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import user.Clients;
 
 public class SignUpController {
 
@@ -59,7 +54,7 @@ public class SignUpController {
 	@FXML
 	private Pane paneC;
 	@FXML
-	private TextField usernameC;
+	private TextField accountNameC;
 	@FXML
 	private TextField nameC;
 	@FXML
@@ -74,7 +69,7 @@ public class SignUpController {
 	@FXML
 	private Pane paneH;
 	@FXML
-	private TextField usernameH;
+	private TextField accountNameH;
 	@FXML
 	private TextField nameH;
 	@FXML
@@ -125,26 +120,26 @@ public class SignUpController {
 		   emailC.getText().trim().isEmpty() ||
 		   pwC.getText().trim().isEmpty() ||
 		   pwConfirmationC.getText().trim().isEmpty() ||
-		   usernameC.getText().trim().isEmpty()
+		   accountNameC.getText().trim().isEmpty()
 		   ) 
 		{
 			alertMissing.setVisible(true);
 			return;
 		}
 		
-		String user_Name = nameC.getText();
+		String name = nameC.getText();
 		String phone=phoneC.getText();
 		String email= emailC.getText();
 		
 		String password = pwC.getText();
 		String passwordConfirm = pwConfirmationC.getText();
-		String username = usernameC.getText();
+		String accountName = accountNameC.getText();
 		
-		if(ClientDB.checkExistAccount(username,phone)==1) {
+		if(ClientDB.checkExistAccount(accountName,phone)==1) {
 			alertExistAccount.setVisible(true);
 			return;
 		}
-		else if (ClientDB.checkExistAccount(username,phone)==2) {
+		else if (ClientDB.checkExistAccount(accountName,phone)==2) {
 			alertExistPhone.setVisible(true);
 			return;
 		}
@@ -155,13 +150,11 @@ public class SignUpController {
 		}
 		
 
-		ClientDB.insertClients(user_Name, phone, email, username, passwordConfirm);
-//		Clients tmp=ClientDB.queryClientInfo(CheckPasswordDB.checkPasswordClients(username, passwordConfirm));
-//		tmp.printInfo();
+		ClientDB.insertClients(name, phone, email, accountName, passwordConfirm);
 		
 		//After Sign Up
 		succesfullySignUp.setVisible(true);
-		usernameC.clear();
+		accountNameC.clear();
 		phoneC.clear();
 		emailC.clear();
 		pwC.clear();
@@ -180,7 +173,7 @@ public class SignUpController {
 				   emailH.getText().trim().isEmpty() ||
 				   pwH.getText().trim().isEmpty() ||
 				   pwConfirmationH.getText().trim().isEmpty() ||
-				   usernameH.getText().trim().isEmpty() ||
+				   accountNameH.getText().trim().isEmpty() ||
 				   hotelNameH.getText().trim().isEmpty() ||
 				   hotelAddressH.getText().trim().isEmpty()
 				   ) 
@@ -189,24 +182,24 @@ public class SignUpController {
 			return;
 		}
 		
-		String user_Name = nameH.getText();
+		String name = nameH.getText();
 		String phone=phoneH.getText();
 		String email= emailH.getText();
 		
 		String password = pwH.getText();
 		String passwordConfirm = pwConfirmationH.getText();
-		String username = usernameH.getText();
+		String accountName = accountNameH.getText();
 		
 		String hotelName=hotelNameH.getText();
 		String hotelAddress=hotelAddressH.getText();
 		
 		int hotel_id = 0;
 		
-		if(HotelEmployeesDB.checkExistAccount(username,phone)==1) {
+		if(HotelEmployeesDB.checkExistAccount(accountName,phone)==1) {
 			alertExistAccount.setVisible(true);
 			return;
 		}
-		else if (HotelEmployeesDB.checkExistAccount(username,phone)==2) {
+		else if (HotelEmployeesDB.checkExistAccount(accountName,phone)==2) {
 			alertExistPhone.setVisible(true);
 			return;
 		}
@@ -223,11 +216,11 @@ public class SignUpController {
 			return;
 		}
 		//create employees with given hotel_id
-		HotelEmployeesDB.insertHotelEmployees(hotel_id, username, phone, email, username, passwordConfirm);
+		HotelEmployeesDB.insertHotelEmployees(hotel_id, name, phone, email, accountName, passwordConfirm);
 		
 		//After Sign Up
 		succesfullySignUp.setVisible(true);
-		usernameC.clear();
+		accountNameC.clear();
 		phoneC.clear();
 		emailC.clear();
 		pwC.clear();

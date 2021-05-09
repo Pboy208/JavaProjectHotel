@@ -10,9 +10,9 @@ import user.Clients;
 
 public class ClientDB {
 	
-	public static Clients queryClientInfo(int user_id) throws SQLException {
-		Clients user = new Clients(user_id);
-		String queryStatement = "SELECT * FROM clients where user_id = "+user_id;
+	public static Clients queryClientInfo(int userID) throws SQLException {
+		Clients user = new Clients(userID);
+		String queryStatement = "SELECT * FROM clients where user_id = "+userID;
 		Connection connection= Postgre.makeConnection();
 		Statement statement= connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
@@ -23,31 +23,31 @@ public class ClientDB {
 		return user;
 	}
 	
-	public static int insertClients(String user_name,String phoneNumber,String email,String username,String password) throws SQLException {
-		String insertInfo="INSERT INTO clients(name,phone,email) VALUES ('"+user_name+"','"+phoneNumber+"','"+email+"')";
-		String query = "SELECT user_id FROM clients WHERE name = '"+user_name+"' AND phone='"+phoneNumber+"' AND email='"+email+"'";
+	public static int insertClients(String name,String phoneNumber,String email,String accountName,String password) throws SQLException {
+		String insertInfo="INSERT INTO clients(name,phone,email) VALUES ('"+name+"','"+phoneNumber+"','"+email+"')";
+		String query = "SELECT user_id FROM clients WHERE name = '"+name+"' AND phone='"+phoneNumber+"' AND email='"+email+"'";
 		Connection connection= Postgre.makeConnection();
 		Statement statement= connection.createStatement();
 		statement.executeUpdate(insertInfo);
-		//truy nguoc tim` id
+
 		ResultSet tmp = statement.executeQuery(query);
 		tmp.next();
-		int id=tmp.getInt("user_id");
-		//
-		String updateAccount="INSERT INTO accountclients(user_id,username,password) VALUES ("+id+",'"+username+"','"+password+"')";
+		int userID=tmp.getInt("user_id");
+
+		String updateAccount="INSERT INTO accountclients(user_id,username,password) VALUES ("+userID+",'"+accountName+"','"+password+"')";
 		return statement.executeUpdate(updateAccount);
 	}
 	
-	public static int checkExistAccount(String username,String phone) throws SQLException {
+	public static int checkExistAccount(String accountName,String phone) throws SQLException {
 		String queryStatement = "SELECT * FROM accountclients JOIN clients on clients.user_id = accountclients.user_id"
-							+ " WHERE username = '"+username+"' OR phone = '"+ phone +"'" ;
+							+ " WHERE username = '"+accountName+"' OR phone = '"+ phone +"'" ;
 		Connection connection= Postgre.makeConnection();
 		Statement statement= connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
 		if(tmp.next()==false)
 			return 0;
 		else {
-			if(tmp.getString("username").equals(username))
+			if(tmp.getString("username").equals(accountName))
 				return 1;
 			else 
 				return 2;
@@ -55,11 +55,13 @@ public class ClientDB {
 		//if already exist -> return 1
 	}
 
-	public static void updateClients(int user_id,String name, String phone,String email,String password) throws SQLException {
+	public static void updateClients(int userID,String name, String phone,String email,String password) throws SQLException {
 		Connection connection= Postgre.makeConnection();
 		Statement statement= connection.createStatement();
-		String updateAccount="UPDATE clients Set name='"+ name+"',phone='"+phone+"',email='"+email+"' WHERE user_id = "+user_id;
+		String updateAccount="UPDATE clients Set name='"+ name+"',phone='"+phone+"',email='"+email+"' WHERE user_id = "+userID;
 		statement.executeUpdate(updateAccount);
+		String updateAccountPW="UPDATE accountclients Set password='"+ password+"' WHERE user_id = "+userID;
+		statement.executeUpdate(updateAccountPW);
 		LoginController.setUser(name, phone, email, password);
 	}
 }

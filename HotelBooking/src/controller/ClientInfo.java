@@ -37,7 +37,7 @@ public class ClientInfo implements Initializable{
 	}
 	
 	@FXML
-	private Label username;
+	private Label accountName;
 	@FXML
 	private TextField name;
 	@FXML
@@ -67,6 +67,7 @@ public class ClientInfo implements Initializable{
 	}
 	
 	public void saveChange(ActionEvent event) throws SQLException {
+		
 		alert.setText("");
 		
 		Clients user = (Clients)LoginController.getUser();
@@ -132,7 +133,7 @@ public class ClientInfo implements Initializable{
 		alert.setText("");
 		Clients user =(Clients) LoginController.getUser();
 		user.printInfo();
-		username.setText("Username: " + user.getUsername());
+		accountName.setText("Username: " + user.getUsername());
 		name.setText(user.getName());
 		email.setText(user.getEmail());
 		phone.setText(user.getPhoneNumber());

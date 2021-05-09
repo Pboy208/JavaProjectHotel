@@ -14,54 +14,52 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HotelInfoController">
+<AnchorPane prefHeight="656.0" prefWidth="1185.0" style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HotelInfoController">
    <children>
-      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="888.0">
+      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="1185.0">
          <items>
-            <Button mnemonicParsing="false" onAction="#searchButton" text="Sign Out" />
+            <Button mnemonicParsing="false" onAction="#signOut" text="Sign Out" />
          </items>
       </ToolBar>
-      <Pane layoutY="36.0" prefHeight="220.0" prefWidth="200.0">
+      <Pane layoutX="2.0" layoutY="36.0" prefHeight="172.0" prefWidth="274.0">
          <children>
-            <TextField alignment="CENTER" layoutX="13.0" layoutY="25.0" prefHeight="26.0" prefWidth="174.0" promptText="Username" />
-            <TextField alignment="CENTER" layoutX="14.0" layoutY="66.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
-            <Label alignment="CENTER" layoutX="10.0" layoutY="382.0" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER" />
-            <TextField alignment="CENTER" layoutX="14.0" layoutY="102.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
-            <TextField alignment="CENTER" layoutX="13.0" layoutY="141.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
-            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="181.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Save Change" />
+            <Label fx:id="accountName" layoutX="50.0" layoutY="28.0" text="Username:" />
+            <TextField fx:id="name" layoutX="50.0" layoutY="60.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
+            <TextField fx:id="email" layoutX="50.0" layoutY="101.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
+            <TextField fx:id="phone" layoutX="50.0" layoutY="141.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
          </children>
       </Pane>
-      <Pane layoutY="256.0" prefHeight="225.0" prefWidth="200.0">
+      <Pane layoutX="2.0" layoutY="202.0" prefHeight="293.0" prefWidth="274.0">
          <children>
-            <Button layoutX="45.0" layoutY="154.0" mnemonicParsing="false" text="Change Password" />
-            <PasswordField layoutX="14.0" layoutY="42.0" prefHeight="25.0" prefWidth="174.0" promptText="Old Password" />
-            <PasswordField layoutX="14.0" layoutY="77.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password" />
-            <PasswordField layoutX="14.0" layoutY="110.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password Confirmation" />
+            <PasswordField fx:id="oldPW" layoutX="50.0" layoutY="14.0" prefHeight="25.0" prefWidth="174.0" promptText="Current Password" visible="false" />
+            <PasswordField fx:id="newPW" layoutX="50.0" layoutY="50.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password" visible="false" />
+            <PasswordField fx:id="newPWConfirm" layoutX="50.0" layoutY="86.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password Confirmation" visible="false" />
+            <Button layoutX="82.0" layoutY="134.0" mnemonicParsing="false" onAction="#changePassword" text="Change Password" />
          </children>
       </Pane>
-      <Pane layoutX="200.0" layoutY="36.0" prefHeight="260.0" prefWidth="690.0">
+      <Pane layoutX="274.0" layoutY="36.0" prefHeight="417.0" prefWidth="911.0">
          <children>
-            <TableView prefHeight="199.0" prefWidth="690.0">
+            <TableView fx:id="orderList" prefHeight="339.0" prefWidth="911.0">
                <columns>
-                  <TableColumn prefWidth="84.79998779296875" text="Hotel Name" />
-                  <TableColumn prefWidth="262.3999938964844" text="Hotel Address" />
-                  <TableColumn prefWidth="82.39996337890625" text="Checkin Date" />
-                  <TableColumn prefWidth="89.60003662109375" text="Checkout Date" />
-                  <TableColumn prefWidth="88.79998779296875" text="Booking Date" />
-                  <TableColumn minWidth="0.0" prefWidth="84.0" text="Price" />
+                  <TableColumn prefWidth="124.0" text="Hotel Name" />
+                  <TableColumn prefWidth="375.20001220703125" text="Hotel Address" />
+                  <TableColumn prefWidth="90.4000244140625" text="Checkin Date" />
+                  <TableColumn prefWidth="104.79998779296875" text="Checkout Date" />
+                  <TableColumn prefWidth="105.60003662109375" text="Booking Date" />
+                  <TableColumn minWidth="0.0" prefWidth="112.00006103515625" text="Price" />
                </columns>
             </TableView>
-            <Button layoutX="483.0" layoutY="204.0" mnemonicParsing="false" text="Cancel Receipt" />
-            <Button layoutX="599.0" layoutY="204.0" mnemonicParsing="false" text="View Hotel " />
+            <Button layoutX="710.0" layoutY="357.0" mnemonicParsing="false" text="Cancel Receipt" />
+            <Button layoutX="824.0" layoutY="357.0" mnemonicParsing="false" text="View Hotel " />
          </children>
       </Pane>
-      <Pane layoutX="200.0" layoutY="297.0" prefHeight="185.0" prefWidth="690.0">
+      <Pane layoutX="274.0" layoutY="454.0" prefHeight="199.0" prefWidth="911.0">
          <children>
-            <TextField layoutX="29.0" layoutY="1.0" promptText="Hotel Name" />
-            <TextField layoutX="29.0" layoutY="33.0" promptText="Hotel Address" />
-            <TextField layoutX="29.0" layoutY="67.0" promptText="Website" />
-            <TextField layoutX="29.0" layoutY="101.0" promptText="Price" />
-            <TextField layoutX="507.0" layoutY="21.0" promptText="Update Room ID" />
+            <TextField fx:id="hotelName" layoutX="29.0" layoutY="1.0" promptText="Hotel Name" />
+            <TextField fx:id="hotelAddress" layoutX="29.0" layoutY="33.0" promptText="Hotel Address" />
+            <TextField fx:id="website" layoutX="29.0" layoutY="67.0" promptText="Website" />
+            <TextField fx:id="price" layoutX="29.0" layoutY="101.0" promptText="Price" />
+            <ComboBox fx:id="star" layoutX="29.0" layoutY="138.0" prefHeight="26.0" prefWidth="149.0" promptText="Hotel Star" />
             <ScrollPane layoutX="197.0" layoutY="5.0" prefHeight="89.0" prefWidth="160.0">
                <content>
                   <VBox prefHeight="222.0" prefWidth="143.0">
@@ -82,10 +80,12 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <ComboBox fx:id="star" layoutX="29.0" layoutY="138.0" prefHeight="26.0" prefWidth="149.0" promptText="Hotel Star" />
+            <TextField fx:id="roomID" layoutX="507.0" layoutY="21.0" promptText="Update Room ID" />
             <Button layoutX="507.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Add Room" />
             <Button layoutX="507.0" layoutY="89.0" mnemonicParsing="false" text="Delete Room" />
          </children>
       </Pane>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="84.0" layoutY="595.0" mnemonicParsing="false" onAction="#saveChange" prefHeight="25.0" prefWidth="110.0" text="Save Change" />
+      <Label fx:id="alert" alignment="CENTER" layoutX="84.0" layoutY="624.0" textFill="RED" />
    </children>
 </AnchorPane>

@@ -10,6 +10,21 @@ public class User {
 	private String username;
 	private String password;
 	
+	public User(String name,String phoneNumber,String email) {
+		this.name=name;
+		this.email=email;
+		this.phoneNumber=phoneNumber;
+	}
+	
+	public User(int userID) {
+		this.userID=userID;
+	}
+	
+	public User() {
+		
+	}
+	
+	//-------------------------------------------------------------
 	public int getUserID() {
 		return userID;
 	}
@@ -28,17 +43,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public User(String name,String phoneNumber,String email) {
-		this.name=name;
-		this.email=email;
-		this.phoneNumber=phoneNumber;
-	}
-	public User(int userID) {
-		this.userID=userID;
-	}
-	public User() {
-		
-	}
+	
 	public int getId() {
 		return userID;
 	}
@@ -72,18 +77,6 @@ public class User {
 	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------
-	public void checkReservedRoom() {
-		
-	}
-	public void cancelRoom() {
-		
-	}
-	public void viewAvailableRoom() {
-		
-	}
-	public void checkReservingStatus() {
-		
-	}
 	public void getUserInfo() {
 		
 	}

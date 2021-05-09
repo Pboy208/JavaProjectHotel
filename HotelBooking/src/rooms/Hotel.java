@@ -3,17 +3,49 @@ package rooms;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Hotel {
+	private int star;
+	private int hotelID;
+	private float rating;
 	private float latNum;
 	private float longNum;
 	private String address;
 	private String url;
-	private int hotelID;
 	private String provinceID;
 	private String districtID;
 	private String streetID;
 	private String name;
-	private int star;
-	private float rating;
+	
+	
+	private SimpleStringProperty nameProperty;
+	private SimpleStringProperty addressProperty;
+	private SimpleStringProperty roomsAvailableProperty;
+	private SimpleStringProperty starProperty;
+	private SimpleStringProperty ratingProperty;
+	
+	
+	public Hotel(int hotel_ID,String name,String address,int star_number,float rating) {
+		setHotelID(hotel_ID);
+		setAddress(address);
+		setName(name);
+		setStar(star_number);
+		setRating(rating);
+		
+		this.nameProperty=new SimpleStringProperty(this.name);
+		this.addressProperty=new SimpleStringProperty(this.address);
+		this.roomsAvailableProperty=new SimpleStringProperty(Integer.toString(getAvailableRooms()));
+		this.ratingProperty=new SimpleStringProperty(Float.toString(this.rating));
+		this.starProperty=new SimpleStringProperty(Integer.toString(star));
+	}
+	
+	public Hotel() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	//-----------------------------------------------------------------------
+	
+	public void printInfo() {
+		System.out.println(name+"/"+address);
+	}
 	
 	public String getNameProperty() {
 		return nameProperty.get();
@@ -38,26 +70,7 @@ public class Hotel {
 	public void setRoomsAvailableProperty(SimpleStringProperty roomsAvailableProperty) {
 		this.roomsAvailableProperty = roomsAvailableProperty;
 	}
-	private SimpleStringProperty nameProperty;
-	private SimpleStringProperty addressProperty;
-	private SimpleStringProperty roomsAvailableProperty;
-	private SimpleStringProperty starProperty;
-	private SimpleStringProperty ratingProperty;
-	
-	public Hotel(int hotel_ID,String name,String address,int star_number,float rating) {
-		setHotelID(hotel_ID);
-		setAddress(address);
-		setName(name);
-		setStar(star_number);
-		setRating(rating);
-		
-		this.nameProperty=new SimpleStringProperty(this.name);
-		this.addressProperty=new SimpleStringProperty(this.address);
-		this.roomsAvailableProperty=new SimpleStringProperty(Integer.toString(getAvailableRooms()));
-		this.ratingProperty=new SimpleStringProperty(Float.toString(this.rating));
-		this.starProperty=new SimpleStringProperty(Integer.toString(star));
-	}
-	
+
 	public float getRating() {
 		return rating;
 	}
@@ -82,10 +95,6 @@ public class Hotel {
 		this.ratingProperty = ratingProperty;
 	}
 
-	public void prinInfo() {
-		System.out.println(this.name+"/"+this.address+"/"+this.star);
-	}
-	
 	public int getAvailableRooms() {
 		return 1;
 	}
@@ -150,9 +159,6 @@ public class Hotel {
 	}
 	public void setStreetID(String streetID) {
 		this.streetID = streetID;
-	}
-	public Hotel() {
-		// TODO Auto-generated constructor stub
 	}
 
 }

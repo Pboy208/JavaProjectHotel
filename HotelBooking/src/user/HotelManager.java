@@ -6,11 +6,4 @@ public class HotelManager extends HotelEmployees {
 		super(user_id);
 	}
 	
-	public void addRoom() {
-		
-	}
-	
-	public void removeRoom() {
-		
-	}
 }
