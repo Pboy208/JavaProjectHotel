@@ -56,12 +56,13 @@ public class FilterController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	//-------------------------------------------------------------------
+
+	// -------------------------------------------------------------------
 	@FXML
 	private Pane filterPane;
 	@FXML
 	private Pane bookingPane;
-	//-------------------------------------------------------------------
+	// -------------------------------------------------------------------
 	@FXML
 	private DatePicker checkinTime;
 	@FXML
@@ -70,7 +71,7 @@ public class FilterController implements Initializable {
 	private TextField numberOfRoom;
 	@FXML
 	private Label alert;
-	//-------------------------------------------------------------------
+	// -------------------------------------------------------------------
 	@FXML
 	private TextField destination;
 	@FXML
@@ -133,46 +134,49 @@ public class FilterController implements Initializable {
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 		bookingPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	
+
 	public void confirmBooking(ActionEvent event) throws SQLException {
 		alert.setText("");
-		if(numberOfRoom.getText().trim().isEmpty() || checkinTime.getValue().toString().isEmpty() ||checkoutTime.getValue().toString().isEmpty()) {
+		if (numberOfRoom.getText().trim().isEmpty() || checkinTime.getValue().toString().isEmpty()
+				|| checkoutTime.getValue().toString().isEmpty()) {
 			alert.setText("Please fill all the field");
 			return;
 		}
-		if(checkinTime.getValue().isAfter(checkoutTime.getValue()) || checkinTime.getValue().isEqual(checkoutTime.getValue()))
-		{
+		if (checkinTime.getValue().isAfter(checkoutTime.getValue())
+				|| checkinTime.getValue().isEqual(checkoutTime.getValue())) {
 			alert.setText("Checkout day must be after checkin day at least 1 day");
 			return;
 		}
-		if(checkinTime.getValue().isBefore(LocalDate.now())) {
+		if (checkinTime.getValue().isBefore(LocalDate.now())) {
 			alert.setText("You can not select day in the past");
 			return;
 		}
-		if(checkinTime.getValue().isEqual(LocalDate.now())) {
+		if (checkinTime.getValue().isEqual(LocalDate.now())) {
 			alert.setText("Please book room a day in advanced");
 			return;
 		}
 		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
 		@SuppressWarnings("deprecation")
-		Date checkinDate=new Date(checkinTime.getValue().getYear()-1900, checkinTime.getValue().getMonthValue()-1, checkinTime.getValue().getDayOfMonth());
+		Date checkinDate = new Date(checkinTime.getValue().getYear() - 1900, checkinTime.getValue().getMonthValue() - 1,
+				checkinTime.getValue().getDayOfMonth());
 		@SuppressWarnings("deprecation")
-		Date checkoutDate =new Date(checkoutTime.getValue().getYear()-1900, checkoutTime.getValue().getMonthValue()-1, checkoutTime.getValue().getDayOfMonth());
+		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
+				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
 		int numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
-		if(hotel.getNumberOfAvailableRooms()<numberOfRoomInt) {	
+		if (hotel.getNumberOfAvailableRooms() < numberOfRoomInt) {
 			alert.setText("Not enough available rooms left");
 			return;
 		}
-		System.out.println(""+checkinDate);
-		System.out.println(""+checkoutDate);
+		System.out.println("" + checkinDate);
+		System.out.println("" + checkoutDate);
 		BookAndCancelDB.insertReciepts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
 	}
-	
+
 	public void back(ActionEvent event) {
 		bookingPane.setVisible(false);
 		filterPane.setEffect(null);
 	}
-	
+
 	public void clientInfo(ActionEvent event) {
 		changeScene(event, "ClientInfo.fxml");
 	}

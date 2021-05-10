@@ -20,7 +20,6 @@ public class ExtensionsDB {
 		int flagHotelNameEmpty = 1;
 
 		// ------------------------- Check whether client left HotelName/Destination
-		// empty
 		if (filter.getHotelName() != null || filter.getDestination() != null) {
 			if (filter.getHotelName() != null)
 				flagHotelNameEmpty = 0;
@@ -29,7 +28,6 @@ public class ExtensionsDB {
 			queryStatement = queryStatement.concat(" JOIN hotel ON hotel.hotel_id = hotelinfo.hotel_id"
 					+ " JOIN province ON province.province_id = hotel.province_id");
 		}
-
 		// ------------------------- Check whether client left Filter empty
 		for (int i = 0; i < 12; i++) {
 			if (filter.getExtensions()[i] == 1) {

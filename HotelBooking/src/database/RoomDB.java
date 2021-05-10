@@ -90,10 +90,9 @@ public class RoomDB {
 	public static int queryNumberOfAvailableRooms(int hotelID) throws SQLException {
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT count(room_id) FROM rooms where hotel_id = " + hotelID + " AND status = -1 GROUP BY hotel_id";
+		String queryStatement = "SELECT count(room_id) FROM rooms where hotel_id = " + hotelID + " AND status = -1";
 		ResultSet numberOfRooms = statement.executeQuery(queryStatement);
-		if(numberOfRooms.next()==false)
-			return 0;
+		numberOfRooms.next();
 		return numberOfRooms.getInt(1);
 	}
 	
@@ -103,6 +102,7 @@ public class RoomDB {
 		String updateStatement = "UPDATE rooms Set receipt_id=" + receiptID + ",status=0 " + "where room_id = " + roomID
 				+ " and hotel_id= " + hotelID;
 		statement.executeUpdate(updateStatement);
+		HotelDB.updateNumberOfAvailableRooms(hotelID);
 	}
 
 	public static void cancelRoom(int receiptID) throws SQLException {
@@ -113,5 +113,6 @@ public class RoomDB {
 				+ tmpReceipts.getRoomID() + " and hotel_id= " + tmpReceipts.getHotelID();
 		System.out.println(updateStatement);
 		statement.executeUpdate(updateStatement);
+		HotelDB.updateNumberOfAvailableRooms(tmpReceipts.getHotelID());
 	}
 }

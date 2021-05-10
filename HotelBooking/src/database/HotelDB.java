@@ -46,14 +46,15 @@ public class HotelDB {
 		Statement statement = connection.createStatement();
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for (int i : hotelIDs) {
-			int numberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(i);
+			// int numberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(i);
 			String fullQueryStatement = queryStatement + i + "'";
 			ResultSet tmp = statement.executeQuery(fullQueryStatement);
 			tmp.next();
 			Float overallScore = HotelQualityDB.queryOverallScore(tmp.getInt(1));
 			if (overallScore == -1)
 				overallScore = 0f;
-			Hotel tmpHotel = new Hotel(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), overallScore,numberOfAvailableRooms);
+			Hotel tmpHotel = new Hotel(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), overallScore,
+					tmp.getInt(10));
 			hotels.add(tmpHotel);
 		}
 		return hotels;
@@ -68,11 +69,12 @@ public class HotelDB {
 			return null;
 		else {
 			ExtensionsDB.queryExtensions(hotelID);
-			int numberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(hotelID);
+			// int numberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(hotelID);
 			Float overallScore = HotelQualityDB.queryOverallScore(tmp.getInt(1));
 			if (overallScore == -1)
 				overallScore = 0f;
-			Hotel tmpHotel = new Hotel(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), overallScore,numberOfAvailableRooms);
+			Hotel tmpHotel = new Hotel(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), overallScore,
+					tmp.getInt(10));
 			tmpHotel.setExtensions(ExtensionsDB.queryExtensions(hotelID));
 			return tmpHotel;
 		}
@@ -86,5 +88,15 @@ public class HotelDB {
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(updateStatement);
 		ExtensionsDB.updateExtensions(hotelID, extensions);
+	}
+
+	public static void updateNumberOfAvailableRooms(int hotelID) throws SQLException {
+		Connection connection = Postgre.makeConnection();
+		int tmpNumberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(hotelID);
+		String queryStatement = "Update hotel set available_room = " + tmpNumberOfAvailableRooms + " where hotel_id = "
+				+ hotelID;
+		Statement statement = connection.createStatement();
+		statement.executeUpdate(queryStatement);
+
 	}
 }

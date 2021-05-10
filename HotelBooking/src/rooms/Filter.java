@@ -1,7 +1,5 @@
 package rooms;
 
-import javafx.scene.control.CheckBox;
-
 public class Filter {
 	private int star;
 	private int extensions[] = new int[12]; // 1,0 ?
