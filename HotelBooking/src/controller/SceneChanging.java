@@ -8,7 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class SceneChanging {
-	
+
 	public void changeScene(ActionEvent event, String source) {
 		try {
 			AnchorPane root = (AnchorPane) FXMLLoader.load(getClass().getResource(source));

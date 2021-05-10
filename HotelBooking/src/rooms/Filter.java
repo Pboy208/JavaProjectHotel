@@ -4,32 +4,31 @@ import javafx.scene.control.CheckBox;
 
 public class Filter {
 	private int star;
-	private int extensions[] = new int[12]; //1,0 ?
+	private int extensions[] = new int[12]; // 1,0 ?
 	private String location;
 	private String destination;
 	private String hotelName;
-	public static final String[] extensionLibrary = {"have_breakfast","free_wifi","car_park","airport_transport",
-			"restaurant","deposit","baby_service","bar","laundry","tour","spa","pool"};
-	
-	
+	public static final String[] extensionLibrary = { "have_breakfast", "free_wifi", "car_park", "airport_transport",
+			"restaurant", "deposit", "baby_service", "bar", "laundry", "tour", "spa", "pool" };
+
 	public Filter() {
-		
+
 	}
-	
-	//-------------------------------------------------------------------------------
-	
+
+	// -------------------------------------------------------------------------------
+
 	public void setExtensions(int[] extension) {
-		this.extensions=extension;
+		this.extensions = extension;
 	}
-	
+
 	public int[] getExtensions() {
 		return this.extensions;
 	}
-	
-	public String[] getExtensionsLibrary() {
+
+	public static String[] getExtensionsLibrary() {
 		return Filter.extensionLibrary;
 	}
-	
+
 	public String getLocation() {
 		return location;
 	}
@@ -45,7 +44,7 @@ public class Filter {
 	public void setStar(int star) {
 		this.star = star;
 	}
-	
+
 	public String getDestination() {
 		return destination;
 	}
@@ -61,5 +60,5 @@ public class Filter {
 	public void setHotelName(String hotelName) {
 		this.hotelName = hotelName;
 	}
-	
+
 }

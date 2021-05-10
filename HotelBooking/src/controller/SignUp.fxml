@@ -22,7 +22,7 @@
       <Label fx:id="alertPW" layoutX="510.0" layoutY="587.0" text="Wrong Password Comfirmation" textFill="RED" visible="false" />
       <Label fx:id="alertExistAccount" layoutX="531.0" layoutY="587.0" text="Username already exist" textFill="RED" visible="false" />
       <Label fx:id="succesfullySignUp" layoutX="533.0" layoutY="587.0" text="Your Account Is Ready" textFill="RED" visible="false" />
-      <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0">
+      <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0" visible="false">
          <children>
             <Label layoutX="340.0" layoutY="38.0" text="Account Signing Up For Clients">
                <font>
@@ -53,8 +53,8 @@
             <TextField fx:id="emailH" alignment="CENTER" layoutX="622.0" layoutY="265.0" prefHeight="39.0" prefWidth="186.0" promptText="Email Address" />
             <TextField fx:id="hotelNameH" alignment="CENTER" layoutX="378.0" layoutY="334.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Name" />
             <Label layoutX="460.0" layoutY="459.0" text="Information about your hotel will be set as default" />
-            <Button layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#signUpHotelManager" text="Sign Up" />
             <TextField fx:id="hotelAddressH" alignment="CENTER" layoutX="622.0" layoutY="334.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Address" />
+            <Button layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#signUpHotelManager" text="Sign Up" />
          </children>
       </Pane>
       <Label fx:id="alertExistPhone" layoutX="525.0" layoutY="587.0" text="Phone already been used" textFill="RED" visible="false" />
