@@ -22,7 +22,7 @@ public class Room {
 	private SimpleStringProperty orderDateProperty;
 	private SimpleStringProperty checkinDateProperty;
 	private SimpleStringProperty checkoutDateProperty;
-
+	
 	public Room() {
 		// TODO Auto-generated constructor stub
 	}

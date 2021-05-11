@@ -43,13 +43,13 @@
             <Button alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="535.0" mnemonicParsing="false" onAction="#saveChange" prefHeight="44.0" prefWidth="85.0" text="Save Change" />
             <Pane layoutX="274.0" layoutY="36.0" prefHeight="419.0" prefWidth="911.0">
                <children>
-                  <TableView fx:id="roomsListTable" prefHeight="339.0" prefWidth="911.0">
+                  <TableView fx:id="receiptsListTable" prefHeight="339.0" prefWidth="911.0">
                      <columns>
                         <TableColumn fx:id="roomIDColumn" prefWidth="120.800048828125" text="Room ID" />
                         <TableColumn fx:id="checkinDateColumn" prefWidth="160.80001831054688" text="Checkin Date" />
                         <TableColumn fx:id="checkoutDateColumn" prefWidth="176.00006103515625" text="Checkout Date" />
                         <TableColumn fx:id="orderDateColumn" prefWidth="172.79998779296875" text="Booking Date" />
-                        <TableColumn fx:id="roomStatusColumn" prefWidth="197.59991455078125" text="Room Status" />
+                        <TableColumn fx:id="receiptStatusColumn" prefWidth="197.59991455078125" text="Receipt Status" />
                         <TableColumn fx:id="receiptIDColumn" prefWidth="78.4000244140625" text="Receipt ID" />
                      </columns>
                   </TableView>

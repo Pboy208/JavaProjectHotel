@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 
 import database.BookAndCancelDB;
 import database.ExtensionsDB;
+import database.RoomDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -70,7 +72,14 @@ public class FilterController implements Initializable {
 	@FXML
 	private TextField numberOfRoom;
 	@FXML
+	private Label informNumberOfRoom;
+	@FXML
 	private Label alert;
+	@FXML
+	private Button searchForRooms;
+	@FXML
+	private Button confirmBooking;
+
 	// -------------------------------------------------------------------
 	@FXML
 	private TextField destination;
@@ -114,8 +123,6 @@ public class FilterController implements Initializable {
 	@FXML
 	private TableColumn<Hotel, String> addressHotel;
 	@FXML
-	private TableColumn<Hotel, String> roomsAvailable;
-	@FXML
 	private TableColumn<Hotel, String> starHotel;
 	@FXML
 	private TableColumn<Hotel, String> ratingHotel;
@@ -136,10 +143,35 @@ public class FilterController implements Initializable {
 	}
 
 	public void confirmBooking(ActionEvent event) throws SQLException {
+		if(!informNumberOfRoom.isVisible()) {
+			alert.setText("Please choose checkin and check out day");
+			return;
+		}
+		if(numberOfRoom.getText().trim().isEmpty()) {
+			alert.setText("Please fill in number of room that you want to book");
+			return;
+		}
+		int numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
+		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
+		@SuppressWarnings("deprecation")
+		Date checkinDate = new Date(checkinTime.getValue().getYear() - 1900, checkinTime.getValue().getMonthValue() - 1,
+				checkinTime.getValue().getDayOfMonth());
+		@SuppressWarnings("deprecation")
+		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
+				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
+		int numberOfRoomAvailable = RoomDB.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate,
+				checkoutDate);
+		if (numberOfRoomAvailable < numberOfRoomInt) {
+			alert.setText("Not enough available rooms left");
+			return;
+		}
+		BookAndCancelDB.insertReciepts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
+	}
+
+	public void searchForAvailableRooms(ActionEvent event) throws SQLException {
 		alert.setText("");
-		if (numberOfRoom.getText().trim().isEmpty() || checkinTime.getValue().toString().isEmpty()
-				|| checkoutTime.getValue().toString().isEmpty()) {
-			alert.setText("Please fill all the field");
+		if (checkinTime.getValue().toString().isEmpty() || checkoutTime.getValue().toString().isEmpty()) {
+			alert.setText("Please choose checkin and checkout days");
 			return;
 		}
 		if (checkinTime.getValue().isAfter(checkoutTime.getValue())
@@ -162,14 +194,11 @@ public class FilterController implements Initializable {
 		@SuppressWarnings("deprecation")
 		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
 				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
-		int numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
-		if (hotel.getNumberOfAvailableRooms() < numberOfRoomInt) {
-			alert.setText("Not enough available rooms left");
-			return;
-		}
-		System.out.println("" + checkinDate);
-		System.out.println("" + checkoutDate);
-		BookAndCancelDB.insertReciepts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
+
+		int numberOfRoomAvailable = RoomDB.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate,
+				checkoutDate);
+		informNumberOfRoom.setText("Number Of Available Rooms: " + numberOfRoomAvailable);
+		informNumberOfRoom.setVisible(true);
 	}
 
 	public void back(ActionEvent event) {
@@ -221,7 +250,6 @@ public class FilterController implements Initializable {
 		ObservableList<Hotel> tableList = FXCollections.observableArrayList(recommendedHotelsList);
 		nameHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("nameProperty"));
 		addressHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("addressProperty"));
-		roomsAvailable.setCellValueFactory(new PropertyValueFactory<Hotel, String>("roomsAvailableProperty"));
 		starHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("starProperty"));
 		ratingHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("ratingProperty"));
 		recommendHotels.setItems(tableList);

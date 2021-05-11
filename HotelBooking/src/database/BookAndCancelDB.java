@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 import controller.LoginController;
-import rooms.Room;
 
 public class BookAndCancelDB {
 
@@ -22,27 +21,27 @@ public class BookAndCancelDB {
 		count.next();
 		int currentReceiptID = count.getInt(1);
 		LocalDate localDate = LocalDate.now();
-		ArrayList<Room> availableRooms = RoomDB.queryAvailableRooms(hotelID);
-		Date orderDate = new Date(localDate.getYear()-1900, localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+		ArrayList<Integer> availableRooms = RoomDB.queryAvailableRooms(hotelID, checkinDate, checkoutDate);
+		@SuppressWarnings("deprecation")
+		Date orderDate = new Date(localDate.getYear() - 1900, localDate.getMonthValue() - 1, localDate.getDayOfMonth());
 		for (int i = 0; i < numberOfRoom; i++) {
 			int tmpReceiptID = currentReceiptID + 1 + i;
-			int roomID = availableRooms.get(i).getRoomID();
-			String insertStatement = "INSERT INTO receipt(receipt_id, hotel_id, room_id, user_id, checkin, checkout,order_date)"
+			int roomID = availableRooms.get(i);
+			String insertStatement = "INSERT INTO receipt(receipt_id, hotel_id, room_id, user_id, checkin, checkout,order_date,status)"
 					+ " VALUES (" + tmpReceiptID + "," + hotelID + "," + roomID + ","
 					+ LoginController.getUser().getId() + ",'" + checkinDate + "','" + checkoutDate + "','" + orderDate
-					+ "')";
+					+ "',0)";
 			System.out.println(insertStatement);
 			statement.executeUpdate(insertStatement);
-			RoomDB.bookRoom(hotelID, roomID, tmpReceiptID);
+
 		}
 	}
 
-	public static void deleteReciepts(int receiptID) throws SQLException {
+	public static void cancelReciepts(int receiptID) throws SQLException {
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String queryStatement = "DELETE FROM receipt WHERE receipt_id = " + receiptID + ";";
-		statement.executeQuery(queryStatement);
-		RoomDB.cancelRoom(receiptID);
+		String queryStatement = "update receipt set status = 2 where receipt_id=" + receiptID;
+		statement.executeUpdate(queryStatement);
 	}
 
 }

@@ -72,4 +72,15 @@ public class HotelEmployeesDB {
 		statement.executeUpdate(updateAccountPW);
 		LoginController.setUser(name, phone, email, password);
 	}
+
+	public static HotelEmployees queryEmployeeInfoByHotelID(int hotelID) throws SQLException {
+
+		String queryStatement = "SELECT * FROM employees where hotel_id = " + hotelID;
+		Connection connection = Postgre.makeConnection();
+		Statement statement = connection.createStatement();
+		ResultSet tmp = statement.executeQuery(queryStatement);
+		tmp.next();
+		HotelEmployees user = new HotelEmployees(tmp.getString(2),tmp.getString(3),tmp.getString(4));
+		return user;
+	}
 }

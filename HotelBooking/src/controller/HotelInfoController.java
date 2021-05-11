@@ -1,18 +1,16 @@
 package controller;
 
-import java.awt.Panel;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 import database.BookAndCancelDB;
 import database.CheckPasswordDB;
 import database.ClientDB;
 import database.HotelDB;
 import database.HotelEmployeesDB;
 import database.ReceiptDB;
-import database.RoomDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,7 +28,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.BlurType;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -45,7 +42,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import orders.Receipts;
 import rooms.Hotel;
-import rooms.Room;
 import user.Clients;
 import user.HotelEmployees;
 
@@ -84,19 +80,19 @@ public class HotelInfoController implements Initializable {
 	private Label alert;
 	// -------------------------------------------------------------------
 	@FXML
-	private TableView<Room> roomsListTable;
+	private TableView<Receipts> receiptsListTable;
 	@FXML
-	private TableColumn<Room, String> roomIDColumn;
+	private TableColumn<Receipts, String> roomIDColumn;
 	@FXML
-	private TableColumn<Room, String> checkinDateColumn;
+	private TableColumn<Receipts, String> checkinDateColumn;
 	@FXML
-	private TableColumn<Room, String> checkoutDateColumn;
+	private TableColumn<Receipts, String> checkoutDateColumn;
 	@FXML
-	private TableColumn<Room, String> orderDateColumn;
+	private TableColumn<Receipts, String> orderDateColumn;
 	@FXML
-	private TableColumn<Room, String> roomStatusColumn;
+	private TableColumn<Receipts, String> receiptStatusColumn;
 	@FXML
-	private TableColumn<Room, String> receiptIDColumn;
+	private TableColumn<Receipts, String> receiptIDColumn;
 	@FXML
 	private Label alertViewDetails;
 	// -------------------------------------------------------------------
@@ -244,34 +240,48 @@ public class HotelInfoController implements Initializable {
 		alert.setText("");
 		alertViewDetails.setText("");
 		
-		Room chosenRoom = roomsListTable.getSelectionModel().getSelectedItem();
-		if (chosenRoom == null) {
-			alertViewDetails.setText("Choose a room");
+		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
+		if (chosenReceipt == null) {
+			alertViewDetails.setText("Choose a receipt");
 			return;
 		}
-		chosenRoom.printInfo();
-		if (chosenRoom.getReceiptID() == 0) {
-			alertViewDetails.setText("The room haven't been booked");
+		chosenReceipt.printInfo();
+		if (chosenReceipt.getStatus() == -1) {
+			alertViewDetails.setText("The receipt has already been finished");
 			return;
 		}
-		
-		BookAndCancelDB.deleteReciepts(chosenRoom.getReceiptID());
+		if (chosenReceipt.getStatus() == 1) {
+			alertViewDetails.setText("Can not cancel this receipt");
+			return;
+		}
+		if (chosenReceipt.getStatus() == 2) {
+			alertViewDetails.setText("The receipt has already been cancelled");
+			return;
+		}
+		BookAndCancelDB.cancelReciepts(chosenReceipt.getReceiptID());
+		ReceiptDB.updateReceiptStatusHotels(((HotelEmployees)LoginController.getUser()).getHotelID());
+		ArrayList<Receipts> receipts = ReceiptDB.queryReceiptsForHotel(((HotelEmployees)LoginController.getUser()).getHotelID());
+		if (receipts == null) {
+			Label noResult = new Label("You have no receipt");
+			receiptsListTable.setPlaceholder(noResult);
+			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
+			receiptsListTable.setItems(tableListNull);
+			return;
+		}
+		ObservableList<Receipts> roomsList = FXCollections.observableArrayList(receipts);
+		receiptsListTable.setItems(roomsList);
+		alertViewDetails.setText("Booking cancelled");
 	}
 
 	public void viewDetails(ActionEvent event) throws SQLException {
 		alert.setText("");
 		alertViewDetails.setText("");
-		Room chosenRoom = roomsListTable.getSelectionModel().getSelectedItem();
-		Receipts chosenReceipts= ReceiptDB.queryRooms(chosenRoom.getReceiptID());
-		if (chosenRoom == null) {
+		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
+		if (chosenReceipt == null) {
 			alertViewDetails.setText("Choose a room");
 			return;
 		}
-		chosenRoom.printInfo();
-		if (chosenRoom.getReceiptID() == 0) {
-			alertViewDetails.setText("The room haven't been booked");
-			return;
-		}
+		Receipts chosenReceipts= ReceiptDB.queryRooms(chosenReceipt.getReceiptID());
 		//--------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -287,7 +297,6 @@ public class HotelInfoController implements Initializable {
 		guestName.setText("Guest's Name: "+guest.getName());
 		guestEmail.setText("Guest's Email: "+guest.getEmail());
 		guestPhoneNumber.setText("Guest's Phone Number: "+guest.getPhoneNumber());
-
 	}
 
 	public void back(ActionEvent event) {
@@ -319,29 +328,35 @@ public class HotelInfoController implements Initializable {
 		}
 		star.getItems().addAll(starList);
 		// ------------------------------------- TableView
-
-		ArrayList<Room> rooms = null;
+		try {	//update before show it
+			ReceiptDB.updateReceiptStatusHotels(user.getHotelID());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ArrayList<Receipts> receipts = null;
 		try {
-			rooms = RoomDB.queryRooms(user.getHotelID());
+			receipts = ReceiptDB.queryReceiptsForHotel(user.getHotelID());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		if (rooms == null) {
+		if (receipts == null) {
 			Label noResult = new Label("You have no room");
-			roomsListTable.setPlaceholder(noResult);
-			ObservableList<Room> tableListNull = FXCollections.observableArrayList();
-			roomsListTable.setItems(tableListNull);
+			receiptsListTable.setPlaceholder(noResult);
+			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
+			receiptsListTable.setItems(tableListNull);
 			return;
 		}
-		ObservableList<Room> roomsList = FXCollections.observableArrayList(rooms);
-		roomIDColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("roomIDProperty"));
-		checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("checkinDateProperty"));
-		checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("checkoutDateProperty"));
-		orderDateColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("orderDateProperty"));
-		roomStatusColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("statusProperty"));
-		receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Room, String>("receiptIDProperty"));
-		roomsListTable.setItems(roomsList);
+		ObservableList<Receipts> receiptsList = FXCollections.observableArrayList(receipts);
+		roomIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("roomIDProperty"));
+		checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkinDateProperty"));
+		checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkoutDateProperty"));
+		orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("orderDateProperty"));
+		receiptStatusColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("statusProperty"));
+		receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("receiptIDProperty"));
+		receiptsListTable.setItems(receiptsList);
 		System.out.println("Done");
 		// ---------------------------------------------------------
 		Hotel hotelInfo = null;

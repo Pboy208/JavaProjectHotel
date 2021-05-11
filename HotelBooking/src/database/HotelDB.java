@@ -90,13 +90,13 @@ public class HotelDB {
 		ExtensionsDB.updateExtensions(hotelID, extensions);
 	}
 
-	public static void updateNumberOfAvailableRooms(int hotelID) throws SQLException {
-		Connection connection = Postgre.makeConnection();
-		int tmpNumberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(hotelID);
-		String queryStatement = "Update hotel set available_room = " + tmpNumberOfAvailableRooms + " where hotel_id = "
-				+ hotelID;
-		Statement statement = connection.createStatement();
-		statement.executeUpdate(queryStatement);
-
-	}
+//	public static void updateNumberOfAvailableRooms(int hotelID) throws SQLException {
+//		Connection connection = Postgre.makeConnection();
+//		int tmpNumberOfAvailableRooms = RoomDB.queryNumberOfAvailableRooms(hotelID);
+//		String queryStatement = "Update hotel set available_room = " + tmpNumberOfAvailableRooms + " where hotel_id = "
+//				+ hotelID;
+//		Statement statement = connection.createStatement();
+//		statement.executeUpdate(queryStatement);
+//
+//	}
 }

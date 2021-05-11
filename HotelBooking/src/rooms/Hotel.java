@@ -23,14 +23,14 @@ public class Hotel {
 	private SimpleStringProperty starProperty;
 	private SimpleStringProperty ratingProperty;
 
-	public Hotel(int hotel_ID, String name, String address, int star_number, float rating,int numberOfAvailableRooms) {
+	public Hotel(int hotel_ID, String name, String address, int star_number, float rating, int numberOfAvailableRooms) {
 		setHotelID(hotel_ID);
 		setAddress(address);
 		setName(name);
 		setStar(star_number);
 		setRating(rating);
 		setNumberOfAvailableRooms(numberOfAvailableRooms);
-		
+
 		this.nameProperty = new SimpleStringProperty(this.name);
 		this.addressProperty = new SimpleStringProperty(this.address);
 		this.roomsAvailableProperty = new SimpleStringProperty(Integer.toString(numberOfAvailableRooms));
@@ -47,7 +47,7 @@ public class Hotel {
 	public void printInfo() {
 		System.out.println(name + "/" + address);
 	}
-	
+
 	public int getNumberOfAvailableRooms() {
 		return numberOfAvailableRooms;
 	}
@@ -56,7 +56,6 @@ public class Hotel {
 		this.numberOfAvailableRooms = numberOfAvailableRooms;
 	}
 
-	
 	public int[] getExtensions() {
 		return extensions;
 	}

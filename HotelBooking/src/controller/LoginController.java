@@ -5,14 +5,10 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-
 import database.CheckPasswordDB;
 import database.ClientDB;
-import database.HotelDB;
 import database.HotelEmployeesDB;
 import javafx.stage.Stage;
 import user.User;
@@ -121,7 +117,6 @@ public class LoginController implements Initializable {
 	}
 
 	public void signUpButtonOnAction(ActionEvent event) throws Exception {
-		Stage windowStage = (Stage) loginPane.getScene().getWindow();
 		changeScene(event, "SignUp.fxml");
 	}
 
