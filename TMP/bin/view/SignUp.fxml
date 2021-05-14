@@ -18,10 +18,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="alertMissing" layoutX="505.0" layoutY="587.0" text="You still have some fields missing" textFill="RED" visible="false" />
-      <Label fx:id="alertPW" layoutX="510.0" layoutY="587.0" text="Wrong Password Comfirmation" textFill="RED" visible="false" />
-      <Label fx:id="alertExistAccount" layoutX="531.0" layoutY="587.0" text="Username already exist" textFill="RED" visible="false" />
-      <Label fx:id="succesfullySignUp" layoutX="533.0" layoutY="587.0" text="Your Account Is Ready" textFill="RED" visible="false" />
+      <Label fx:id="alertLabel" layoutX="505.0" layoutY="587.0" text="You still have some fields missing" textFill="RED" visible="false" />
       <Pane fx:id="paneC" layoutY="71.0" prefHeight="590.0" prefWidth="1186.0" visible="false">
          <children>
             <Label layoutX="340.0" layoutY="38.0" text="Account Signing Up For Clients">
@@ -57,7 +54,5 @@
             <Button layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#signUpHotelManager" text="Sign Up" />
          </children>
       </Pane>
-      <Label fx:id="alertExistPhone" layoutX="525.0" layoutY="587.0" text="Phone already been used" textFill="RED" visible="false" />
-      <Label fx:id="alertExistHotelName" layoutX="505.0" layoutY="587.0" text="Hotel Already Exist In The System" textFill="RED" visible="false" />
    </children>
 </AnchorPane>
