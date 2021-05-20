@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javafx.scene.control.Label;
 import model.database.AccountsDB;
-import model.database.ReceiptDB;
+import model.database.ReceiptsDB;
 import model.database.UsersDB;
 import model.receipts.Receipts;
 import model.users.Users;
@@ -41,9 +41,9 @@ public class ClientInfoController {
 
 	public static ArrayList<Receipts> cancelReceipt(Receipts chosenReceipt) throws SQLException {
 
-		ReceiptDB.cancelReciepts(chosenReceipt.getReceiptID());
-		ReceiptDB.updateReceiptStatusClients(LoginController.getUser().getId());
-		ArrayList<Receipts> receipts = ReceiptDB.queryReceiptsForClient(LoginController.getUser().getId());
+		ReceiptsDB.cancelReciepts(chosenReceipt.getReceiptID());
+		ReceiptsDB.updateReceiptStatusClients(LoginController.getUser().getId());
+		ArrayList<Receipts> receipts = ReceiptsDB.queryReceiptsForClient(LoginController.getUser().getId());
 		return receipts;
 	}
 }

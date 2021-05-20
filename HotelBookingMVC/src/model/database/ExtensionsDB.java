@@ -6,12 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import model.rooms.Filter;
-import model.rooms.Hotel;
+import model.rooms.Filters;
+import model.rooms.Hotels;
 
 public class ExtensionsDB {
 
-	public static ArrayList<Hotel> queryHotelsByFilter(Filter filter) throws SQLException {
+	public static ArrayList<Hotels> queryHotelsByFilter(Filters filter) throws SQLException {
 		String values = null;
 		String queryStatement = "SELECT hotelinfo.hotel_id FROM hotelinfo";
 		ArrayList<Integer> hotel_IDs = new ArrayList<>();
@@ -80,7 +80,7 @@ public class ExtensionsDB {
 			array[i] = hotel_IDs.get(i);
 		}
 
-		ArrayList<Hotel> hotels = HotelDB.queryHotelInfo(array);
+		ArrayList<Hotels> hotels = HotelsDB.queryHotelInfo(array);
 		System.out.println("Filter File:" + hotels.size());
 		if (hotels.size() == 0) {
 			System.out.println("array of hotel = NULL/ There is no hotel meets this filter");
@@ -94,7 +94,7 @@ public class ExtensionsDB {
 	private static String valuesForQuery(int[] extensions) {
 		String values = "";
 		int length = extensions.length;
-		String library[] = Filter.getExtensionsLibrary();
+		String library[] = Filters.getExtensionsLibrary();
 		for (int i = 0; i < length; i++) {
 			if (extensions[i] == 1) {
 				values = values.concat(library[i]);
@@ -134,7 +134,7 @@ public class ExtensionsDB {
 	private static String valuesForUpdate(int[] extensions) {
 		String values = "";
 		int length = extensions.length;
-		String library[] = Filter.getExtensionsLibrary();
+		String library[] = Filters.getExtensionsLibrary();
 		for (int i = 0; i < length; i++) {
 			if (extensions[i] == 1) {
 				values = values.concat(library[i]);

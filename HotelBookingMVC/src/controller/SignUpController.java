@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import javafx.scene.control.Label;
 import model.database.AccountsDB;
-import model.database.HotelDB;
+import model.database.HotelsDB;
 import model.database.HotelEmployeesDB;
 import model.database.UsersDB;
 
@@ -48,13 +48,13 @@ public class SignUpController {
 			alertLabel.setVisible(true);
 			return alertLabel;
 		}
-		int hotelID = HotelDB.insertHotel(hotelName, hotelAddress);
+		int hotelID = HotelsDB.insertHotel(hotelName, hotelAddress);
 		if (hotelID == -1) {
 			alertLabel.setText("Hotel already exists in the system");
 			alertLabel.setVisible(true);
 			return alertLabel;
 		}
-		HotelEmployeesDB.insertHotelEmployees(hotelID, name, phone, email, accountName, passwordConfirm);
+		HotelEmployeesDB.insertHotelEmployees(hotelID, name, phone, email,1, accountName, passwordConfirm);
 		// After Sign Up
 		alertLabel.setText("Your account is ready");
 		alertLabel.setVisible(true);

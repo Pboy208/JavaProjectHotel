@@ -35,12 +35,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.database.AccountsDB;
-import model.database.HotelDB;
+import model.database.HotelsDB;
 import model.database.HotelEmployeesDB;
-import model.database.ReceiptDB;
+import model.database.ReceiptsDB;
 import model.database.UsersDB;
 import model.receipts.Receipts;
-import model.rooms.Hotel;
+import model.rooms.Hotels;
 import model.users.HotelEmployees;
 import model.users.Users;
 
@@ -224,7 +224,7 @@ public class HotelInfoController implements Initializable {
 			if (rbs[i].isSelected())
 				extensions[i] = 1;
 		// -------------------------------------- Update hotel info
-		HotelDB.updateHotelInfo(user.getHotelID(), hotelNameString, hotelAddressString, starInt, extensions,
+		HotelsDB.updateHotelInfo(user.getHotelID(), hotelNameString, hotelAddressString, starInt, extensions,
 				priceFloat);
 	}
 
@@ -258,9 +258,9 @@ public class HotelInfoController implements Initializable {
 			alertViewDetails.setText("The receipt has already been cancelled");
 			return;
 		}
-		ReceiptDB.cancelReciepts(chosenReceipt.getReceiptID());
-		ReceiptDB.updateReceiptStatusHotels(((HotelEmployees) LoginController.getUser()).getHotelID());
-		ArrayList<Receipts> receipts = ReceiptDB
+		ReceiptsDB.cancelReciepts(chosenReceipt.getReceiptID());
+		ReceiptsDB.updateReceiptStatusHotels(((HotelEmployees) LoginController.getUser()).getHotelID());
+		ArrayList<Receipts> receipts = ReceiptsDB
 				.queryReceiptsForHotel(((HotelEmployees) LoginController.getUser()).getHotelID());
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
@@ -282,7 +282,7 @@ public class HotelInfoController implements Initializable {
 			alertViewDetails.setText("Choose a room");
 			return;
 		}
-		Receipts chosenReceipts = ReceiptDB.queryRooms(chosenReceipt.getReceiptID());
+		Receipts chosenReceipts = ReceiptsDB.queryRooms(chosenReceipt.getReceiptID());
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -330,7 +330,7 @@ public class HotelInfoController implements Initializable {
 		star.getItems().addAll(starList);
 		// ------------------------------------- TableView
 		try { // update before show it
-			ReceiptDB.updateReceiptStatusHotels(user.getHotelID());
+			ReceiptsDB.updateReceiptStatusHotels(user.getHotelID());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -338,7 +338,7 @@ public class HotelInfoController implements Initializable {
 
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptDB.queryReceiptsForHotel(user.getHotelID());
+			receipts = ReceiptsDB.queryReceiptsForHotel(user.getHotelID());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -360,9 +360,9 @@ public class HotelInfoController implements Initializable {
 		receiptsListTable.setItems(receiptsList);
 		System.out.println("Done");
 		// ---------------------------------------------------------
-		Hotel hotelInfo = null;
+		Hotels hotelInfo = null;
 		try {
-			hotelInfo = HotelDB.queryHotelInfo(user.getHotelID());
+			hotelInfo = HotelsDB.queryHotelInfo(user.getHotelID());
 		} catch (SQLException e) {
 			System.out.println("Error getting hotel Info in HotelInfoController");
 			e.printStackTrace();

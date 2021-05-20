@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.sql.Date;
 
 import javafx.beans.property.SimpleStringProperty;
-import model.database.HotelDB;
-import model.rooms.Hotel;
+import model.database.HotelsDB;
+import model.rooms.Hotels;
 
 public class Receipts {
 
@@ -42,7 +42,7 @@ public class Receipts {
 		this.setStatus(status);
 
 		this.roomIDProperty = new SimpleStringProperty(Integer.toString(roomID));
-		Hotel tmpHotel = HotelDB.queryHotelInfo(hotelID);
+		Hotels tmpHotel = HotelsDB.queryHotelInfo(hotelID);
 		this.hotelAddressProperty = new SimpleStringProperty(tmpHotel.getAddress());
 		this.hotelNameProperty = new SimpleStringProperty(tmpHotel.getName());
 		if (receiptID != 0)

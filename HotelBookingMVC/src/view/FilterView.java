@@ -33,8 +33,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import model.database.ExtensionsDB;
-import model.rooms.Filter;
-import model.rooms.Hotel;
+import model.rooms.Filters;
+import model.rooms.Hotels;
 
 public class FilterView implements Initializable {
 
@@ -95,15 +95,15 @@ public class FilterView implements Initializable {
 	private ComboBox<String> star;
 	// -------------------------------------------------------------------
 	@FXML
-	private TableView<Hotel> recommendHotels;
+	private TableView<Hotels> recommendHotels;
 	@FXML
-	private TableColumn<Hotel, String> nameHotel;
+	private TableColumn<Hotels, String> nameHotel;
 	@FXML
-	private TableColumn<Hotel, String> addressHotel;
+	private TableColumn<Hotels, String> addressHotel;
 	@FXML
-	private TableColumn<Hotel, String> starHotel;
+	private TableColumn<Hotels, String> starHotel;
 	@FXML
-	private TableColumn<Hotel, String> ratingHotel;
+	private TableColumn<Hotels, String> ratingHotel;
 
 	public void signOut(ActionEvent event) {
 		new SceneChanging().changeScene(event, "Login.fxml");
@@ -133,7 +133,7 @@ public class FilterView implements Initializable {
 			alert.setText("Please fill in number of room that you want to book");
 			return;
 		}
-		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
+		Hotels hotel = recommendHotels.getSelectionModel().getSelectedItem();
 		int numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
 		alert = FilterController.confirmBooking(alert, checkinTime, checkoutTime, numberOfRoomInt, hotel);
 		informNumberOfRoom = FilterController.searchForAvailableRooms(informNumberOfRoom, checkinTime, checkoutTime,
@@ -159,7 +159,7 @@ public class FilterView implements Initializable {
 			alert.setText("Please book room a day in advanced");
 			return;
 		}
-		Hotel hotel = recommendHotels.getSelectionModel().getSelectedItem();
+		Hotels hotel = recommendHotels.getSelectionModel().getSelectedItem();
 		informNumberOfRoom = FilterController.searchForAvailableRooms(informNumberOfRoom, checkinTime, checkoutTime,
 				hotel);
 	}
@@ -176,7 +176,7 @@ public class FilterView implements Initializable {
 
 	public void searchButton(ActionEvent e) throws SQLException {
 		int array[] = new int[12];
-		Filter filter = new Filter();
+		Filters filter = new Filters();
 		// ----------------------------------------- Destination part
 		if (destination.getText().trim().isEmpty()) {
 			System.out.println("Null Destination");
@@ -202,19 +202,19 @@ public class FilterView implements Initializable {
 		filter.setExtensions(array);
 
 		// ----------------------------------------- Gui part
-		ArrayList<Hotel> recommendedHotelsList = ExtensionsDB.queryHotelsByFilter(filter);
+		ArrayList<Hotels> recommendedHotelsList = ExtensionsDB.queryHotelsByFilter(filter);
 		if (recommendedHotelsList == null) {
 			Label noResult = new Label("No hotel meets your filter");
 			recommendHotels.setPlaceholder(noResult);
-			ObservableList<Hotel> tableListNull = FXCollections.observableArrayList();
+			ObservableList<Hotels> tableListNull = FXCollections.observableArrayList();
 			recommendHotels.setItems(tableListNull);
 			return;
 		}
-		ObservableList<Hotel> tableList = FXCollections.observableArrayList(recommendedHotelsList);
-		nameHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("nameProperty"));
-		addressHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("addressProperty"));
-		starHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("starProperty"));
-		ratingHotel.setCellValueFactory(new PropertyValueFactory<Hotel, String>("ratingProperty"));
+		ObservableList<Hotels> tableList = FXCollections.observableArrayList(recommendedHotelsList);
+		nameHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("nameProperty"));
+		addressHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("addressProperty"));
+		starHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("starProperty"));
+		ratingHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("ratingProperty"));
 		recommendHotels.setItems(tableList);
 	}
 

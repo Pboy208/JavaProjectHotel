@@ -30,7 +30,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import model.database.HotelEmployeesDB;
-import model.database.ReceiptDB;
+import model.database.ReceiptsDB;
 import model.receipts.Receipts;
 import model.users.HotelEmployees;
 import model.users.Users;
@@ -188,7 +188,7 @@ public class ClientInfoView implements Initializable {
 			viewDetailsLabel.setText("Choose a receipt");
 			return;
 		}
-		Receipts chosenReceipts = ReceiptDB.queryRooms(chosenReceipt.getReceiptID());
+		Receipts chosenReceipts = ReceiptsDB.queryRooms(chosenReceipt.getReceiptID());
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -219,21 +219,26 @@ public class ClientInfoView implements Initializable {
 		email.setText(user.getEmail());
 		phone.setText(user.getPhoneNumber());
 		// -------------------------------------------------------
+		reloadPage();
+		
+	}
+	private void reloadPage() {
+		Users user = LoginController.getUser();
 		try {
-			ReceiptDB.updateReceiptStatusClients(user.getId());
+			ReceiptsDB.updateReceiptStatusClients(user.getId());
 		} catch (SQLException e) {
-			System.out.println("This user done have any receipt to udpate status");
+			System.out.println("This user don't have any receipt to udpate status");
 			e.printStackTrace();
+			System.out.println("damn it");
 		}
-
+		System.out.println("Done update receipt list");
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptDB.queryReceiptsForClient(user.getId());
+			receipts = ReceiptsDB.queryReceiptsForClient(user.getId());
 		} catch (SQLException e) {
-			System.out.println("This user done have any receipt to query out");
+			System.out.println("This user don't have any receipt to query out");
 			e.printStackTrace();
 		}
-
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
 			receiptsListTable.setPlaceholder(noResult);
@@ -241,7 +246,6 @@ public class ClientInfoView implements Initializable {
 			receiptsListTable.setItems(tableListNull);
 			return;
 		}
-
 		ObservableList<Receipts> receiptsList = FXCollections.observableArrayList(receipts);
 		hotelAddressColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("hotelAddressProperty"));
 		hotelNameColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("hotelNameProperty"));
@@ -252,5 +256,4 @@ public class ClientInfoView implements Initializable {
 		receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("receiptIDProperty"));
 		receiptsListTable.setItems(receiptsList);
 	}
-
 }
