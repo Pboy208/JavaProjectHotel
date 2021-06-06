@@ -19,7 +19,7 @@ public class HotelEmployeesDB {
 		Statement statement = connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
 		if (tmp.next() == false) {
-			System.out.println("Result set error, userID/queryStatement: " + userID + "/" + queryStatement);
+			//System.out.println("Result set error, userID/queryStatement: " + userID + "/" + queryStatement);
 			return null;
 		}
 		HotelEmployees user = new HotelEmployees(userID, tmp.getString("name"), tmp.getString("phone"),
@@ -60,10 +60,12 @@ public class HotelEmployeesDB {
 
 	public static HotelEmployees queryEmployeeInfoByHotelID(int hotelID) throws SQLException {
 		String queryStatement = "SELECT * FROM users where user_id = (SELECT user_id FROM hotel_employees"
-				+ " where rank = 1 and hotel_id = " + hotelID + ")";
+				+ " where rank = 1 and hotel_id = " + hotelID + " limit 1)";
+		System.out.println(queryStatement);
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
+		System.out.println(queryStatement);
 		if (tmp.next() == true)
 			return new HotelEmployees(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getString(4), hotelID, 1);
 		else
@@ -72,7 +74,7 @@ public class HotelEmployeesDB {
 	
 	public static ArrayList<HotelEmployees> queryAllEmployeeAndManagerInfoByHotelID(int hotelID) throws SQLException {
 		ArrayList<HotelEmployees> employeeList = new ArrayList<>();
-		String queryStatement = "SELECT * FROM users,hotel_employees where hotel_employees.user_id = users.user_id";
+		String queryStatement = "SELECT * FROM users,hotel_employees where hotel_employees.user_id = users.user_id and hotel_id= "+hotelID;
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
@@ -84,14 +86,19 @@ public class HotelEmployeesDB {
 		return employeeList;
 	}
 
-	public static void deleteEmployees(int userID) throws SQLException {
+	public static boolean deleteEmployees(int userID,int hotelID) throws SQLException {
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String deleteUser = "DELETE FROM users where user_id ="+userID;
-		statement.executeUpdate(deleteUser);
+		
+		String queryStatement="SELECT count(*) from hotel_employees where rank=1 and hotel_id= " + hotelID;
+		ResultSet resulSet=statement.executeQuery(queryStatement);
+		resulSet.next();
+		if(resulSet.getInt(1)==1)
+			return false;
 		String deleteAccount = "DELETE FROM accounts where user_id ="+userID;
 		statement.executeUpdate(deleteAccount);
-		String deleteHotelEmployee = "DELETE FROM hotel_employees where user_id ="+userID;
-		statement.executeUpdate(deleteHotelEmployee);
+		String updateHotelEmployee = "UPDATE hotel_employees set rank=-1 where user_id ="+userID;
+		statement.executeUpdate(updateHotelEmployee);
+		return true;
 	}
 }

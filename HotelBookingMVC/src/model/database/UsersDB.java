@@ -8,24 +8,15 @@ import java.sql.Statement;
 import controller.LoginController;
 import model.users.Users;
 
-public class UsersDB {
-
-	public static Users queryUserInfo(int userID) throws SQLException {
-		String queryStatement = "SELECT * FROM users where user_id = " + userID;
-		Connection connection = Postgre.makeConnection();
-		Statement statement = connection.createStatement();
-		ResultSet tmp = statement.executeQuery(queryStatement);
-		tmp.next();
-		return new Users(userID, tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"));
-	}
-
-	public static int insertUser(String name, String phoneNumber, String email, String accountName, String password)
-			throws SQLException {
-		String insertInfo = "INSERT INTO users(name,phone,email) VALUES ('" + name + "','" + phoneNumber + "','" + email
+public class UsersDB implements DBInterface{
+	@Override
+	public void insertInstance(Object object) throws SQLException {
+		Users user = (Users)object;
+		String insertInfo = "INSERT INTO users(name,phone,email) VALUES ('" + user.getName() + "','" + user.getPhoneNumber() + "','" + user.getEmail()
 				+ "')";
 
-		String query = "SELECT user_id FROM users WHERE name = '" + name + "' AND phone='" + phoneNumber
-				+ "' AND email='" + email + "'";
+		String query = "SELECT user_id FROM users WHERE name = '" + user.getName() + "' AND phone='" + user.getPhoneNumber()
+				+ "' AND email='" + user.getEmail() + "'";
 
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
@@ -34,21 +25,38 @@ public class UsersDB {
 		ResultSet tmp = statement.executeQuery(query);
 		tmp.next();
 		int userID = tmp.getInt("user_id");
-
-		String updateAccount = "INSERT INTO accounts(user_id,username,password) VALUES (" + userID + ",'" + accountName
-				+ "','" + password + "')";
-		return statement.executeUpdate(updateAccount);
+		
+		String updateAccount = "INSERT INTO accounts(user_id,username,password) VALUES (" + userID + ",'" + user.getUsername()
+				+ "','" + user.getPassword() + "')";
+		statement.executeUpdate(updateAccount);
+		
 	}
-
-	public static void updateUser(int userID, String name, String phone, String email, String password)
-			throws SQLException {
+	
+	@Override
+	public Object queryInstance(int userID) throws SQLException {
+		String queryStatement = "SELECT * FROM users where user_id = " + userID;
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String updateAccount = "UPDATE users Set name='" + name + "',phone='" + phone + "',email='" + email
-				+ "' WHERE user_id = " + userID;
-		statement.executeUpdate(updateAccount);
-		String updateAccountPW = "UPDATE accounts Set password='" + password + "' WHERE user_id = " + userID;
-		statement.executeUpdate(updateAccountPW);
-		LoginController.setUser(name, phone, email, password);
+		ResultSet tmp = statement.executeQuery(queryStatement);
+		if (tmp.next() == false) {
+			System.out.println("Result set error, userID/queryStatement: " + userID + "/" + queryStatement);
+			return null;
+		}
+		return new Users(userID, tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"));
+		
 	}
+
+	@Override
+	public void updateInstance(Object object) throws SQLException {
+		Users user = (Users)object;
+		Connection connection = Postgre.makeConnection();
+		Statement statement = connection.createStatement();
+		String updateAccount = "UPDATE users Set name='" + user.getName() + "',phone='" + user.getPhoneNumber() + "',email='" + user.getEmail()
+				+ "' WHERE user_id = " + user.getUserID();
+		statement.executeUpdate(updateAccount);
+		String updateAccountPW = "UPDATE accounts Set password='" + user.getPassword() + "' WHERE user_id = " + user.getUserID();
+		statement.executeUpdate(updateAccountPW);
+		LoginController.setUser(user);		
+	}
+
 }

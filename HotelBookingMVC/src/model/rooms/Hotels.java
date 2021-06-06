@@ -5,24 +5,22 @@ import javafx.beans.property.SimpleStringProperty;
 public class Hotels {
 	private int star;
 	private int hotelID;
-	private int numberOfAvailableRooms;
 	private float rating;
-	private float latNum;
-	private float longNum;
 	private String address;
-	private String website;
 	private String provinceID;
 	private String districtID;
 	private String streetID;
 	private String name;
 	private int[] extensions;
+	private int minPrice;
 
+	private int numberOfAvailableRooms;
 	private SimpleStringProperty nameProperty;
 	private SimpleStringProperty addressProperty;
 	private SimpleStringProperty roomsAvailableProperty;
 	private SimpleStringProperty starProperty;
 	private SimpleStringProperty ratingProperty;
-
+	private SimpleStringProperty minPriceProperty;
 	public Hotels(int hotel_ID, String name, String address, int star_number, float rating, int numberOfAvailableRooms) {
 		setHotelID(hotel_ID);
 		setAddress(address);
@@ -36,24 +34,38 @@ public class Hotels {
 		this.roomsAvailableProperty = new SimpleStringProperty(Integer.toString(numberOfAvailableRooms));
 		this.ratingProperty = new SimpleStringProperty(Float.toString(this.rating));
 		this.starProperty = new SimpleStringProperty(Integer.toString(star));
+		
 	}
-
+	public Hotels(int hotel_ID, String name, String address, int star_number,int[] extensions) {
+		setHotelID(hotel_ID);
+		setAddress(address);
+		setName(name);
+		setStar(star_number);
+		setExtensions(extensions);
+	}
 	public Hotels() {
 		// TODO Auto-generated constructor stub
 	}
 
 	// -----------------------------------------------------------------------
-
-	public void printInfo() {
-		System.out.println(name + "/" + address);
-	}
-
 	public int getNumberOfAvailableRooms() {
 		return numberOfAvailableRooms;
+	}
+	
+	public int getMinPrice() {
+		return minPrice;
+	}
+	public void setMinPrice(int minPrice) {
+		this.minPrice = minPrice;
+		this.minPriceProperty = new SimpleStringProperty(String.format("%,d", minPrice));
 	}
 
 	public void setNumberOfAvailableRooms(int numberOfAvailableRooms) {
 		this.numberOfAvailableRooms = numberOfAvailableRooms;
+	}
+	
+	public void printInfo() {
+		System.out.println(name + "/" + address);
 	}
 
 	public int[] getExtensions() {
@@ -111,6 +123,12 @@ public class Hotels {
 	public void setRatingProperty(SimpleStringProperty ratingProperty) {
 		this.ratingProperty = ratingProperty;
 	}
+	public String getMinPriceProperty() {
+		return minPriceProperty.get();
+	}
+	public void setMinPriceProperty(SimpleStringProperty minPriceProperty) {
+		this.minPriceProperty = minPriceProperty;
+	}
 
 	public String getName() {
 		return name;
@@ -118,10 +136,6 @@ public class Hotels {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public float getLatNum() {
-		return latNum;
 	}
 
 	public int getStar() {
@@ -132,32 +146,12 @@ public class Hotels {
 		this.star = star;
 	}
 
-	public void setLatNum(float latNum) {
-		this.latNum = latNum;
-	}
-
-	public float getLongNum() {
-		return longNum;
-	}
-
-	public void setLongNum(float longNum) {
-		this.longNum = longNum;
-	}
-
 	public String getAddress() {
 		return address;
 	}
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	public String getWebsite() {
-		return website;
-	}
-
-	public void setWebsite(String url) {
-		this.website = url;
 	}
 
 	public int getHotelID() {

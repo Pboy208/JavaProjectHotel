@@ -15,25 +15,40 @@ public class Users {
 		this.phoneNumber = phoneNumber;
 		this.userID = userID;
 	}
-
-	public Users() {
-
+	
+	public Users(String name, String phoneNumber, String email) {
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
 	}
-
+	public Users(int userID,String name, String phoneNumber, String email,String username,String password) {
+		this.userID = userID;
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.username = username;
+		this.password = password;
+	}
+	public Users(String name, String phoneNumber, String email,String username,String password) {
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.username = username;
+		this.password = password;
+	}
+	public Users(String username,String password) {
+		this.username = username;
+		this.password = password;
+	}
+	public Users() {
+		
+	}
 	// -------------------------------------------------------------
 	public void printInfo() {
 		System.out.println(this.getName() + "/" + this.getPhoneNumber() + "/" + this.getEmail());
 	}
 
 	// -------------------------------------------------------------
-	public int getUserID() {
-		return userID;
-	}
-
-	public void setUserID(int userID) {
-		this.userID = userID;
-	}
-
 	public String getUsername() {
 		return username;
 	}
@@ -50,11 +65,11 @@ public class Users {
 		this.password = password;
 	}
 
-	public int getId() {
+	public int getUserID() {
 		return userID;
 	}
 
-	public void setId(int id) {
+	public void setUserID(int id) {
 		this.userID = id;
 	}
 

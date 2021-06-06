@@ -26,11 +26,16 @@ public class HotelEmployees extends Users {
 		else if(rank==2) {
 			this.rankProperty=new SimpleStringProperty("Employee");
 		}
+		else if(rank==-1) {
+			this.rankProperty=new SimpleStringProperty("Retired");
+		}
 		else {
 			System.out.println("Wrong rank of HotelEmployees");
 		}
 	}
-
+	public HotelEmployees(int userID, String name, String phone, String email) {
+		super(userID, name, phone, email);
+	}
 	public HotelEmployees() {
 		super();
 	}

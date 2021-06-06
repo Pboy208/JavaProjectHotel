@@ -4,10 +4,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
+import javafx.stage.WindowEvent;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import controller.LoginController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -34,21 +37,20 @@ public class LoginView implements Initializable {
 	private Button signUpButton;
 
 	@FXML
-	private ToggleButton clientType;
+	private ToggleButton usersType;
 
 	@FXML
 	private ToggleButton employeesType;
 
 	public void signInButtonOnAction(ActionEvent event) throws Exception {
-		System.out.println("event source: " + event.getSource());
 		String passwordString = password.getText();
 		String accountNameString = accountName.getText();
-		if (!clientType.isSelected() && !employeesType.isSelected()) {
+		if (!usersType.isSelected() && !employeesType.isSelected()) {
 			alertLabel.setText("Please choose a user type");
 			return;
 		}
 
-		if (clientType.isSelected()) {
+		if (usersType.isSelected()) {
 			alertLabel = LoginController.signInButtonOnAction(alertLabel, accountNameString, passwordString, 1);
 			if (alertLabel.isVisible() == false)
 				new SceneChanging().changeScene(event, "Filter.fxml");
@@ -66,7 +68,7 @@ public class LoginView implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		ToggleGroup typeGroup = new ToggleGroup();
-		clientType.setToggleGroup(typeGroup);
+		usersType.setToggleGroup(typeGroup);
 		employeesType.setToggleGroup(typeGroup);
 	}
 

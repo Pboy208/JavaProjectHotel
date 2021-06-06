@@ -2,12 +2,14 @@ package model.rooms;
 
 import javafx.beans.property.SimpleStringProperty;
 
+//import javafx.beans.property.SimpleStringProperty;
+
 public class Rooms {
 	private int roomID; // id == roomNumber?
 	private int hotelID;
 	private int price;
 
-	private SimpleStringProperty roomIDProperty;
+//	private SimpleStringProperty roomIDProperty;
 	private SimpleStringProperty priceProperty;
 
 	public Rooms() {
@@ -19,8 +21,8 @@ public class Rooms {
 		setPrice(price);
 		setRoomID(roomID);
 
-		this.roomIDProperty = new SimpleStringProperty(Integer.toString(roomID));
-		this.priceProperty = new SimpleStringProperty(Integer.toString(price));
+//		this.roomIDProperty = new SimpleStringProperty(Integer.toString(roomID));
+		this.priceProperty = new SimpleStringProperty(String.format("%,d",price));
 	}
 
 	// -------------------------------------------------------------
@@ -55,14 +57,15 @@ public class Rooms {
 	}
 
 	// --------------------------------------------------
-	public String getRoomIDProperty() {
-		return roomIDProperty.get();
-	}
-
-	public void setRoomIDProperty(SimpleStringProperty roomIDProperty) {
-		this.roomIDProperty = roomIDProperty;
-	}
-
+//	public String getRoomIDProperty() {
+//		return roomIDProperty.get();
+//	}
+//
+//	public void setRoomIDProperty(SimpleStringProperty roomIDProperty) {
+//		this.roomIDProperty = roomIDProperty;
+//	}
+//
+	
 	public String getPriceProperty() {
 		return priceProperty.get();
 	}

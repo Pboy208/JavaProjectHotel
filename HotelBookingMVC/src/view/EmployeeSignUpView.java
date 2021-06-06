@@ -99,7 +99,7 @@ public class EmployeeSignUpView implements Initializable {
 	public void deleteEmployee(ActionEvent event) throws SQLException {
 		secondPaneAlertLabel.setText("");
 		mainPaneAlertLabel.setText("");
-		EmployeeSignUpController.deleteEmployee(employeeListTable.getSelectionModel().getSelectedItem().getId());
+		EmployeeSignUpController.deleteEmployee(employeeListTable.getSelectionModel().getSelectedItem().getUserID());
 		reloadPage();
 	}
 
@@ -120,6 +120,12 @@ public class EmployeeSignUpView implements Initializable {
 		String pwString = pw.getText();
 		String pwConfirmationString = pwConfirmation.getText();
 		String accountNameString = accountName.getText();
+		 try {
+	            Integer.parseInt(phoneString);
+	     } catch (Exception e) {
+	    	 secondPaneAlertLabel.setText("Phone must be a sequence of number");
+			return;
+	     }
 		int rank = 0;
 		if (rankComboBox.getValue().equals("Manager"))
 			rank = 1;

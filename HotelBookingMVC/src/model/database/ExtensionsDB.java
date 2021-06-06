@@ -81,7 +81,6 @@ public class ExtensionsDB {
 		}
 
 		ArrayList<Hotels> hotels = HotelsDB.queryHotelInfo(array);
-		System.out.println("Filter File:" + hotels.size());
 		if (hotels.size() == 0) {
 			System.out.println("array of hotel = NULL/ There is no hotel meets this filter");
 			return null;

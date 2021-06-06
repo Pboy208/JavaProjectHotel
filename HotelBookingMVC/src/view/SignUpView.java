@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import controller.SignUpController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -14,7 +15,6 @@ public class SignUpView {
 	private Label beginLabel;
 	@FXML
 	private Label alertLabel;
-
 	// ----------------------------------- C for Clients
 	@FXML
 	private Pane paneC;
@@ -49,6 +49,17 @@ public class SignUpView {
 	private PasswordField pwH;
 	@FXML
 	private PasswordField pwConfirmationH;
+	// -----------------------------------
+	@FXML
+	private Button back;
+
+//	public Button getBack() {
+//		return back;
+//	}
+//
+//	public void setBack(Button back) {
+//		this.back = back;
+//	}
 
 	// -----------------------------------
 	public void back(ActionEvent event) {
@@ -82,20 +93,26 @@ public class SignUpView {
 		String name = nameC.getText();
 		String phone = phoneC.getText();
 		String email = emailC.getText();
-
 		String password = pwC.getText();
 		String passwordConfirm = pwConfirmationC.getText();
 		String accountName = accountNameC.getText();
-
-		alertLabel = SignUpController.signUpClient(alertLabel, name, phone, email, password, passwordConfirm,
-				accountName);
-
+		try {
+			Integer.parseInt(phone);
+		} catch (Exception e) {
+			alertLabel.setVisible(true);
+			alertLabel.setText("Phone number must be a sequence of number");
+			phoneC.clear();
+			return;
+		}
 		accountNameC.clear();
 		phoneC.clear();
 		emailC.clear();
 		pwC.clear();
 		pwConfirmationC.clear();
 		nameC.clear();
+
+		alertLabel = SignUpController.signUpUser(alertLabel, name, phone, email, password, passwordConfirm,
+				accountName);
 	}
 
 	public void signUpHotelManager(ActionEvent event) throws SQLException {
@@ -113,23 +130,28 @@ public class SignUpView {
 		String name = nameH.getText();
 		String phone = phoneH.getText();
 		String email = emailH.getText();
-
 		String password = pwH.getText();
 		String passwordConfirm = pwConfirmationH.getText();
 		String accountName = accountNameH.getText();
-
 		String hotelName = hotelNameH.getText();
 		String hotelAddress = hotelAddressH.getText();
-
+		try {
+			Integer.parseInt(phone);
+		} catch (Exception e) {
+			alertLabel.setVisible(true);
+			alertLabel.setText("Phone number must be a sequence of number");
+			phoneH.clear();
+			return;
+		}
+		phoneH.clear();
+		accountNameH.clear();
+		emailH.clear();
+		pwH.clear();
+		pwConfirmationH.clear();
+		nameH.clear();
 		alertLabel = SignUpController.signUpHotelManager(alertLabel, name, phone, email, password, passwordConfirm,
 				accountName, hotelName, hotelAddress);
 
-		accountNameC.clear();
-		phoneC.clear();
-		emailC.clear();
-		pwC.clear();
-		pwConfirmationC.clear();
-		nameC.clear();
 	}
 
 }

@@ -188,7 +188,7 @@ public class ClientInfoView implements Initializable {
 			viewDetailsLabel.setText("Choose a receipt");
 			return;
 		}
-		Receipts chosenReceipts = ReceiptsDB.queryRooms(chosenReceipt.getReceiptID());
+		Receipts chosenReceipts =(Receipts) new ReceiptsDB().queryInstance(chosenReceipt.getReceiptID());
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -225,7 +225,7 @@ public class ClientInfoView implements Initializable {
 	private void reloadPage() {
 		Users user = LoginController.getUser();
 		try {
-			ReceiptsDB.updateReceiptStatusClients(user.getId());
+			ReceiptsDB.updateReceiptStatus(user);
 		} catch (SQLException e) {
 			System.out.println("This user don't have any receipt to udpate status");
 			e.printStackTrace();
@@ -234,7 +234,7 @@ public class ClientInfoView implements Initializable {
 		System.out.println("Done update receipt list");
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptsDB.queryReceiptsForClient(user.getId());
+			receipts = ReceiptsDB.queryReceipts(user);
 		} catch (SQLException e) {
 			System.out.println("This user don't have any receipt to query out");
 			e.printStackTrace();

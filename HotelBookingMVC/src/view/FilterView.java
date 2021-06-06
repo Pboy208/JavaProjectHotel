@@ -134,7 +134,15 @@ public class FilterView implements Initializable {
 			return;
 		}
 		Hotels hotel = recommendHotels.getSelectionModel().getSelectedItem();
-		int numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
+		
+		int numberOfRoomInt = 0;
+		try {
+			numberOfRoomInt = Integer.parseInt(numberOfRoom.getText());
+	    } catch (Exception e) {
+	    	alert.setText("Number of room must be a number");
+			return;
+	    }
+		
 		alert = FilterController.confirmBooking(alert, checkinTime, checkoutTime, numberOfRoomInt, hotel);
 		informNumberOfRoom = FilterController.searchForAvailableRooms(informNumberOfRoom, checkinTime, checkoutTime,
 				hotel);

@@ -17,7 +17,7 @@ public class Receipts {
 	private Date orderDate;
 	private Date checkinDate;
 	private Date checkoutDate;
-	private float price;
+	private int price;
 
 	private SimpleStringProperty hotelAddressProperty;
 	private SimpleStringProperty hotelNameProperty;
@@ -30,7 +30,7 @@ public class Receipts {
 	private SimpleStringProperty priceProperty;
 
 	public Receipts(int receiptID, int hotelID, int roomID, int userID, Date checkinDate, Date checkoutDate,
-			Date orderDate, int status) throws SQLException {
+			Date orderDate, int status,int price) throws SQLException {
 		// TODO Auto-generated constructor stub
 		this.setOrderDate(orderDate);
 		this.setCheckinDate(checkinDate);
@@ -40,9 +40,12 @@ public class Receipts {
 		this.setUserID(userID);
 		this.setReceiptID(receiptID);
 		this.setStatus(status);
-
+		this.price=price;
+		
+		
+		this.priceProperty= new SimpleStringProperty(String.format("%,d", price));
 		this.roomIDProperty = new SimpleStringProperty(Integer.toString(roomID));
-		Hotels tmpHotel = HotelsDB.queryHotelInfo(hotelID);
+		Hotels tmpHotel =(Hotels) new HotelsDB().queryInstance(hotelID);
 		this.hotelAddressProperty = new SimpleStringProperty(tmpHotel.getAddress());
 		this.hotelNameProperty = new SimpleStringProperty(tmpHotel.getName());
 		if (receiptID != 0)
@@ -81,7 +84,17 @@ public class Receipts {
 		}
 
 	}
-
+	public Receipts(int receiptID, int hotelID, int roomID, int userID, Date checkinDate, Date checkoutDate,
+			Date orderDate) {
+		this.setOrderDate(orderDate);
+		this.setCheckinDate(checkinDate);
+		this.setCheckoutDate(checkoutDate);
+		this.setHotelID(hotelID);
+		this.setRoomID(roomID);
+		this.setUserID(userID);
+		this.setReceiptID(receiptID);
+		
+	}
 	public Receipts() {
 
 	}
@@ -155,13 +168,12 @@ public class Receipts {
 		return orderDate;
 	}
 
-	public float getPrice() {
+	public int getPrice() {
 		return price;
 	}
 
-	public void setPrice(float price) {
+	public void setPrice(int price) {
 		this.price = price;
-		this.priceProperty = new SimpleStringProperty(Float.toString(price));
 	}
 	// --------------------------------------------------------------------------------
 

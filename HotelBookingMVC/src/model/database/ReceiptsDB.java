@@ -10,57 +10,30 @@ import java.util.ArrayList;
 
 import controller.LoginController;
 import model.receipts.Receipts;
+import model.rooms.Rooms;
+import model.users.HotelEmployees;
+import model.users.Users;
 
-public class ReceiptsDB {
+public class ReceiptsDB implements DBInterface{
 
-	public static Receipts queryRooms(int receiptID) throws SQLException {
-		Connection connection = Postgre.makeConnection();
-		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT * FROM receipt where receipt_id = " + receiptID;
-		ResultSet receiptSet = statement.executeQuery(queryStatement);
-		if (receiptSet.next() == false) {
-			System.out.println(receiptID + " Doest not exists");
-			return null;
-		} else {
-			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
-					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
-					receiptSet.getInt(8));
-			System.out.print("ReceiptDB :");
-			tmpReceipt.printInfo();
-			return tmpReceipt;
-		}
-	}
-
-	public static ArrayList<Receipts> queryReceiptsForHotel(int hotelID) throws SQLException {
+	public static ArrayList<Receipts> queryReceipts(Object object) throws SQLException {
 		ArrayList<Receipts> tmpReceipts = new ArrayList<>();
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT * FROM receipt where hotel_id = " + hotelID;
-		ResultSet receiptSet = statement.executeQuery(queryStatement);
-		System.out.println("begin " + hotelID);
-		while (receiptSet.next()) {
-			System.out.println("Testing...");
-			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
-					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
-					receiptSet.getInt(8));
-			tmpReceipts.add(tmpReceipt);
+		String queryStatement=null;
+		if(object instanceof HotelEmployees) {
+			queryStatement = "SELECT * FROM receipt where hotel_id = " + ((HotelEmployees)object).getHotelID();
+			//System.out.println(queryStatement);
 		}
-		System.out.println("end");
-		if (tmpReceipts.size() == 0)
-			return null;
-		return tmpReceipts;
-	}
-
-	public static ArrayList<Receipts> queryReceiptsForClient(int userID) throws SQLException {
-		ArrayList<Receipts> tmpReceipts = new ArrayList<>();
-		Connection connection = Postgre.makeConnection();
-		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT * FROM receipt where user_id = " + userID;
+		else {
+			queryStatement = "SELECT * FROM receipt where user_id = " + ((Users)object).getUserID();
+			//System.out.println(queryStatement);
+		}
 		ResultSet receiptSet = statement.executeQuery(queryStatement);
 		while (receiptSet.next()) {
 			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
 					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
-					receiptSet.getInt(8));
+					receiptSet.getInt(8),receiptSet.getInt(9));
 			tmpReceipts.add(tmpReceipt);
 		}
 		if (tmpReceipts.size() == 0)
@@ -68,6 +41,7 @@ public class ReceiptsDB {
 		return tmpReceipts;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void insertReciepts(int numberOfRoom, int hotelID, Date checkinDate, Date checkoutDate)
 			throws SQLException {
 		Connection connection = Postgre.makeConnection();
@@ -77,18 +51,15 @@ public class ReceiptsDB {
 		count.next();
 		int currentReceiptID = count.getInt(1);
 		LocalDate localDate = LocalDate.now();
-		ArrayList<Integer> availableRooms = RoomsDB.queryAvailableRooms(hotelID, checkinDate, checkoutDate);
-		@SuppressWarnings("deprecation")
+		ArrayList<Rooms> availableRooms = RoomsDB.queryAvailableRooms(hotelID, checkinDate, checkoutDate);
 		Date orderDate = new Date(localDate.getYear() - 1900, localDate.getMonthValue() - 1, localDate.getDayOfMonth());
 		for (int i = 0; i < numberOfRoom; i++) {
 			int tmpReceiptID = currentReceiptID + 1 + i;
-			int roomID = availableRooms.get(i);
-			String insertStatement = "INSERT INTO receipt(receipt_id, hotel_id, room_id, user_id, checkin, checkout,order_date,status)"
-					+ " VALUES (" + tmpReceiptID + "," + hotelID + "," + roomID + ","
-					+ LoginController.getUser().getId() + ",'" + checkinDate + "','" + checkoutDate + "','" + orderDate
-					+ "',0)";
-			System.out.println(insertStatement);
-			statement.executeUpdate(insertStatement);
+			int roomID = availableRooms.get(i).getRoomID();
+			Receipts receipt = new Receipts(tmpReceiptID,hotelID,roomID,LoginController.getUser().getUserID(),checkinDate,checkoutDate,orderDate);
+			int totalDay = checkoutDate.getDay()-checkinDate.getDay();
+			receipt.setPrice(availableRooms.get(i).getPrice()*totalDay);
+			new ReceiptsDB().insertInstance(receipt);
 		}
 	}
 
@@ -99,65 +70,77 @@ public class ReceiptsDB {
 		statement.executeUpdate(queryStatement);
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void updateReceiptStatusClients(int userID) throws SQLException {
+	public static void updateReceiptStatus(Object object) throws SQLException {
 		Connection connection = Postgre.makeConnection();
 		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT count(*) FROM receipt WHERE status in (0,1) AND user_id = " + userID;
-		ResultSet receiptSet = statement.executeQuery(queryStatement);
-//		receiptSet.next();
-//		System.out.println(receiptSet.getInt(1));
-		while (receiptSet.next()==true) {
-			System.out.println("abc");
-			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
-					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
-					receiptSet.getInt(8));
-			LocalDate localDate = LocalDate.now();
-			if (tmpReceipt.getStatus() == 0) { // waiting for checkin
-				if (tmpReceipt.getCheckinDate().compareTo(new Date(localDate.getYear() - 1900,
-						localDate.getMonthValue() - 1, localDate.getDayOfMonth()))<=0) {
-					String updateStatement = "UPDATE receipt SET status =1 WHERE receipt_id =  "
-							+ tmpReceipt.getReceiptID();
-					statement.executeUpdate(updateStatement);
-				}
-			} else { // waiting for checkout
-				if (tmpReceipt.getCheckoutDate().before(new Date(localDate.getYear() - 1900,
-						localDate.getMonthValue() - 1, localDate.getDayOfMonth()))) {
-					String updateStatement = "UPDATE receipt SET status = -1 WHERE receipt_id =  "
-							+ tmpReceipt.getReceiptID();
-					statement.executeUpdate(updateStatement);
-				}
-			}
+		String queryStatement=null;
+		if(object instanceof HotelEmployeesDB) {
+			queryStatement = "SELECT * FROM receipt WHERE status in (0,1) AND hotel_id = " + ((HotelEmployees)object).getHotelID();
 		}
-	}
-
-	@SuppressWarnings("deprecation")
-	public static void updateReceiptStatusHotels(int hotelID) throws SQLException {
-		Connection connection = Postgre.makeConnection();
-		Statement statement = connection.createStatement();
-		String queryStatement = "SELECT * FROM receipt WHERE status in (0,1) AND hotel_id = " + hotelID;
+		else {
+			queryStatement = "SELECT * FROM receipt WHERE status in (0,1) AND user_id = " + ((Users)object).getUserID();
+		}
 		ResultSet receiptSet = statement.executeQuery(queryStatement);
 		while (receiptSet.next()!=false) {
 			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
 					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
-					receiptSet.getInt(8));
+					receiptSet.getInt(8),receiptSet.getInt(9));
 			LocalDate localDate = LocalDate.now();
-			if (tmpReceipt.getStatus() == 0) { // waiting for checkin
-				if (tmpReceipt.getCheckinDate().compareTo(new Date(localDate.getYear() - 1900,
-						localDate.getMonthValue() - 1, localDate.getDayOfMonth()))<=0) {
-					String updateStatement = "UPDATE receipt SET status =1 WHERE receipt_id =  "
-							+ tmpReceipt.getReceiptID();
-					statement.executeUpdate(updateStatement);
-				}
-			} else { // waiting for checkout
-				if (tmpReceipt.getCheckoutDate().before(new Date(localDate.getYear() - 1900,
-						localDate.getMonthValue() - 1, localDate.getDayOfMonth()))) {
-					String updateStatement = "UPDATE receipt SET status = -1 WHERE receipt_id =  "
-							+ tmpReceipt.getReceiptID();
-					statement.executeUpdate(updateStatement);
-				}
+			@SuppressWarnings("deprecation")
+			Date dateNow = new Date(localDate.getYear() - 1900,localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+			updateStatus(tmpReceipt, dateNow);
+		}
+	}
+	
+	
+	public static void updateStatus(Receipts receipt,Date dateNow) throws SQLException {
+		Connection connection = Postgre.makeConnection();
+		Statement statement = connection.createStatement();
+		if (receipt.getStatus() == 0) { // waiting for checkin
+			if (receipt.getCheckinDate().compareTo(dateNow)<=0) {
+				String updateStatement = "UPDATE receipt SET status =1 WHERE receipt_id =  "
+						+ receipt.getReceiptID();
+				statement.executeUpdate(updateStatement);
+			}
+		} else { // waiting for checkout
+			if (receipt.getCheckoutDate().before(dateNow)) {
+				String updateStatement = "UPDATE receipt SET status = -1 WHERE receipt_id =  "
+						+ receipt.getReceiptID();
+				statement.executeUpdate(updateStatement);
 			}
 		}
+	}
+	@Override
+	public void insertInstance(Object object) throws SQLException {
+		Connection connection = Postgre.makeConnection();
+		Statement statement = connection.createStatement();
+		Receipts receipt = (Receipts) object;
+		String insertStatement = "INSERT INTO receipt(receipt_id, hotel_id, room_id, user_id, checkin, checkout,order_date,status,price)"
+					+ " VALUES (" + receipt.getReceiptID() + "," + receipt.getHotelID() + "," + receipt.getRoomID() + ","
+					+ receipt.getUserID() + ",'" + receipt.getCheckinDate() + "','" + receipt.getCheckoutDate() + "','" + receipt.getOrderDate()
+					+ "',0,"+receipt.getPrice()+")";
+		statement.executeUpdate(insertStatement);	
+	}
+
+	@Override
+	public Object queryInstance(int receiptID) throws SQLException {
+		Connection connection = Postgre.makeConnection();
+		Statement statement = connection.createStatement();
+		String queryStatement = "SELECT * FROM receipt where receipt_id = " + receiptID;
+		ResultSet receiptSet = statement.executeQuery(queryStatement);
+		if (receiptSet.next() == false) {
+			return null;
+		} else {
+			Receipts tmpReceipt = new Receipts(receiptSet.getInt(1), receiptSet.getInt(2), receiptSet.getInt(3),
+					receiptSet.getInt(4), receiptSet.getDate(5), receiptSet.getDate(6), receiptSet.getDate(7),
+					receiptSet.getInt(8),receiptSet.getInt(9));
+			return tmpReceipt;
+		}
+	}
+
+	@Override
+	public void updateInstance(Object object) throws SQLException {
+		return;
 	}
 
 }

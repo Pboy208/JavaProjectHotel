@@ -1,6 +1,7 @@
 package view;
 
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -69,7 +70,7 @@ public class HotelInfoView implements Initializable {
 	@FXML
 	private TableColumn<Receipts, String> roomIDColumn;
 	@FXML
-	private TableColumn<Receipts, String> checkinDateColumn;
+	private TableColumn<Receipts, Date> checkinDateColumn;
 	@FXML
 	private TableColumn<Receipts, String> checkoutDateColumn;
 	@FXML
@@ -86,9 +87,9 @@ public class HotelInfoView implements Initializable {
 	@FXML
 	private TableView<Rooms> roomsListTable;
 	@FXML
-	private TableColumn<Rooms, String> roomIDInRoomColumn;
+	private TableColumn<Rooms, Integer> roomIDInRoomColumn;
 	@FXML
-	private TableColumn<Rooms, String> priceInRoomColumn;
+	private TableColumn<Rooms,Integer> priceInRoomColumn;
 	@FXML
 	private Label alertAdjustRoom;
 	// -------------------------------------------------------------------
@@ -151,6 +152,7 @@ public class HotelInfoView implements Initializable {
 	}
 
 	public void saveChange(ActionEvent event) throws SQLException {
+		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
 		// -------------------------------------- User info
@@ -198,9 +200,9 @@ public class HotelInfoView implements Initializable {
 			}
 		}
 		if (visibleFlag)
-			HotelEmployeesDB.updateHotelEmployees(user.getId(), newName, newPhone, newEmail, newPWString);
+			HotelEmployeesDB.updateHotelEmployees(user.getUserID(), newName, newPhone, newEmail, newPWString);
 		else
-			HotelEmployeesDB.updateHotelEmployees(user.getId(), newName, newPhone, newEmail, user.getPassword());
+			HotelEmployeesDB.updateHotelEmployees(user.getUserID(), newName, newPhone, newEmail, user.getPassword());
 
 		alert.setText("Information changed");
 		oldPW.clear();
@@ -209,7 +211,6 @@ public class HotelInfoView implements Initializable {
 		// -------------------------------------- Hotel info
 		String hotelAddressString = hotelAddress.getText();
 		String hotelNameString = hotelName.getText();
-		float priceFloat = Float.parseFloat(price.getText());
 		int starInt = 0;
 
 		for (int i = 0; i < 5; i++) {
@@ -224,11 +225,12 @@ public class HotelInfoView implements Initializable {
 			if (rbs[i].isSelected())
 				extensions[i] = 1;
 		// -------------------------------------- Update hotel info
-		HotelsDB.updateHotelInfo(user.getHotelID(), hotelNameString, hotelAddressString, starInt, extensions,
-				priceFloat);
+
+		new HotelsDB().updateInstance(new Hotels(user.getHotelID(), hotelNameString, hotelAddressString, starInt, extensions));
 	}
 
 	public void changePassword(ActionEvent event) {
+		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
 		oldPW.setVisible(!oldPW.isVisible());
@@ -237,6 +239,7 @@ public class HotelInfoView implements Initializable {
 	}
 
 	public void cancelReceipt(ActionEvent event) throws SQLException {
+		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
 
@@ -259,9 +262,8 @@ public class HotelInfoView implements Initializable {
 			return;
 		}
 		ReceiptsDB.cancelReciepts(chosenReceipt.getReceiptID());
-		ReceiptsDB.updateReceiptStatusHotels(((HotelEmployees) LoginController.getUser()).getHotelID());
-		ArrayList<Receipts> receipts = ReceiptsDB
-				.queryReceiptsForHotel(((HotelEmployees) LoginController.getUser()).getHotelID());
+		ReceiptsDB.updateReceiptStatus(LoginController.getUser());
+		ArrayList<Receipts> receipts = ReceiptsDB.queryReceipts(LoginController.getUser());
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
 			receiptsListTable.setPlaceholder(noResult);
@@ -269,12 +271,13 @@ public class HotelInfoView implements Initializable {
 			receiptsListTable.setItems(tableListNull);
 			return;
 		}
-		ObservableList<Receipts> roomsList = FXCollections.observableArrayList(receipts);
-		receiptsListTable.setItems(roomsList);
+		ObservableList<Receipts> receiptList = FXCollections.observableArrayList(receipts);
+		receiptsListTable.setItems(receiptList);
 		alertViewDetails.setText("Booking cancelled");
 	}
 
 	public void viewDetails(ActionEvent event) throws SQLException {
+		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
 		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
@@ -282,7 +285,7 @@ public class HotelInfoView implements Initializable {
 			alertViewDetails.setText("Choose a room");
 			return;
 		}
-		Receipts chosenReceipts = ReceiptsDB.queryRooms(chosenReceipt.getReceiptID());
+		Receipts chosenReceipts =(Receipts) (new ReceiptsDB().queryInstance(chosenReceipt.getReceiptID()));
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -292,7 +295,7 @@ public class HotelInfoView implements Initializable {
 		detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		// --------------------------------------------------------------
 		System.out.println("guest ID: " + chosenReceipts.getUserID());
-		Users guest = UsersDB.queryUserInfo(chosenReceipts.getUserID());
+		Users guest = (Users)(new UsersDB().queryInstance(chosenReceipts.getUserID()));
 		System.out.print("guest name: ");
 		guest.printInfo();
 		guestName.setText("Guest's Name: " + guest.getName());
@@ -301,6 +304,7 @@ public class HotelInfoView implements Initializable {
 	}
 
 	public void back(ActionEvent event) {
+		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
 		detailPane.setVisible(false);
@@ -308,16 +312,67 @@ public class HotelInfoView implements Initializable {
 	}
 	
 	public void signUp(ActionEvent event) {
+		
 		new SceneChanging().changeScene(event,"EmployeeSignUp.fxml");
 	}
 	
+	public void deleteRoom(ActionEvent event) {
+		alertAdjustRoom.setText("");
+		if(roomsListTable.getSelectionModel().getSelectedItem()==null) {
+			alertAdjustRoom.setText("Choose a room to delete");
+			return;
+		}
+		refreshRoom();
+	}
+	public void addRoom(ActionEvent event) throws SQLException {
+		alertAdjustRoom.setText("");
+		if(price.getText().trim().isEmpty()) {
+			alertAdjustRoom.setText("Insert price of new room");
+			return;
+		}
+		int priceInt = 0;
+		 try {
+			 priceInt = Integer.parseInt(price.getText());
+	     } catch (Exception e) {
+	       	alertAdjustRoom.setText("Price must be a number");
+			return;
+	     }
+		 Rooms room = new Rooms(0, ((HotelEmployees)LoginController.getUser()).getHotelID(), priceInt);
+		new RoomsDB().insertInstance(room);
+		refreshRoom();
+	}
+	public void adjustPrice(ActionEvent event) throws SQLException {
+		alertAdjustRoom.setText("");
+		Rooms chosenRoom=roomsListTable.getSelectionModel().getSelectedItem();
+		if(chosenRoom==null) {
+			alertAdjustRoom.setText("Choose a room to adjust");
+			return;
+		}
+		if(price.getText().trim().isEmpty()) {
+			alertAdjustRoom.setText("Insert new price of room");
+			return;
+		}
+		int priceInt = 0;
+		try {
+			 	priceInt = Integer.parseInt(price.getText());
+	    } catch (Exception e) {
+	      	alertAdjustRoom.setText("Price must be a number");
+			return;
+	    }
+		Rooms room = new Rooms(chosenRoom.getRoomID(), chosenRoom.getHotelID(), priceInt);
+		new RoomsDB().updateInstance(room);
+		refreshRoom();
+	}
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		// ------------------------------------- User part
 		HotelEmployees user = (HotelEmployees) LoginController.getUser();
-		user.printInfo();
-		System.out.println(user.getPassword());
+		if(user instanceof Users )
+			System.out.println("yes");
+		if(user instanceof HotelEmployees )
+			System.out.println("yes too");
+		System.out.println(user.getRank());
 		accountName.setText("Username: " + user.getUsername());
 		name.setText(user.getName());
 		email.setText(user.getEmail());
@@ -334,7 +389,7 @@ public class HotelInfoView implements Initializable {
 		star.getItems().addAll(starList);
 		// ------------------------------------- TableView For Receipt
 		try { // update before show it
-			ReceiptsDB.updateReceiptStatusHotels(user.getHotelID());
+			ReceiptsDB.updateReceiptStatus(user);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -342,7 +397,7 @@ public class HotelInfoView implements Initializable {
 
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptsDB.queryReceiptsForHotel(user.getHotelID());
+			receipts = ReceiptsDB.queryReceipts(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -356,7 +411,7 @@ public class HotelInfoView implements Initializable {
 		}
 		ObservableList<Receipts> receiptsList = FXCollections.observableArrayList(receipts);
 		roomIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("roomIDProperty"));
-		checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkinDateProperty"));
+		checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkinDate")); //("checkinDateProperty")
 		checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkoutDateProperty"));
 		orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("orderDateProperty"));
 		receiptStatusColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("statusProperty"));
@@ -366,30 +421,12 @@ public class HotelInfoView implements Initializable {
 		if (user.getRank() == 1) {
 			managerPart.setVisible(true);
 			signUp.setVisible(true);
-
-			ArrayList<Rooms> allRooms = null;
-			try {
-				allRooms = RoomsDB.queryAllRooms(user.getHotelID());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-			if (allRooms == null) {
-				Label noResult = new Label("You have no room");
-				roomsListTable.setPlaceholder(noResult);
-				ObservableList<Rooms> tableListNull = FXCollections.observableArrayList();
-				roomsListTable.setItems(tableListNull);
-				return;
-			}
-			ObservableList<Rooms> roomsList = FXCollections.observableArrayList(allRooms);
-			roomIDInRoomColumn.setCellValueFactory(new PropertyValueFactory<Rooms, String>("roomIDProperty"));
-			priceInRoomColumn.setCellValueFactory(new PropertyValueFactory<Rooms, String>("priceProperty"));
-			roomsListTable.setItems(roomsList);
+			refreshRoom();
 		}
 		// ---------------------------------------------------------
 		Hotels hotelInfo = null;
 		try {
-			hotelInfo = HotelsDB.queryHotelInfo(user.getHotelID());
+			hotelInfo =(Hotels) new HotelsDB().queryInstance(user.getHotelID());
 		} catch (SQLException e) {
 			System.out.println("Error getting hotel Info in HotelInfoController");
 			e.printStackTrace();
@@ -409,5 +446,24 @@ public class HotelInfoView implements Initializable {
 		star.setValue(starString[hotelInfo.getStar() - 1]);
 		// ---------------------------------------------------------
 	}
+	private void refreshRoom() {
+		ArrayList<Rooms> allRooms = null;
+		try {
+			allRooms = RoomsDB.queryAllRooms(((HotelEmployees)LoginController.getUser()).getHotelID());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
+		if (allRooms == null) {
+			Label noResult = new Label("You have no room");
+			roomsListTable.setPlaceholder(noResult);
+			ObservableList<Rooms> tableListNull = FXCollections.observableArrayList();
+			roomsListTable.setItems(tableListNull);
+			return;
+		}
+		ObservableList<Rooms> roomsList = FXCollections.observableArrayList(allRooms);
+		roomIDInRoomColumn.setCellValueFactory(new PropertyValueFactory<Rooms, Integer>("roomID"));
+		priceInRoomColumn.setCellValueFactory(new PropertyValueFactory<Rooms, Integer>("price"));
+		roomsListTable.setItems(roomsList);
+	}
 }

@@ -6,54 +6,61 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxWidth="1185.0" prefHeight="656.0" prefWidth="1185.0" style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ClientInfoView">
+<AnchorPane prefHeight="680.0" prefWidth="1360.0" style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ClientInfoController">
    <children>
-      <Pane fx:id="infoPane" prefHeight="656.0" prefWidth="1186.0">
+      <ImageView fitHeight="680.0" fitWidth="1360.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../img/Filter.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="87.0" layoutY="13.0" mnemonicParsing="false" onAction="#backToFilter" text="Back" />
+      <Button layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#signOut" text="SignOut" />
+      <Pane fx:id="infoPane" layoutX="44.0" layoutY="50.0" prefHeight="610.0" prefWidth="1279.0" style="-fx-border-color: orange;">
          <children>
-            <Label fx:id="alert" alignment="CENTER" layoutX="45.0" layoutY="580.0" textFill="RED" />
-            <ToolBar layoutX="1.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="1185.0">
-               <items>
-                  <Button mnemonicParsing="false" onAction="#backToFilter" text="Back" />
-                  <Button mnemonicParsing="false" onAction="#signOut" text="SignOut" />
-               </items>
-            </ToolBar>
-            <Pane layoutY="36.0" prefHeight="195.0" prefWidth="200.0">
+            <ImageView fitHeight="610.0" fitWidth="1279.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../../img/null.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="alert" alignment="CENTER" contentDisplay="CENTER" layoutX="16.0" layoutY="584.0" prefHeight="17.0" prefWidth="192.0" textAlignment="CENTER" textFill="RED" />
+            <Pane layoutY="36.0" prefHeight="195.0" prefWidth="223.0">
                <children>
-                  <TextField fx:id="name" layoutX="13.0" layoutY="64.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
-                  <TextField fx:id="email" layoutX="14.0" layoutY="102.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
-                  <TextField fx:id="phone" layoutX="13.0" layoutY="141.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
-                  <Label fx:id="accountName" layoutX="13.0" layoutY="35.0" text="Username:" />
+                  <TextField fx:id="name" layoutX="24.0" layoutY="61.0" prefHeight="26.0" prefWidth="174.0" promptText="Name" />
+                  <TextField fx:id="email" layoutX="25.0" layoutY="99.0" prefHeight="26.0" prefWidth="174.0" promptText="Email Address" />
+                  <TextField fx:id="phone" layoutX="24.0" layoutY="138.0" prefHeight="26.0" prefWidth="174.0" promptText="Phone Number" />
+                  <Label fx:id="accountName" layoutX="24.0" layoutY="32.0" text="Username:" />
                </children>
             </Pane>
-            <Pane layoutY="231.0" prefHeight="302.0" prefWidth="200.0">
+            <Pane layoutY="231.0" prefHeight="278.0" prefWidth="223.0">
                <children>
-                  <PasswordField fx:id="oldPW" layoutX="13.0" layoutY="14.0" prefHeight="25.0" prefWidth="174.0" promptText="Current Password" visible="false" />
-                  <PasswordField fx:id="newPW" layoutX="14.0" layoutY="49.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password" visible="false" />
-                  <PasswordField fx:id="newPWConfirm" layoutX="14.0" layoutY="87.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password Confirmation" visible="false" />
-                  <Button layoutX="46.0" layoutY="139.0" mnemonicParsing="false" onAction="#changePassword" text="Change Password" />
+                  <PasswordField fx:id="oldPW" layoutX="24.0" prefHeight="25.0" prefWidth="174.0" promptText="Current Password" visible="false" />
+                  <PasswordField fx:id="newPW" layoutX="25.0" layoutY="35.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password" visible="false" />
+                  <PasswordField fx:id="newPWConfirm" layoutX="25.0" layoutY="73.0" prefHeight="25.0" prefWidth="174.0" promptText="New Password Confirmation" visible="false" />
+                  <Button layoutX="57.0" layoutY="125.0" mnemonicParsing="false" onAction="#changePassword" text="Change Password" />
                </children>
             </Pane>
-            <TableView fx:id="receiptsListTable" layoutX="200.0" layoutY="36.0" prefHeight="544.0" prefWidth="983.0">
+            <TableView fx:id="receiptsListTable" layoutX="223.0" layoutY="21.0" prefHeight="537.0" prefWidth="1033.0">
                <columns>
-                  <TableColumn fx:id="hotelNameColumn" prefWidth="116.79998779296875" text="Hotel Name" />
-                  <TableColumn fx:id="hotelAddressColumn" prefWidth="296.8000183105469" text="Hotel Address" />
-                  <TableColumn fx:id="checkinDateColumn" prefWidth="85.5999755859375" text="Checkin Date" />
-                  <TableColumn fx:id="checkoutDateColumn" prefWidth="92.0" text="Checkout Date" />
-                  <TableColumn fx:id="orderDateColumn" prefWidth="87.99993896484375" text="Booking Date" />
-                  <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="75.20001220703125" text="Price" />
-                  <TableColumn fx:id="receiptIDColumn" prefWidth="76.0" text="Receipt ID" />
-                  <TableColumn fx:id="receiptStatusColumn" prefWidth="157.5999755859375" text="Receipt Status" />
+                  <TableColumn fx:id="hotelNameColumn" prefWidth="200.0" text="Hotel Name" />
+                  <TableColumn fx:id="hotelAddressColumn" prefWidth="272.79998779296875" text="Hotel Address" />
+                  <TableColumn fx:id="checkinDateColumn" prefWidth="78.4000244140625" text="Checkin Date" />
+                  <TableColumn fx:id="checkoutDateColumn" prefWidth="90.39996337890625" text="Checkout Date" />
+                  <TableColumn fx:id="orderDateColumn" prefWidth="83.20001220703125" text="Booking Date" />
+                  <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="77.60009765625" text="Price" />
+                  <TableColumn fx:id="receiptIDColumn" prefWidth="72.0" text="Receipt ID" />
+                  <TableColumn fx:id="receiptStatusColumn" prefWidth="160.0" text="Receipt Status" />
                </columns>
             </TableView>
-            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="45.0" layoutY="555.0" mnemonicParsing="false" onAction="#saveChange" prefHeight="25.0" prefWidth="110.0" text="Save Change" />
-            <Button layoutX="1025.0" layoutY="597.0" mnemonicParsing="false" onAction="#viewDetails" text="View Contact Infomation" />
-            <Button layoutX="920.0" layoutY="597.0" mnemonicParsing="false" onAction="#cancelReceipt" text="Cancel Receipt" />
-            <Label fx:id="viewDetailsLabel" layoutX="920.0" layoutY="622.0" textFill="RED" />
+            <Button layoutX="1106.0" layoutY="568.0" mnemonicParsing="false" onAction="#viewDetails" text="View Contact Infomation" />
+            <Button layoutX="997.0" layoutY="568.0" mnemonicParsing="false" onAction="#cancelReceipt" text="Cancel Receipt" />
+            <Label fx:id="viewDetailsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="806.0" layoutY="572.0" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER" textFill="RED" />
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="57.0" layoutY="516.0" mnemonicParsing="false" onAction="#saveChange" prefHeight="52.0" prefWidth="110.0" text="Save Change" />
          </children>
       </Pane>
       <Pane fx:id="detailPane" layoutX="357.0" layoutY="197.0" onDragDetected="#back" prefHeight="324.0" prefWidth="490.0" visible="false">
