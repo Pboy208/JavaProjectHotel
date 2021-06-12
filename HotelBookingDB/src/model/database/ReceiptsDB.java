@@ -30,7 +30,7 @@ public class ReceiptsDB implements DBInterface{
 		else {
 			queryStatement = String.format("SELECT receipt.*,hotel.id FROM receipt JOIN room ON (receipt.room_id = room.id) "
 					+ "JOIN hotel ON (room.hotel_id = hotel.id)"
-					+ "WHERE user_id = %s", HostController.getHotel().getHotelID());
+					+ "WHERE user_id = %s", LoginController.getUser().getUserID());
 		}
 	
 		ResultSet receiptSet = statement.executeQuery(queryStatement);
@@ -85,7 +85,7 @@ public class ReceiptsDB implements DBInterface{
 		else {
 			queryStatement = String.format("SELECT receipt.*,hotel.id FROM receipt JOIN room ON (receipt.room_id = room.id) "
 					+ "JOIN hotel ON (room.hotel_id = hotel.id)"
-					+ "WHERE user_id = %s", HostController.getHotel().getHotelID());
+					+ "WHERE user_id = %s", LoginController.getUser().getUserID());
 		}
 		ResultSet receiptSet = statement.executeQuery(queryStatement);
 		while (receiptSet.next()!=false) {

@@ -197,6 +197,8 @@ public class SignUpController implements Initializable {
 	}
 
 	public void signUpHotelManager(ActionEvent event) throws SQLException {
+		
+		System.out.println(province+district+street);
 		alertLabel.setVisible(false);
 		if (nameH.getText().trim().isEmpty() || phoneH.getText().trim().isEmpty() || emailH.getText().trim().isEmpty()
 				|| pwH.getText().trim().isEmpty() || pwConfirmationH.getText().trim().isEmpty()
@@ -252,9 +254,23 @@ public class SignUpController implements Initializable {
 		}
 		
 		int streetID = LocationDB.queryStreetIDByName(street);
+		if(streetID == -1) {
+			alertLabel.setText("Street invalid");
+			alertLabel.setVisible(true);
+			return ;
+		}
 		
-		int hotelID = HotelsDB.insertHotel(hotelName, hotelAddressFull,streetID);
 		ArrayList<Integer> hotelIDs = new ArrayList<>();
+		HotelEmployees newManager = new HotelEmployees(0,0, name, phone, email, accountName, passwordConfirm,hotelIDs);
+		(new HotelEmployeesDB()).insertInstance(newManager);
+		
+		
+		int managerID = HotelEmployeesDB.queryManagerIDByPhone(phone);
+		
+		System.out.println(managerID);
+		
+		int hotelID = HotelsDB.insertHotel(hotelName, hotelAddressFull,streetID,managerID);
+		
 		hotelIDs.add(hotelID);
 		
 		if (hotelID == -1) {
@@ -263,8 +279,7 @@ public class SignUpController implements Initializable {
 			hotelNameH.clear();
 			return ;
 		}
-		HotelEmployees newManager = new HotelEmployees(0,0, name, phone, email, accountName, passwordConfirm,hotelIDs);
-		(new HotelEmployeesDB()).insertInstance(newManager);
+		
 		alertLabel.setText("Your account is ready");
 		alertLabel.setVisible(true);
 		clearTextFields();

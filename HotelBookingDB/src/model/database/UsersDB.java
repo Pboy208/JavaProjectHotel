@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import controller.LoginController;
+import model.users.HotelEmployees;
 import model.users.Users;
 
 public class UsersDB implements DBInterface{
@@ -46,5 +48,6 @@ public class UsersDB implements DBInterface{
 		statement.executeUpdate(updateAccount);
 		LoginController.setUser(user);		
 	}
+	
 	
 }

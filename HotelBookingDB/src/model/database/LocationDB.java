@@ -42,10 +42,11 @@ public class LocationDB {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
 		ResultSet streetsSet = statement.executeQuery("SELECT * FROM street WHERE district_id = "+districtID);
-//		System.out.println("SELECT name FROM street WHERE district_id = "+districtID);
+		System.out.println("SELECT name FROM street WHERE district_id = "+districtID);
 		while(streetsSet.next())
 		{	
 			streetList.add(new Street(streetsSet.getInt(1),streetsSet.getString(2)));
+			System.out.println(streetsSet.getString(2));
 		}
 		return streetList;
 	}
@@ -53,8 +54,11 @@ public class LocationDB {
 	public static int queryStreetIDByName(String street) throws SQLException {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
-		ResultSet streetsSet = statement.executeQuery("SELECT id FROM street WHERE name = "+street);
-		streetsSet.next();
+		ResultSet streetsSet = statement.executeQuery("SELECT id FROM street WHERE name = '"+street+"'");
+		if(!streetsSet.next()) {
+			System.out.println("SELECT id FROM street WHERE name = '"+street+"'");
+			return -1;
+		}
 		return streetsSet.getInt(1);
 	}
 	

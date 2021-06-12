@@ -13,7 +13,9 @@ public class HotelQualityDB {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
 		ResultSet tmp = statement.executeQuery(queryStatement);
-		tmp.next();
+		if(!tmp.next()) {
+			return -1;
+		}
 		float result = tmp.getFloat("overall_score");
 		return result;
 	}

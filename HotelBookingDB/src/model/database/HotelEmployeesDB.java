@@ -29,7 +29,7 @@ public class HotelEmployeesDB implements DBInterface {
 				tmp.getString("email"),hotelIDs);
 		return user;
 	}
-
+	
 	public static HotelEmployees queryEmployeeInfoByHotelID(int hotelID) throws SQLException {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
@@ -46,7 +46,20 @@ public class HotelEmployeesDB implements DBInterface {
 		HotelEmployees manager = new HotelEmployees(tmp2.getInt("id"),managerID,tmp2.getString("name"),tmp2.getString("phone"),tmp2.getString("email"),hotelIDs);
 		return manager;
 	}
+	
+	public static int queryManagerIDByPhone(String phone) throws SQLException {
 
+		String queryStatement = String.format("SELECT hotelmanager.id FROM user JOIN hotelmanager ON (user.id=hotelmanager.user_id) WHERE user.phone = '%s'",phone);
+		System.out.println(String.format("SELECT hotelmanager.id FROM user JOIN hotelmanager ON (user.id=hotelmanager.user_id) WHERE user.phone = '%s'",phone));
+		Connection connection = Mysql.makeConnection();
+		Statement statement = connection.createStatement();
+		ResultSet tmp = statement.executeQuery(queryStatement);
+		if (tmp.next() == false) {
+			return -1;
+		}
+		return tmp.getInt(1);
+	}
+	
 	@Override
 	public void insertInstance(Object object) throws SQLException {
 		HotelEmployees user = (HotelEmployees)object;
@@ -57,7 +70,7 @@ public class HotelEmployeesDB implements DBInterface {
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(insert);	
 		
-		String query = "SELECT id FROM user WHERE phone='" + user.getPhoneNumber();
+		String query = "SELECT id FROM user WHERE phone='" + user.getPhoneNumber()+"'";
 		ResultSet tmp = statement.executeQuery(query);
 		tmp.next();
 		int userID = tmp.getInt("id");

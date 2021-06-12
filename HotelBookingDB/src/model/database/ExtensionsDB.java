@@ -148,4 +148,13 @@ public class ExtensionsDB {
 		System.out.println("Values:" + values);
 		return values;
 	}
+	
+	public static void insertExtensions(int hotelID) throws SQLException {
+		String updateStatement = "INSERT INTO hotelinfo VALUES("+hotelID+",0,0,0,0,0,0,0,0,0,0,0,0)";
+		Connection connection = Mysql.makeConnection();
+		Statement statement = connection.createStatement();
+		System.out.println(updateStatement);
+		statement.executeUpdate(updateStatement);
+	}
+	
 }

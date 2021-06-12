@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="680.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/14.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
+<AnchorPane prefHeight="680.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
    <children>
       <ImageView fitHeight="680.0" fitWidth="1360.0" pickOnBounds="true">
          <image>
@@ -21,7 +21,7 @@
       <Button fx:id="back" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#back" style="-fx-background-color: #f5f5c6;" text="Back to login page" textFill="#d16676" />
       <Button layoutX="146.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeHotelManagers" style="-fx-background-color: #f5f5c6;" text="Hotel Manager" textFill="#d16676" />
       <Button layoutX="260.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeClients" style="-fx-background-color: #f5f5c6;" text="Clients" textFill="#d16676" />
-      <Label fx:id="beginLabel" layoutX="552.0" layoutY="321.0" text="Please choose a type of user " visible="false">
+      <Label fx:id="beginLabel" layoutX="552.0" layoutY="321.0" text="Please choose a type of user ">
          <font>
             <Font size="20.0" />
          </font>
@@ -73,7 +73,7 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="paneH" layoutY="52.0" prefHeight="626.0" prefWidth="1360.0">
+      <Pane fx:id="paneH" layoutY="52.0" prefHeight="626.0" prefWidth="1360.0" visible="false">
          <children>
             <Label layoutX="351.0" layoutY="35.0" text="Account Signing Up For Hotel Managers" textFill="#d16676">
                <font>

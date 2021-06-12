@@ -23,18 +23,20 @@ public class HotelsDB implements DBInterface {
 			return 1;
 	}
 
-	public static int insertHotel(String name, String address,int streetID) throws SQLException {
+	public static int insertHotel(String name, String address,int streetID,int managerID) throws SQLException {
 		if (checkExistName(name) == 1)
 			return -1;
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
-		int managerID =((HotelEmployees) LoginController.getUser()).getUserID();
+		
 		String insertStatement = String.format("INSERT INTO hotel(name,address,star,street_id,manager_id) "
-				+ "VALUES ('%s','%s',0,%d,%d)",name,address,0,streetID,managerID);
+				+ "VALUES ('%s','%s',1,%d,%d)",name,address,streetID,managerID);
+		
 		statement.executeUpdate(insertStatement);
 		
 		String queryStatement = String.format("SELECT id FROM hotel "
-				+ "WHERE name = '%s',manager_id = %d",name,managerID);
+				+ "WHERE name = '%s' AND manager_id = %d",name,managerID);
+		System.out.println(queryStatement);
 		ResultSet tmp = statement.executeQuery(queryStatement);
 		tmp.next();
 		return tmp.getInt(1);

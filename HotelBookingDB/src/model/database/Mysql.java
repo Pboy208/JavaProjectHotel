@@ -14,9 +14,11 @@ public class Mysql {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+
 			String username = "root";
 			String password = "";
-			String jdbcUrl = "jdbc:mysql://localhost:3306/latestdb";
+			String jdbcUrl = "jdbc:mysql://localhost:3306/latestdb?useUnicode=true&characterEncoding=utf-8";
+//			String jdbcUrl = "jdbc:mysql://localhost:3306/latestdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 			try {
 				connection = DriverManager.getConnection(jdbcUrl, username, password);
 				System.out.println("Connection extablished");
