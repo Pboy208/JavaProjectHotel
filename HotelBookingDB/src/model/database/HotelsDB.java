@@ -72,6 +72,7 @@ public class HotelsDB implements DBInterface {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
 		String queryStatement = "SELECT id FROM hotel WHERE manager_id = " + managerID;
+		System.out.println(queryStatement);
 		ResultSet tmp = statement.executeQuery(queryStatement);
 		while(tmp.next()) {
 			hotelIDs.add(tmp.getInt(1));
@@ -129,8 +130,7 @@ public class HotelsDB implements DBInterface {
 	@Override
 	public void updateInstance(Object object) throws SQLException {
 		Hotels hotel = (Hotels)object; 
-		String updateStatement = "UPDATE hotel SET name = '" + hotel.getName() + "',address='" + hotel.getAddress() + "',star="
-				+ hotel.getStar() +"price="+hotel.getMinPrice()+ "WHERE id=" + hotel.getHotelID();
+		String updateStatement = String.format("UPDATE hotel SET star= %d , price = %d WHERE id= %d",hotel.getStar(),hotel.getMinPrice(),hotel.getHotelID());
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(updateStatement);

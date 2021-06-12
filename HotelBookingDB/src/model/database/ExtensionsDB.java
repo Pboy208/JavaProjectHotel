@@ -26,8 +26,10 @@ public class ExtensionsDB {
 			if (filter.getDestination() != null)
 				flagDestinationEmpty = 0;
 		
-			queryStatement = queryStatement.concat(" JOIN hotel ON hotel.id = hotelinfo.id"
-					+ " JOIN province ON province.id = hotel.province_id");
+			queryStatement = queryStatement.concat(" JOIN hotel ON (hotelinfo.id = hotel.id)"
+					+ "JOIN street ON (street.id = hotel.street_id)"
+					+ " JOIN district ON (district.id = street.district_id)"
+					+ " JOIN province ON (province.id = district.province_id)");
 		}
 
 		// ------------------------- Check whether client left Filter empty
@@ -72,7 +74,7 @@ public class ExtensionsDB {
 		System.out.println(queryStatement);
 		ResultSet tmp = statement.executeQuery(queryStatement);
 		while (tmp.next()) {
-			hotel_IDs.add(tmp.getInt("hotel_id"));
+			hotel_IDs.add(tmp.getInt("id"));
 		}
 		int size = hotel_IDs.size();
 		int[] array = new int[size];

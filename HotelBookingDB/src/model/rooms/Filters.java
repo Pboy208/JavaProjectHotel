@@ -6,8 +6,8 @@ public class Filters {
 	private String location;
 	private String destination;
 	private String hotelName;
-	public static final String[] extensionLibrary = { "have_breakfast", "free_wifi", "car_park", "airport_transport",
-			"restaurant", "deposit", "baby_service", "bar", "laundry", "tour", "spa", "pool" };
+	public static final String[] extensionLibrary = { "have_breakfast", "free_wifi", "have_car_park", "transport_airport",
+			"have_restaurant", "have_deposit", "baby_service", "have_bar", "have_laundry", "have_tour", "have_spa", "have_pool" };
 
 	public Filters() {
 

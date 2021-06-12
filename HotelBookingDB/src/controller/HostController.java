@@ -120,12 +120,19 @@ public class HostController implements Initializable {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void reloadPage() throws SQLException {
 		HotelEmployees user = (HotelEmployees) LoginController.getUser();
+		System.out.println(user.getUserID());
 		ArrayList<Hotels> hotels = HotelsDB.queryHotelsByManagerID(user.getManagerID());
+		if(hotels==null) {
+			Label noResult = new Label("You have no hotel on the list");
+			hotelsTable.setPlaceholder(noResult);
+			ObservableList<Hotels> tableListNull = FXCollections.observableArrayList();
+			hotelsTable.setItems(tableListNull);
+			return;
+		}
 		ObservableList<Hotels> tableList = FXCollections.observableArrayList(hotels);
 		nameHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("name"));
 		addressHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("address"));

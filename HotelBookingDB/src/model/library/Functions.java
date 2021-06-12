@@ -21,9 +21,37 @@ public class Functions {
 		try {
 			Integer.parseInt(price);
 		} catch (Exception e) {
-			return false;
+			try {
+				String array[]=price.split(",");
+				for(int i=1;i<array.length;i++) {
+					array[0]=array[i-1].concat(array[i]);
+				}
+				Integer.parseInt(array[0]);
+			} catch (Exception e2) {
+				return false;
+			}
+			return true;
 		}
 		return true;
+	}
+	
+	public static int priceToInt(String price) {
+		int result;
+		try {
+			result = Integer.parseInt(price);
+			return result;
+		} catch (Exception e) {
+			try {
+				String array[]=price.split(",");
+				for(int i=1;i<array.length;i++) {
+					array[0]=array[i-1].concat(array[i]);
+				}
+				result = Integer.parseInt(array[0]);
+				return result;
+			} catch (Exception e2) {
+				return -1;
+			}
+		}
 	}
 	
 	public static boolean checkEmail(String email) {

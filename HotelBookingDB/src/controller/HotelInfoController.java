@@ -49,20 +49,6 @@ public class HotelInfoController implements Initializable {
 
 	// -------------------------------------------------------------------
 	@FXML
-	private Label accountName;
-	@FXML
-	private TextField name;
-	@FXML
-	private TextField phone;
-	@FXML
-	private TextField email;
-	@FXML
-	private PasswordField oldPW;
-	@FXML
-	private PasswordField newPW;
-	@FXML
-	private PasswordField newPWConfirm;
-	@FXML
 	private Label alert;
 	// -------------------------------------------------------------------
 	@FXML
@@ -127,15 +113,9 @@ public class HotelInfoController implements Initializable {
 	private RadioButton radio12;
 	// -------------------------------------------------------------------
 	@FXML
-	private Button signUp;
-
-	// -------------------------------------------------------------------
-	@FXML
 	private Pane detailPane;
 	@FXML
 	private Pane infoPane;
-	@FXML
-	private Pane managerPart;
 	@FXML
 	private Label guestName;
 	@FXML
@@ -157,16 +137,9 @@ public class HotelInfoController implements Initializable {
 		alertAdjustRoom.setText("");
 		alert.setText("");
 		alertViewDetails.setText("");
-		// -------------------------------------- User info
-		HotelEmployees user = (HotelEmployees) LoginController.getUser();
-		boolean visibleFlag = false;
-		if (oldPW.isVisible() == true) {
-			visibleFlag = true;
-		}
 
-		if (name.getText().trim().isEmpty() || email.getText().trim().isEmpty() || phone.getText().trim().isEmpty()
-				|| hotelName.getText().trim().isEmpty() || hotelAddress.getText().trim().isEmpty() || price.getText().trim().isEmpty()) {
-			alert.setText("Some fields is Missing");
+		if (price.getText().trim().isEmpty()) {
+			alert.setText("Price field is Missing");
 			return;
 		}
 		
@@ -174,64 +147,7 @@ public class HotelInfoController implements Initializable {
 			alert.setText("Invalid price");
 			return;
 		}
-		
-		if (visibleFlag) {
-			if (oldPW.getText().trim().isEmpty() || newPW.getText().trim().isEmpty()
-					|| newPWConfirm.getText().trim().isEmpty()) {
-				alert.setText("Some fields is Missing");
-				return;
-			}
-		}
-		String newName = name.getText();
-		String newEmail = email.getText();
-		String newPhone = phone.getText();
-		
-		if(!Functions.checkPhoneNumber(newPhone)) {
-			alert.setText("Phone number must be a sequence of 10 numbers");
-			phone.clear();
-			return;
-		}
-		
-		if(!Functions.checkEmail(newEmail)) {
-			alert.setText("Invalid email address");
-			email.clear();
-			return;
-		}
-		
-		String oldPwString = null;
-		String newPWString = null;
-		String newPWConfirmString = null;
-		
-		if (visibleFlag) {
-			oldPwString = oldPW.getText();
-			newPWString = newPW.getText();
-			newPWConfirmString = newPWConfirm.getText();
-			if (AccountsDB.checkPassword(user.getUsername(), oldPwString) == -1) {
-				alert.setText("Current password is incorrect");
-				return;
-			}
-			if (!newPWString.equals(newPWConfirmString)) {
-				alert.setText("Comfirmation of password is wrong");
-				return;
-			}
-			if (user.getPassword().equals(newPWString)) {
-				alert.setText("New password must be different than current password");
-				return;
-			}
-		}
 
-		if (visibleFlag) {
-			HotelEmployees newManager = new HotelEmployees(user.getUserID(), newName, newPhone, newEmail, newPWString);
-			(new HotelEmployeesDB()).updateInstance(newManager);
-		}
-		else {
-			HotelEmployees newManager = new HotelEmployees(user.getUserID(), newName, newPhone, newEmail, user.getPassword());
-			(new HotelEmployeesDB()).updateInstance(newManager);
-		}
-		alert.setText("Information changed");
-		oldPW.clear();
-		newPW.clear();
-		newPWConfirm.clear();
 		// -------------------------------------- Hotel info
 		String hotelAddressString = hotelAddress.getText();
 		String hotelNameString = hotelName.getText();
@@ -250,20 +166,11 @@ public class HotelInfoController implements Initializable {
 				extensions[i] = 1;
 		
 		// -------------------------------------- Price
-		int currentPrice = Integer.parseInt(price.getText());
+		int currentPrice = Functions.priceToInt(price.getText());
 		// -------------------------------------- Update hotel info
 
 		new HotelsDB().updateInstance(
 				new Hotels(HostController.getHotel().getHotelID(), hotelNameString, hotelAddressString, starInt, extensions,currentPrice));
-	}
-
-	public void changePassword(ActionEvent event) {
-		alertAdjustRoom.setText("");
-		alert.setText("");
-		alertViewDetails.setText("");
-		oldPW.setVisible(!oldPW.isVisible());
-		newPW.setVisible(!newPW.isVisible());
-		newPWConfirm.setVisible(!newPWConfirm.isVisible());
 	}
 
 	public void cancelReceipt(ActionEvent event) throws SQLException {
@@ -353,10 +260,6 @@ public class HotelInfoController implements Initializable {
 		
 		// ------------------------------------- User part
 		HotelEmployees user = (HotelEmployees) LoginController.getUser();
-		accountName.setText("Username: " + user.getUsername());
-		name.setText(user.getName());
-		email.setText(user.getEmail());
-		phone.setText(user.getPhoneNumber());
 		// ------------------------------------- Star
 		ObservableList<String> starList = FXCollections.observableArrayList();
 		for (int i = 0; i < 5; i++) {
@@ -399,7 +302,6 @@ public class HotelInfoController implements Initializable {
 			receiptsListTable.setItems(receiptsList);
 		}
 		// ------------------------------------- TableView For Rooms
-			managerPart.setVisible(true);
 			refreshRoom();
 		// ------------------------------------- Filter
 		Hotels hotelInfo = null;
