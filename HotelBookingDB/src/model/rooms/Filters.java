@@ -31,21 +31,18 @@ public class Filters {
 		int flagHotelNameEmpty = 1;
 		int flagStarEmpty = 1;
 
-	
-		String conditionDestination = String.format(" ( province.name like '%%%s%%'"
-				+ " OR province.name LIKE '%s%%'"
-				+ " OR province.name LIKE '%%%s'"
-				+ " OR province.name LIKE '%s')",
+		String conditionDestination = String.format(
+				" ( province.name like '%%%s%%'" + " OR province.name LIKE '%s%%'" + " OR province.name LIKE '%%%s'"
+						+ " OR province.name LIKE '%s')",
 				filter.getDestination(), filter.getDestination(), filter.getDestination(), filter.getDestination());
-		
-		String conditionName = String.format(" ( hotel.name like '%%%s%%'"
-				+ " OR hotel.name LIKE '%s%%'"
-				+ " OR hotel.name LIKE '%%%s'"
-				+ " OR hotel.name LIKE '%s')",
+
+		String conditionName = String.format(
+				" ( hotel.name like '%%%s%%'" + " OR hotel.name LIKE '%s%%'" + " OR hotel.name LIKE '%%%s'"
+						+ " OR hotel.name LIKE '%s')",
 				filter.getHotelName(), filter.getHotelName(), filter.getHotelName(), filter.getHotelName());
-		
+
 		String conditionStar = " star = " + filter.getStar();
-		
+
 		// ------------------------- Check whether client left HotelName/Destination
 		if (filter.getHotelName() != null || filter.getDestination() != null || filter.getStar() != 0) {
 			if (filter.getHotelName() != null)
@@ -54,8 +51,8 @@ public class Filters {
 				flagDestinationEmpty = 0;
 			if (filter.getStar() != 0)
 				flagStarEmpty = 0;
-			queryStatement = queryStatement.concat(" JOIN hotel ON (hotelinfo.id = hotel.id"
-							+ " JOIN street ON (street.id = hotel.street_id)"
+			queryStatement = queryStatement
+					.concat(" JOIN hotel ON (hotelinfo.id = hotel.id)" + " JOIN street ON (street.id = hotel.street_id)"
 							+ " JOIN district ON (district.id = street.district_id)"
 							+ " JOIN province ON (province.id = district.province_id)");
 
@@ -83,29 +80,26 @@ public class Filters {
 
 		// -------------------------
 		else { // Extension empty
-			if (flagDestinationEmpty == 0 || flagHotelNameEmpty == 0 || flagStarEmpty == 0) {
-				queryStatement = queryStatement.concat(" WHERE");
+			if (flagDestinationEmpty == 0) {
+				queryStatement = queryStatement.concat(" WHERE " + conditionDestination);
 
-				if (flagDestinationEmpty == 0) {
-					queryStatement = queryStatement.concat(conditionDestination);
+				if (flagHotelNameEmpty == 0)
+					queryStatement = queryStatement.concat(" AND " + conditionName);
 
-					if (flagHotelNameEmpty == 0)
-						queryStatement = queryStatement.concat(" AND " + conditionName);
+				if (flagStarEmpty == 0)
+					queryStatement = queryStatement.concat(" AND " + conditionStar);
+			} else {
+				if (flagHotelNameEmpty == 0) {
+					queryStatement = queryStatement.concat(" WHERE " + conditionName);
 
 					if (flagStarEmpty == 0)
 						queryStatement = queryStatement.concat(" AND " + conditionStar);
 				} else {
-					if (flagHotelNameEmpty == 0) {
-						queryStatement = queryStatement.concat(conditionName);
-
-						if (flagStarEmpty == 0)
-							queryStatement = queryStatement.concat(" AND " + conditionStar);
-					} else {
-						if (flagStarEmpty == 0)
-							queryStatement = queryStatement.concat(conditionStar);
-					}
+					if (flagStarEmpty == 0)
+						queryStatement = queryStatement.concat(" WHERE " + conditionStar);
 				}
 			}
+
 		}
 
 		// -------------------------
