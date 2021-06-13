@@ -17,14 +17,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import model.database.AccountsDB;
-import model.database.HotelEmployeesDB;
-import model.database.HotelsDB;
 import model.database.LocationDB;
-import model.database.UsersDB;
 import model.library.Functions;
 import model.locations.Districts;
 import model.locations.Provinces;
 import model.locations.Street;
+import model.rooms.Hotels;
 import model.users.HotelEmployees;
 import model.users.Users;
 
@@ -123,6 +121,7 @@ public class SignUpController implements Initializable {
 		nameH.clear();
 		hotelAddress.setText("Select below fields for address");
 		hotelAddressH.clear();
+		hotelNameH.clear();
 		provinceBox.setValue("Choose a province");
 		districtBox.setValue("Choose a district");
 		streetBox.setValue("Choose a street");
@@ -189,7 +188,7 @@ public class SignUpController implements Initializable {
 		}
 		
 		Users user = new Users(name, phone, email, accountName, passwordConfirm);
-		new UsersDB().insertInstance(user);
+		new Users().insertInstance(user);
 		alertLabel.setText("Your account is ready");
 		alertLabel.setVisible(true);
 		clearTextFields();
@@ -198,7 +197,6 @@ public class SignUpController implements Initializable {
 
 	public void signUpHotelManager(ActionEvent event) throws SQLException {
 		
-		System.out.println(province+district+street);
 		alertLabel.setVisible(false);
 		if (nameH.getText().trim().isEmpty() || phoneH.getText().trim().isEmpty() || emailH.getText().trim().isEmpty()
 				|| pwH.getText().trim().isEmpty() || pwConfirmationH.getText().trim().isEmpty()
@@ -262,14 +260,12 @@ public class SignUpController implements Initializable {
 		
 		ArrayList<Integer> hotelIDs = new ArrayList<>();
 		HotelEmployees newManager = new HotelEmployees(0,0, name, phone, email, accountName, passwordConfirm,hotelIDs);
-		(new HotelEmployeesDB()).insertInstance(newManager);
+		(new HotelEmployees()).insertInstance(newManager);
 		
 		
-		int managerID = HotelEmployeesDB.queryManagerIDByPhone(phone);
-		
-		System.out.println(managerID);
-		
-		int hotelID = HotelsDB.insertHotel(hotelName, hotelAddressFull,streetID,managerID);
+		int managerID = HotelEmployees.queryManagerIDByPhone(phone);
+
+		int hotelID = Hotels.insertHotel(hotelName, hotelAddressFull,streetID,managerID);
 		
 		hotelIDs.add(hotelID);
 		
@@ -290,9 +286,9 @@ public class SignUpController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		hotelAddress.setText("Select below fields for address");
-//		hotelAddressH.textProperty().addListener((observable, oldValue, newValue) -> {
-//		    hotelAddress.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
-//		});
+		hotelAddressH.textProperty().addListener((observable, oldValue, newValue) -> {
+		    hotelAddress.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
+		});
 		//-------------------------------- Callback function for locations
 		try {
 			provincesList = LocationDB.queryProvince();

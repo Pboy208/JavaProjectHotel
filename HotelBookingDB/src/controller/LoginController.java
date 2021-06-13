@@ -1,35 +1,19 @@
 package controller;
 
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import model.database.AccountsDB;
-import model.database.HotelEmployeesDB;
-import model.database.UsersDB;
 import model.users.HotelEmployees;
 import model.users.Users;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import controller.LoginController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 
 public class LoginController{
 	private static Users user = null;
-
-	public static void setUser(String name, String phone, String email, String password) {
-		user.setEmail(email);
-		user.setName(name);
-		user.setPassword(password);
-		user.setPhoneNumber(phone);
-	}
 
 	public static void setUser(Users user) {
 		LoginController.user = user;
@@ -77,10 +61,10 @@ public class LoginController{
 			return;
 		}
 		
-		user= HotelEmployeesDB.queryEmployeeInfo(userID);
+		user = (HotelEmployees) new HotelEmployees().queryInstance(userID);
 		if(user==null) {
-			System.out.println("welcome user");
-			user=(Users) new UsersDB().queryInstance(userID);
+			//case Just a normal user
+			user=(Users) new Users().queryInstance(userID);
 		}
 		user.setPassword(passwordString);
 		user.setUsername(accountNameString);

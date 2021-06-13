@@ -1,8 +1,15 @@
 package model.rooms;
 
-import javafx.beans.property.SimpleStringProperty;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-public class Hotels {
+import javafx.beans.property.SimpleStringProperty;
+import model.database.DBInterface;
+import model.database.HotelQualityDB;
+import model.database.Mysql;
+
+public class Hotels implements DBInterface{
 	private int star;
 	private int hotelID;
 	private float rating;
@@ -14,26 +21,15 @@ public class Hotels {
 	private int[] extensions;
 	private int minPrice;
 
-	private int numberOfAvailableRooms;
-	private SimpleStringProperty nameProperty;
-	private SimpleStringProperty addressProperty;
-	private SimpleStringProperty roomsAvailableProperty;
-	private SimpleStringProperty starProperty;
-	private SimpleStringProperty ratingProperty;
 	private SimpleStringProperty minPriceProperty;
+	
 	public Hotels(int hotel_ID, String name, String address, int star_number,int minPrice, float rating) {
 		setHotelID(hotel_ID);
 		setAddress(address);
 		setName(name);
 		setStar(star_number);
 		setRating(rating);
-
 		setMinPrice(minPrice);
-		
-		this.nameProperty = new SimpleStringProperty(this.name);
-		this.addressProperty = new SimpleStringProperty(this.address);
-		this.ratingProperty = new SimpleStringProperty(Float.toString(this.rating));
-		this.starProperty = new SimpleStringProperty(Integer.toString(star));
 		
 		this.minPriceProperty = new SimpleStringProperty(String.format("%,d", minPrice));
 		
@@ -50,10 +46,122 @@ public class Hotels {
 		// TODO Auto-generated constructor stub
 	}
 
-	// -----------------------------------------------------------------------
-	public int getNumberOfAvailableRooms() {
-		return numberOfAvailableRooms;
+	// ----------------------------------------------------------------------------------------------------------------------------------------------
+	
+	public static int checkExistName(String name) throws SQLException {
+		String queryStatement = "SELECT * FROM hotel WHERE name ='" + name + "'";
+		ResultSet count = Mysql.executeQuery(queryStatement);
+				
+		if (count.next() == false)
+			return 0;
+		return 1;
 	}
+
+	public static int insertHotel(String name, String address,int streetID,int managerID) throws SQLException {
+		if (checkExistName(name) == 1)
+			return -1;
+		
+		String insertStatement = String.format("INSERT INTO hotel(name,address,star,street_id,manager_id) "
+				+ "VALUES ('%s','%s',1,%d,%d)",name,address,streetID,managerID);
+		Mysql.executeUpdate(insertStatement);
+		
+		String queryStatement = String.format("SELECT id FROM hotel WHERE name = '%s' AND manager_id = %d",name,managerID);
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		
+		tmp.next();
+		return tmp.getInt(1);
+	}
+
+	public static ArrayList<Hotels> queryHotelInfo(int[] hotelIDs) throws SQLException {
+
+		String queryStatement = "SELECT * FROM hotel WHERE id = ";
+		
+		ArrayList<Hotels> hotels = new ArrayList<>();
+		
+		for (int i : hotelIDs) {
+			String fullQueryStatement = queryStatement + i ;
+			ResultSet tmp = Mysql.executeQuery(fullQueryStatement);
+			tmp.next();
+			
+			Float overallScore = HotelQualityDB.queryOverallScore(tmp.getInt(1));
+			
+			if (overallScore == -1)
+				overallScore = 0f;
+			
+			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), tmp.getInt(7), overallScore);
+
+			hotels.add(tmpHotel);
+		}
+		return hotels;
+	}
+	
+	public static ArrayList<Integer> queryHotelIDByManagerID(int managerID) throws SQLException{
+		ArrayList<Integer> hotelIDs = new ArrayList<>();
+		
+		String queryStatement = "SELECT id FROM hotel WHERE manager_id = " + managerID;
+		
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		
+		while(tmp.next()) {
+			hotelIDs.add(tmp.getInt(1));
+		}
+		return hotelIDs;
+	}
+	
+	public static ArrayList<Hotels> queryHotelsByManagerID(int managerID) throws SQLException {
+		ArrayList<Hotels> hotels = new ArrayList<>();
+		
+		ArrayList<Integer> hotelIDs = queryHotelIDByManagerID(managerID);
+		
+		for(Integer id:hotelIDs) {
+			Hotels aHotel = (Hotels) (new Hotels()).queryInstance(id);
+			hotels.add(aHotel);
+		}
+	
+		return hotels;
+	}
+	
+	public static int queryPriceByID(int hotelID) throws SQLException {
+		String queryStatement = "SELECT price FROM hotel WHERE id = " + hotelID;
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		tmp.next();
+		return tmp.getInt(1);
+	}
+	
+	@Override
+	public void insertInstance(Object object) throws SQLException {
+		return;
+	}
+
+	@Override
+	public Object queryInstance(int hotelID) throws SQLException {
+		String queryStatement = "SELECT * FROM hotel WHERE id = " + hotelID;
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		
+		if (tmp.next() == false)
+			return null;
+		else {
+			Filters.queryExtensions(hotelID);
+			Float overallScore = HotelQualityDB.queryOverallScore(hotelID);
+			if (overallScore == -1)
+				overallScore = 0f;
+			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6),tmp.getInt(7), overallScore);
+			tmpHotel.setExtensions(Filters.queryExtensions(hotelID));
+			return tmpHotel;
+		}
+	}
+	
+	@Override
+	public void updateInstance(Object object) throws SQLException {
+		Hotels hotel = (Hotels)object; 
+		String updateStatement = String.format("UPDATE hotel SET star= %d , price = %d WHERE id= %d",hotel.getStar(),hotel.getMinPrice(),hotel.getHotelID());
+		Mysql.executeUpdate(updateStatement);
+		Filters.updateExtensions(hotel.getHotelID(), hotel.getExtensions());
+	}
+	
+	
+	// ----------------------------------------------------------------------------------------------------------------------------------------------
+
 	
 	public int getMinPrice() {
 		return minPrice;
@@ -63,10 +171,6 @@ public class Hotels {
 		this.minPriceProperty = new SimpleStringProperty(String.format("%,d", minPrice));
 	}
 
-	public void setNumberOfAvailableRooms(int numberOfAvailableRooms) {
-		this.numberOfAvailableRooms = numberOfAvailableRooms;
-	}
-	
 	public void printInfo() {
 		System.out.println(name + "/" + address);
 	}
@@ -79,30 +183,6 @@ public class Hotels {
 		this.extensions = extensions;
 	}
 
-	public String getNameProperty() {
-		return nameProperty.get();
-	}
-
-	public void setNameProperty(SimpleStringProperty nameProperty) {
-		this.nameProperty = nameProperty;
-	}
-
-	public String getAddressProperty() {
-		return addressProperty.get();
-	}
-
-	public void setAddressProperty(SimpleStringProperty addressProperty) {
-		this.addressProperty = addressProperty;
-	}
-
-	public String getRoomsAvailableProperty() {
-		return roomsAvailableProperty.get();
-	}
-
-	public void setRoomsAvailableProperty(SimpleStringProperty roomsAvailableProperty) {
-		this.roomsAvailableProperty = roomsAvailableProperty;
-	}
-
 	public float getRating() {
 		return rating;
 	}
@@ -111,21 +191,6 @@ public class Hotels {
 		this.rating = rating;
 	}
 
-	public String getStarProperty() {
-		return starProperty.get();
-	}
-
-	public void setStarProperty(SimpleStringProperty starProperty) {
-		this.starProperty = starProperty;
-	}
-
-	public String getRatingProperty() {
-		return ratingProperty.get();
-	}
-
-	public void setRatingProperty(SimpleStringProperty ratingProperty) {
-		this.ratingProperty = ratingProperty;
-	}
 	public String getMinPriceProperty() {
 		return minPriceProperty.get();
 	}

@@ -1,6 +1,7 @@
 package controller;
 
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -29,9 +30,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import model.database.AccountsDB;
-import model.database.HotelEmployeesDB;
-import model.database.ReceiptsDB;
-import model.database.UsersDB;
 import model.library.Functions;
 import model.receipts.Receipts;
 import model.users.HotelEmployees;
@@ -78,17 +76,17 @@ public class ClientInfoController implements Initializable {
 	@FXML
 	private TableColumn<Receipts, String> hotelAddressColumn;
 	@FXML
-	private TableColumn<Receipts, String> checkinDateColumn;
+	private TableColumn<Receipts, Date> checkinDateColumn;
 	@FXML
-	private TableColumn<Receipts, String> checkoutDateColumn;
+	private TableColumn<Receipts, Date> checkoutDateColumn;
 	@FXML
-	private TableColumn<Receipts, String> orderDateColumn;
+	private TableColumn<Receipts, Date> orderDateColumn;
 	@FXML
 	private TableColumn<Receipts, String> priceColumn;
 	@FXML
 	private TableColumn<Receipts, String> receiptStatusColumn;
 	@FXML
-	private TableColumn<Receipts, String> receiptIDColumn;
+	private TableColumn<Receipts, Integer> receiptIDColumn;
 
 	// -----------------------------------------------------------------------
 	public void backToFilter(ActionEvent event) {
@@ -159,7 +157,7 @@ public class ClientInfoController implements Initializable {
 			}
 			user.setPassword(newPWString);
 		}
-		new UsersDB().updateInstance(user);
+		new Users().updateInstance(user);
 		alert.setText("Information changed");
 	}
 
@@ -193,14 +191,15 @@ public class ClientInfoController implements Initializable {
 			return;
 		}
 
-		ReceiptsDB.cancelReciepts(chosenReceipt.getReceiptID());
-		ReceiptsDB.updateReceiptStatus(LoginController.getUser());
-		ArrayList<Receipts> receipts = ReceiptsDB.queryReceipts(LoginController.getUser());
+		Receipts.cancelReciepts(chosenReceipt.getReceiptID());
+		
+		Receipts.updateReceiptStatusForUser(LoginController.getUser());
+		
+		ArrayList<Receipts> receipts = Receipts.queryReceiptsForUser(LoginController.getUser());
+		
 		if (receipts == null) {
 			Label noResult = new Label("You have no room");
 			receiptsListTable.setPlaceholder(noResult);
-			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
-			receiptsListTable.setItems(tableListNull);
 			return;
 		}
 		ObservableList<Receipts> roomsList = FXCollections.observableArrayList(receipts);
@@ -223,7 +222,7 @@ public class ClientInfoController implements Initializable {
 			viewDetailsLabel.setText("Choose a receipt");
 			return;
 		}
-		Receipts chosenReceipts = (Receipts) new ReceiptsDB().queryInstance(chosenReceipt.getReceiptID());
+		Receipts chosenReceipts = (Receipts) new Receipts().queryInstance(chosenReceipt.getReceiptID());
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -232,7 +231,7 @@ public class ClientInfoController implements Initializable {
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 		detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		// --------------------------------------------------------------
-		HotelEmployees employee = HotelEmployeesDB.queryEmployeeInfoByHotelID(chosenReceipts.getHotelID());
+		HotelEmployees employee = HotelEmployees.queryEmployeeInfoByHotelID(chosenReceipts.getHotelID());
 		try {
 			employeeName.setText("Employee's Name: " + employee.getName());
 			employeeEmail.setText("Employee's Email: " + employee.getEmail());
@@ -261,7 +260,7 @@ public class ClientInfoController implements Initializable {
 	private void reloadPage() {
 		Users user = LoginController.getUser();
 		try {
-			ReceiptsDB.updateReceiptStatus(user);
+			Receipts.updateReceiptStatusForUser(user);
 		} catch (SQLException e) {
 			System.out.println("This user don't have any receipt to udpate status");
 			e.printStackTrace();
@@ -270,7 +269,7 @@ public class ClientInfoController implements Initializable {
 		System.out.println("Done update receipt list");
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptsDB.queryReceipts(user);
+			receipts = Receipts.queryReceiptsForUser(user);
 		} catch (SQLException e) {
 			System.out.println("This user don't have any receipt to query out");
 			e.printStackTrace();
@@ -278,18 +277,16 @@ public class ClientInfoController implements Initializable {
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
 			receiptsListTable.setPlaceholder(noResult);
-			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
-			receiptsListTable.setItems(tableListNull);
 		} else {
 			ObservableList<Receipts> receiptsList = FXCollections.observableArrayList(receipts);
 			hotelAddressColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("hotelAddressProperty"));
 			hotelNameColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("hotelNameProperty"));
-			checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkinDateProperty"));
-			checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkoutDateProperty"));
-			orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("orderDateProperty"));
+			checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkinDate"));
+			checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkoutDate"));
+			orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("orderDate"));
 			receiptStatusColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("statusProperty"));
-			receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("receiptIDProperty"));
-			priceColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("priceProperty"));
+			receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Integer>("receiptID"));
+			priceColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("price"));
 			receiptsListTable.setItems(receiptsList);
 		}
 	}

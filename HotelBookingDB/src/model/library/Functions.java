@@ -43,10 +43,11 @@ public class Functions {
 		} catch (Exception e) {
 			try {
 				String array[]=price.split(",");
-				for(int i=1;i<array.length;i++) {
-					array[0]=array[i-1].concat(array[i]);
-				}
-				result = Integer.parseInt(array[0]);
+				String resultString="";
+				for(int i=0;i<array.length;i++) 
+					resultString=resultString.concat(array[i]);
+				
+				result = Integer.parseInt(resultString);
 				return result;
 			} catch (Exception e2) {
 				return -1;

@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class SceneChanging {
@@ -21,9 +20,4 @@ public class SceneChanging {
 			e.printStackTrace();
 		}
 	}
-	
-	public void popUp(Pane oldPane,Pane newPane) {
-		
-	}
-
 }

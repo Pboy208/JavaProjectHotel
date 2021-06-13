@@ -11,14 +11,12 @@ public class Mysql {
 			 try {
 				Class.forName("com.mysql.jdbc.Driver");
 			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
 			String username = "root";
 			String password = "";
 			String jdbcUrl = "jdbc:mysql://localhost:3306/latestdb?useUnicode=true&characterEncoding=utf-8";
-//			String jdbcUrl = "jdbc:mysql://localhost:3306/latestdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 			try {
 				connection = DriverManager.getConnection(jdbcUrl, username, password);
 				System.out.println("Connection extablished");
@@ -27,5 +25,17 @@ public class Mysql {
 			}
 		}
 		return connection;
+	}
+	
+	public static ResultSet executeQuery(String queryStatement) throws SQLException {
+		Connection connection = Mysql.makeConnection();
+		Statement statement = connection.createStatement();
+		return statement.executeQuery(queryStatement);
+	}
+	
+	public static void executeUpdate(String updateStatement) throws SQLException {
+		Connection connection = Mysql.makeConnection();
+		Statement statement = connection.createStatement();
+		statement.executeUpdate(updateStatement);
 	}
 }

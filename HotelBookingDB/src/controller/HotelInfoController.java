@@ -12,10 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -31,12 +29,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.AccountsDB;
-import model.database.HotelsDB;
-import model.database.HotelEmployeesDB;
-import model.database.ReceiptsDB;
-import model.database.RoomsDB;
-import model.database.UsersDB;
 import model.library.Functions;
 import model.receipts.Receipts;
 import model.rooms.Hotels;
@@ -54,17 +46,17 @@ public class HotelInfoController implements Initializable {
 	@FXML
 	private TableView<Receipts> receiptsListTable;
 	@FXML
-	private TableColumn<Receipts, String> roomIDColumn;
+	private TableColumn<Receipts, Integer> roomIDColumn;
 	@FXML
 	private TableColumn<Receipts, Date> checkinDateColumn;
 	@FXML
-	private TableColumn<Receipts, String> checkoutDateColumn;
+	private TableColumn<Receipts, Date> checkoutDateColumn;
 	@FXML
-	private TableColumn<Receipts, String> orderDateColumn;
+	private TableColumn<Receipts, Date> orderDateColumn;
 	@FXML
 	private TableColumn<Receipts, String> receiptStatusColumn;
 	@FXML
-	private TableColumn<Receipts, String> receiptIDColumn;
+	private TableColumn<Receipts, Integer> receiptIDColumn;
 	@FXML
 	private TableColumn<Receipts, String> priceColumn;
 	@FXML
@@ -167,10 +159,12 @@ public class HotelInfoController implements Initializable {
 		
 		// -------------------------------------- Price
 		int currentPrice = Functions.priceToInt(price.getText());
+		System.out.println(currentPrice);
 		// -------------------------------------- Update hotel info
 
-		new HotelsDB().updateInstance(
+		new Hotels().updateInstance(
 				new Hotels(HostController.getHotel().getHotelID(), hotelNameString, hotelAddressString, starInt, extensions,currentPrice));
+		alert.setText("Information changed");
 	}
 
 	public void cancelReceipt(ActionEvent event) throws SQLException {
@@ -196,14 +190,12 @@ public class HotelInfoController implements Initializable {
 			alertViewDetails.setText("The receipt has already been cancelled");
 			return;
 		}
-		ReceiptsDB.cancelReciepts(chosenReceipt.getReceiptID());
-		ReceiptsDB.updateReceiptStatus(LoginController.getUser());
-		ArrayList<Receipts> receipts = ReceiptsDB.queryReceipts(LoginController.getUser());
+		Receipts.cancelReciepts(chosenReceipt.getReceiptID());
+		Receipts.updateReceiptStatusForHotel(LoginController.getUser());
+		ArrayList<Receipts> receipts = Receipts.queryReceiptsForHotel(LoginController.getUser());
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
 			receiptsListTable.setPlaceholder(noResult);
-			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
-			receiptsListTable.setItems(tableListNull);
 			return;
 		}
 		ObservableList<Receipts> receiptList = FXCollections.observableArrayList(receipts);
@@ -217,10 +209,10 @@ public class HotelInfoController implements Initializable {
 		alertViewDetails.setText("");
 		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
 		if (chosenReceipt == null) {
-			alertViewDetails.setText("Choose a room");
+			alertViewDetails.setText("Choose a receipt");
 			return;
 		}
-		Receipts chosenReceipts = (Receipts) (new ReceiptsDB().queryInstance(chosenReceipt.getReceiptID()));
+		Receipts chosenReceipts = (Receipts) (new Receipts().queryInstance(chosenReceipt.getReceiptID()));
 		// --------------------------------------------------------------
 		infoPane.setEffect(new GaussianBlur(20));
 		detailPane.setVisible(true);
@@ -229,10 +221,7 @@ public class HotelInfoController implements Initializable {
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 		detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		// --------------------------------------------------------------
-		System.out.println("guest ID: " + chosenReceipts.getUserID());
-		Users guest = (Users) (new UsersDB().queryInstance(chosenReceipts.getUserID()));
-		System.out.print("guest name: ");
-		guest.printInfo();
+		Users guest = (Users) (new Users().queryInstance(chosenReceipts.getUserID()));
 		guestName.setText("Guest's Name: " + guest.getName());
 		guestEmail.setText("Guest's Email: " + guest.getEmail());
 		guestPhoneNumber.setText("Guest's Phone Number: " + guest.getPhoneNumber());
@@ -250,7 +239,7 @@ public class HotelInfoController implements Initializable {
 	public void addRoom(ActionEvent event) throws SQLException {
 		alertAdjustRoom.setText("");
 		Rooms room = new Rooms(0,HostController.getHotel().getHotelID());
-		new RoomsDB().insertInstance(room);
+		new Rooms().insertInstance(room);
 		alertAdjustRoom.setText("1 room is added");
 		refreshRoom();
 	}
@@ -264,23 +253,22 @@ public class HotelInfoController implements Initializable {
 		ObservableList<String> starList = FXCollections.observableArrayList();
 		for (int i = 0; i < 5; i++) {
 			String star = "";
-			for (int j = 0; j < i + 1; j++) {
+			for (int j = 0; j < i + 1; j++) 
 				star = star.concat("* ");
-			}
+
 			starList.add(star);
 		}
 		star.getItems().addAll(starList);
 		// ------------------------------------- TableView For Receipt
-		try { // update before show it
-			ReceiptsDB.updateReceiptStatus(user);
+		try { //
+			Receipts.updateReceiptStatusForHotel(user);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		ArrayList<Receipts> receipts = null;
 		try {
-			receipts = ReceiptsDB.queryReceipts(user);
+			receipts = Receipts.queryReceiptsForHotel(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -288,16 +276,14 @@ public class HotelInfoController implements Initializable {
 		if (receipts == null) {
 			Label noResult = new Label("You have no receipt");
 			receiptsListTable.setPlaceholder(noResult);
-			ObservableList<Receipts> tableListNull = FXCollections.observableArrayList();
-			receiptsListTable.setItems(tableListNull);
 		} else {
 			ObservableList<Receipts> receiptsList = FXCollections.observableArrayList(receipts);
-			roomIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("roomIDProperty"));
-			checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkinDate")); // ("checkinDateProperty")
-			checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("checkoutDateProperty"));
-			orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("orderDateProperty"));
+			roomIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Integer>("roomID"));
+			checkinDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkinDate")); 
+			checkoutDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("checkoutDate"));
+			orderDateColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Date>("orderDate"));
 			receiptStatusColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("statusProperty"));
-			receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("receiptIDProperty"));
+			receiptIDColumn.setCellValueFactory(new PropertyValueFactory<Receipts, Integer>("receiptID"));
 			priceColumn.setCellValueFactory(new PropertyValueFactory<Receipts, String>("priceProperty"));
 			receiptsListTable.setItems(receiptsList);
 		}
@@ -306,7 +292,7 @@ public class HotelInfoController implements Initializable {
 		// ------------------------------------- Filter
 		Hotels hotelInfo = null;
 		try {
-			hotelInfo = (Hotels) new HotelsDB().queryInstance(HostController.getHotel().getHotelID());
+			hotelInfo = (Hotels) new Hotels().queryInstance(HostController.getHotel().getHotelID());
 		} catch (SQLException e) {
 			System.out.println("Error getting hotel Info in HotelInfoController");
 			e.printStackTrace();
@@ -327,7 +313,7 @@ public class HotelInfoController implements Initializable {
 		// ------------------------------------- Price
 		int currentPrice = 0;
 		try {
-			currentPrice = HotelsDB.queryPriceByID(HostController.getHotel().getHotelID());
+			currentPrice = Hotels.queryPriceByID(HostController.getHotel().getHotelID());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -338,7 +324,7 @@ public class HotelInfoController implements Initializable {
 	private void refreshRoom() {
 		ArrayList<Rooms> allRooms = null;
 		try {
-			allRooms = RoomsDB.queryAllRooms(HostController.getHotel().getHotelID());
+			allRooms = Rooms.queryAllRooms(HostController.getHotel().getHotelID());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -346,12 +332,11 @@ public class HotelInfoController implements Initializable {
 		if (allRooms == null) {
 			Label noResult = new Label("You have no room");
 			roomsListTable.setPlaceholder(noResult);
-			ObservableList<Rooms> tableListNull = FXCollections.observableArrayList();
-			roomsListTable.setItems(tableListNull);
 			return;
 		}
 		ObservableList<Rooms> roomsList = FXCollections.observableArrayList(allRooms);
 		roomIDInRoomColumn.setCellValueFactory(new PropertyValueFactory<Rooms, Integer>("roomID"));
 		roomsListTable.setItems(roomsList);
+
 	}
 }
