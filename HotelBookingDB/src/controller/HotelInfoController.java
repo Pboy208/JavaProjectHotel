@@ -297,6 +297,10 @@ public class HotelInfoController implements Initializable {
 			System.out.println("Error getting hotel Info in HotelInfoController");
 			e.printStackTrace();
 		}
+		
+		if(hotelInfo == null)
+			System.out.println("bug");
+		
 		hotelName.setText("Hotel name: "+hotelInfo.getName());
 		hotelAddress.setText("Hotel address: "+hotelInfo.getAddress());
 		int[] hotelExtensions = hotelInfo.getExtensions();

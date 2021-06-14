@@ -2,6 +2,9 @@ package model.database;
 
 import java.sql.*;
 
+import model.users.HotelEmployees;
+import model.users.Users;
+
 public class Mysql {
 
 	private static java.sql.Connection connection;
@@ -37,5 +40,25 @@ public class Mysql {
 		Connection connection = Mysql.makeConnection();
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(updateStatement);
+	}
+	
+	public static Users loginProcedure(String username,String password) throws SQLException {
+		Connection connection = Mysql.makeConnection();
+		Statement statement = connection.createStatement();
+		ResultSet tmp = statement.executeQuery(String.format("CALL Login('%s','%s')",username,password));
+		Users user = new Users();
+		
+		if(!tmp.next())
+			return null;
+		
+		try {
+			user = new HotelEmployees(tmp.getInt("user.id"), tmp.getInt("hotelmanager.id"), tmp.getString("name"),
+					tmp.getString("phone"), tmp.getString("email"),tmp.getString("username"), tmp.getString("password"));
+		} catch (Exception e) {
+			user = new Users(tmp.getInt("user.id"), tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"),
+					tmp.getString("username"), tmp.getString("password"));
+		}
+		
+		return user;
 	}
 }

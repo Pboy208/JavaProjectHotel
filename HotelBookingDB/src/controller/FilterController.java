@@ -314,7 +314,9 @@ public class FilterController implements Initializable {
 			}
 		}//else star = 0;
 		// ----------------------------------------- Gui part
+		
 		ArrayList<Hotels> recommendedHotelsList = Filters.queryHotelsByFilter(filter);
+		
 		if (recommendedHotelsList == null) {
 			Label noResult = new Label("No hotel meets your filter");
 			recommendHotels.setPlaceholder(noResult);

@@ -2,8 +2,7 @@ package controller;
 
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import model.database.AccountsDB;
-import model.users.HotelEmployees;
+import model.database.Mysql;
 import model.users.Users;
 import controller.LoginController;
 import javafx.event.ActionEvent;
@@ -54,20 +53,12 @@ public class LoginController{
 			return;
 		}
 		
-		int userID = AccountsDB.checkPassword(accountNameString, passwordString);
-		if (userID == -1) {
+		user = Mysql.loginProcedure(accountNameString, passwordString);
+		if(user ==null) {
 			alertLabel.setText("Wrong user name or password");
 			alertLabel.setVisible(true);
 			return;
 		}
-		
-		user = (HotelEmployees) new HotelEmployees().queryInstance(userID);
-		if(user==null) {
-			//case Just a normal user
-			user=(Users) new Users().queryInstance(userID);
-		}
-		user.setPassword(passwordString);
-		user.setUsername(accountNameString);
 		new SceneChanging().changeScene(event, "Filter.fxml");
 		
 	}

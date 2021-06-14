@@ -103,8 +103,10 @@ public class Filters {
 		}
 
 		// -------------------------
+		
 		System.out.println(queryStatement);
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		
 		while (tmp.next()) {
 			hotel_IDs.add(tmp.getInt("id"));
 		}
@@ -145,7 +147,7 @@ public class Filters {
 		String queryStatement = "SELECT * FROM hotelinfo WHERE id = " + hotelID;
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
 		if (tmp.next() == false)
-			return null;
+			return extensions;
 		for (int i = 2; i <= 13; i++)
 			if (tmp.getInt(i) == 1)
 				extensions[i - 2] = 1;
@@ -155,6 +157,7 @@ public class Filters {
 
 	public static void updateExtensions(int hotelID, int[] extensions) throws SQLException {
 		String updateStatement = "UPDATE hotelinfo SET " + valuesForUpdate(extensions) + " WHERE id=" + hotelID;
+		System.out.println(updateStatement);
 		Mysql.executeUpdate(updateStatement);
 	}
 

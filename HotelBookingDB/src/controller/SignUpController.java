@@ -260,8 +260,7 @@ public class SignUpController implements Initializable {
 		
 		ArrayList<Integer> hotelIDs = new ArrayList<>();
 		HotelEmployees newManager = new HotelEmployees(0,0, name, phone, email, accountName, passwordConfirm,hotelIDs);
-		(new HotelEmployees()).insertInstance(newManager);
-		
+		newManager.insertInstance(newManager);
 		
 		int managerID = HotelEmployees.queryManagerIDByPhone(phone);
 

@@ -22,7 +22,15 @@ public class HotelEmployees extends Users implements DBInterface {
 		setPassword(password);
 
 	}
-
+	
+	public HotelEmployees(int userID, int managerID, String name, String phone, String email,String username,
+			String password) {
+		super(userID, name, phone, email);
+		setManagerID(managerID);
+		setUsername(username);
+		setPassword(password);
+	}
+	
 	public HotelEmployees(int userID, int managerID, String name, String phone, String email,
 			ArrayList<Integer> hotelID) {
 		super(userID, name, phone, email);

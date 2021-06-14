@@ -69,7 +69,11 @@ public class Hotels implements DBInterface{
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
 		
 		tmp.next();
-		return tmp.getInt(1);
+		int hotelID = tmp.getInt(1);
+		
+		Filters.insertExtensions(hotelID);
+		
+		return hotelID;
 	}
 
 	public static ArrayList<Hotels> queryHotelInfo(int[] hotelIDs) throws SQLException {

@@ -46,7 +46,7 @@
             <Label fx:id="mainPaneAlertLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="1083.0" layoutY="588.0" prefHeight="17.0" prefWidth="174.0" textAlignment="CENTER" textFill="RED" />
          </children>
       </Pane>
-      <Pane fx:id="secondPane" layoutX="449.0" layoutY="132.0" prefHeight="416.0" prefWidth="470.0">
+      <Pane fx:id="secondPane" layoutX="449.0" layoutY="132.0" prefHeight="416.0" prefWidth="470.0" visible="false">
          <children>
             <TextField fx:id="hotelNameH" alignment="CENTER" layoutX="218.0" layoutY="37.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Name" />
             <ComboBox fx:id="provinceBox" layoutX="218.0" layoutY="127.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose province" />
