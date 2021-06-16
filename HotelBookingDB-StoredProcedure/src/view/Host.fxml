@@ -52,7 +52,7 @@
             <ComboBox fx:id="provinceBox" layoutX="218.0" layoutY="127.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose province" />
             <ComboBox fx:id="districtBox" layoutX="218.0" layoutY="166.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose district" />
             <ComboBox fx:id="streetBox" layoutX="218.0" layoutY="206.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose street" />
-            <TextField fx:id="hotelAddressH" layoutX="218.0" layoutY="246.0" prefHeight="25.0" prefWidth="186.0" promptText="Specific address" />
+            <TextField fx:id="specificAddress" layoutX="218.0" layoutY="246.0" prefHeight="25.0" prefWidth="186.0" promptText="Specific address" />
             <Label layoutX="67.0" layoutY="168.0" prefHeight="21.0" prefWidth="131.0" text="District :">
                <font>
                   <Font size="15.0" />

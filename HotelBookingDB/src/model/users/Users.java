@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import controller.LoginController;
 import model.database.DBInterface;
 import model.database.Mysql;
+import sun.security.jgss.LoginConfigImpl;
 
 public class Users implements DBInterface {
 
@@ -78,8 +79,8 @@ public class Users implements DBInterface {
 	@Override
 	public void updateInstance(Object object) throws SQLException {
 		Users user = (Users) object;
-		String updateStatement = String.format("UPDATE user Set name= '%s', phone='%s',email='%s',password='%s'",
-				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getPassword());
+		String updateStatement = String.format("UPDATE user Set name= '%s', phone='%s',email='%s',password='%s' WHERE id = %d",
+				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(),LoginController.getUser().getUserID());
 		Mysql.executeUpdate(updateStatement);
 		LoginController.setUser(user);
 	}

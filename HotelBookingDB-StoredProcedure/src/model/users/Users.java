@@ -2,11 +2,10 @@ package model.users;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import controller.LoginController;
-import model.database.DBInterface;
+
 import model.database.Mysql;
 
-public class Users implements DBInterface {
+public class Users {
 
 	private int userID;
 	private String name;
@@ -54,36 +53,14 @@ public class Users implements DBInterface {
 
 	}
 	// -------------------------------------------------------------------------------------------------------------------
-
-	@Override
-	public void insertInstance(Object object) throws SQLException {
-		Users user = (Users) object;
-		String updateStatement = String.format(
-				"INSERT INTO user(name,phone,email,username,password) " + "VALUES ('%s','%s','%s','%s','%s')",
-				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword());
-		Mysql.executeUpdate(updateStatement);
+	public static int checkPassword(String accountName, String password) throws SQLException {
+		String queryStatement=String.format("SELECT id FROM user WHERE username = '%s' "
+				+ "AND password = '%s'", accountName,password);
+		ResultSet user_id = Mysql.executeQuery(queryStatement);
+		if (user_id.next()) 
+			return user_id.getInt("id");
+		return -1;
 	}
-
-	@Override
-	public Object queryInstance(int userID) throws SQLException {
-		String queryStatement = "SELECT * FROM user where id = " + userID;
-		ResultSet tmp = Mysql.executeQuery(queryStatement);
-		if (tmp.next() == false) {
-			return null;
-		}
-		return new Users(userID, tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"),
-				tmp.getString("username"), tmp.getString("password"));
-	}
-
-	@Override
-	public void updateInstance(Object object) throws SQLException {
-		Users user = (Users) object;
-		String updateStatement = String.format("UPDATE user Set name= '%s', phone='%s',email='%s',password='%s'",
-				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getPassword());
-		Mysql.executeUpdate(updateStatement);
-		LoginController.setUser(user);
-	}
-
 	// -------------------------------------------------------------------------------------------------------------------
 	public void printInfo() {
 		System.out.println(this.getName() + "/" + this.getPhoneNumber() + "/" + this.getEmail());

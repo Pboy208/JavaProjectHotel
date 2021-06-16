@@ -29,7 +29,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.AccountsDB;
 import model.database.Mysql;
 import model.library.Functions;
 import model.receipts.Receipts;
@@ -98,7 +97,7 @@ public class ClientInfoController implements Initializable {
 		new SceneChanging().changeScene(event, "Login.fxml");
 		LoginController.signOut();
 	}
-
+	//check
 	public void saveChange(ActionEvent event) throws SQLException {
 		alert.setText("");
 		boolean visibleFlag = false;
@@ -143,7 +142,7 @@ public class ClientInfoController implements Initializable {
 			String oldPwString = oldPW.getText();
 			String newPWString = newPW.getText();
 			String newPWConfirmString = newPWConfirm.getText();
-			if (AccountsDB.checkPassword(user.getUsername(), oldPwString) == -1) {
+			if (Users.checkPassword(user.getUsername(), oldPwString) == -1) {
 				alert.setText("Current password is incorrect");
 				return;
 			}
@@ -157,7 +156,9 @@ public class ClientInfoController implements Initializable {
 			}
 			user.setPassword(newPWString);
 		}
-		user.updateInstance(user);
+		
+		Mysql.updateUserInfo(user);
+		LoginController.setUser(user);
 		alert.setText("Information changed");
 	}
 
@@ -168,7 +169,7 @@ public class ClientInfoController implements Initializable {
 		newPW.setVisible(!newPW.isVisible());
 		newPWConfirm.setVisible(!newPWConfirm.isVisible());
 	}
-
+	//check
 	public void cancelReceipt(ActionEvent event) throws SQLException {
 		alert.setText("");
 		viewDetailsLabel.setText("");
@@ -205,25 +206,26 @@ public class ClientInfoController implements Initializable {
 		detailPane.setVisible(false);
 		infoPane.setEffect(null);
 	}
-
+	//check
 	public void viewDetails(ActionEvent event) throws SQLException {
+		// -------------------------------------------------------------- Pop up
+				infoPane.setEffect(new GaussianBlur(20));
+				detailPane.setVisible(true);
+				detailPane.toFront();
+				detailPane.setBorder(new Border(
+						new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+				detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		// --------------------------------------------------------------
 		alert.setText("");
 		viewDetailsLabel.setText("");
 		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
 		if (chosenReceipt == null) {
 			viewDetailsLabel.setText("Choose a receipt");
 			return;
-		}
-		Receipts chosenReceipts = (Receipts) new Receipts().queryInstance(chosenReceipt.getReceiptID());
-		// --------------------------------------------------------------
-		infoPane.setEffect(new GaussianBlur(20));
-		detailPane.setVisible(true);
-		detailPane.toFront();
-		detailPane.setBorder(new Border(
-				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-		detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		// --------------------------------------------------------------
-		HotelEmployees employee = HotelEmployees.queryEmployeeInfoByHotelID(chosenReceipts.getHotelID());
+		}	
+		
+		HotelEmployees employee = Mysql.userViewManagerDetail(chosenReceipt.getReceiptID());
+		
 		try {
 			employeeName.setText("Employee's Name: " + employee.getName());
 			employeeEmail.setText("Employee's Email: " + employee.getEmail());
@@ -246,9 +248,8 @@ public class ClientInfoController implements Initializable {
 		phone.setText(user.getPhoneNumber());
 		// -------------------------------------------------------
 		reloadPage();
-
 	}
-
+	
 	private void reloadPage() {
 		Users user = LoginController.getUser();
 		try {

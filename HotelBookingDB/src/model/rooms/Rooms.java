@@ -61,10 +61,9 @@ public class Rooms implements DBInterface {
 	}
 	
 	
-	@SuppressWarnings("deprecation")
 	public static int queryPaymentForReceipts(int numberOfRoom, int hotelID, Date checkinDate, Date checkoutDate) throws SQLException {
 		int price= Hotels.queryPriceByID(hotelID);
-		int payment =(price * numberOfRoom *(checkoutDate.getDay()-checkinDate.getDay()));	
+		int payment =(int) (price * numberOfRoom *(checkoutDate.getTime() - checkinDate.getTime())/86400000);	
 		return payment;
 	}
 	

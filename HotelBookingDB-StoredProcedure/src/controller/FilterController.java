@@ -32,7 +32,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.receipts.Receipts;
+import model.database.Mysql;
 import model.rooms.Filters;
 import model.rooms.Hotels;
 import model.rooms.Rooms;
@@ -227,8 +227,8 @@ public class FilterController implements Initializable {
 		Date checkinDate = new Date(checkinTime.getValue().getYear() - 1900, checkinTime.getValue().getMonthValue() - 1,
 				checkinTime.getValue().getDayOfMonth());
 		@SuppressWarnings("deprecation")
-		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
-				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
+		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,checkoutTime.getValue().getMonthValue() - 1,
+				checkoutTime.getValue().getDayOfMonth());
 
 		int numberOfRoomAvailable = Rooms.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate, checkoutDate);
 		if (numberOfRoomAvailable < numberOfRoomInt) {
@@ -237,12 +237,11 @@ public class FilterController implements Initializable {
 		}
 
 		int total = Rooms.queryPaymentForReceipts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
-		System.out.println("total money: " + total);
 		totalPrice.setText("Total payment : " + String.format("%,d", total));
 		confirmBooking.setVisible(true);
 
 	}
-
+	//check
 	public void confirmBooking(ActionEvent event) throws SQLException {
 		Hotels hotel = recommendHotels.getSelectionModel().getSelectedItem();
 		int numberOfRoomInt = 0;
@@ -260,7 +259,7 @@ public class FilterController implements Initializable {
 		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
 				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
 
-		Receipts.insertReciepts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
+		Mysql.addReceipt(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate,LoginController.getUser().getUserID());
 		alert.setText("Booking is succesfully done");
 
 		int numberOfRoomAvailable = Rooms.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate, checkoutDate);
@@ -277,19 +276,19 @@ public class FilterController implements Initializable {
 		checkoutTime.setValue(null);
 		numberOfRoom.clear();
 	}
-
+	//check
 	public void searchButton(ActionEvent e) throws SQLException {
 		int array[] = new int[12];
 		Filters filter = new Filters();
 		// ----------------------------------------- Destination part
 		if (destination.getText().trim().isEmpty()) {
-			filter.setDestination(null);
+			filter.setDestination("");
 		} else {
 			filter.setDestination(destination.getText());
 		}
 		// ----------------------------------------- HotelName part
 		if (hotelName.getText().trim().isEmpty()) {
-			filter.setHotelName(null);
+			filter.setHotelName("");
 		} else {
 			filter.setHotelName(hotelName.getText());
 		}
@@ -309,14 +308,16 @@ public class FilterController implements Initializable {
 					filter.setStar(i+1);
 				}
 			}
-		}//else star = 0;
+		} else filter.setStar(0);
 		// ----------------------------------------- Gui part
 		
-		ArrayList<Hotels> recommendedHotelsList = Filters.queryHotelsByFilter(filter);
-		
+		ArrayList<Hotels> recommendedHotelsList = Mysql.filterSearching(filter); 
+
 		if (recommendedHotelsList == null) {
 			Label noResult = new Label("No hotel meets your filter");
 			recommendHotels.setPlaceholder(noResult);
+			ObservableList<Hotels> tableListNULL = FXCollections.observableArrayList();
+			recommendHotels.setItems(tableListNULL);
 			return;
 		}
 		

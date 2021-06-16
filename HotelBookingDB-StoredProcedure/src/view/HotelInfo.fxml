@@ -95,7 +95,7 @@
                </content>
             </ScrollPane>
             <TextField fx:id="price" layoutX="1075.0" layoutY="237.0" prefHeight="25.0" prefWidth="85.0" promptText="Price" />
-            <Label fx:id="alertAdjustRoom" alignment="CENTER" contentDisplay="CENTER" layoutX="821.0" layoutY="511.0" prefHeight="17.0" prefWidth="182.0" textAlignment="CENTER" textFill="RED" />
+            <Label fx:id="alertAdjustRoom" alignment="CENTER" contentDisplay="CENTER" layoutX="1063.0" layoutY="277.0" prefHeight="17.0" prefWidth="194.0" textAlignment="CENTER" textFill="RED" />
             <ComboBox fx:id="star" layoutX="1083.0" layoutY="305.0" prefHeight="26.0" prefWidth="156.0" promptText="Hotel Star" />
          </children>
       </Pane>
