@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="680.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
+<AnchorPane prefHeight="680.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/14.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
    <children>
       <ImageView fitHeight="680.0" fitWidth="1360.0" pickOnBounds="true">
          <image>
@@ -21,7 +21,7 @@
       <Button fx:id="back" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#back" style="-fx-background-color: #f5f5c6;" text="Back to login page" textFill="#d16676" />
       <Button layoutX="146.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeHotelManagers" style="-fx-background-color: #f5f5c6;" text="Hotel Manager" textFill="#d16676" />
       <Button layoutX="260.0" layoutY="13.0" mnemonicParsing="false" onAction="#typeClients" style="-fx-background-color: #f5f5c6;" text="Clients" textFill="#d16676" />
-      <Label fx:id="beginLabel" layoutX="552.0" layoutY="321.0" text="Please choose a type of user ">
+      <Label fx:id="beginLabel" layoutX="552.0" layoutY="321.0" text="Please choose a type of user " visible="false">
          <font>
             <Font size="20.0" />
          </font>
@@ -40,7 +40,7 @@
             <TextField fx:id="accountNameC" layoutX="678.0" layoutY="287.0" prefHeight="39.0" prefWidth="186.0" style="-fx-border-color: #d16676;" />
             <PasswordField fx:id="pwC" layoutX="678.0" layoutY="337.0" prefHeight="39.0" prefWidth="186.0" style="-fx-border-color: #d16676;" />
             <PasswordField fx:id="pwConfirmationC" layoutX="678.0" layoutY="390.0" prefHeight="39.0" prefWidth="186.0" style="-fx-border-color: #d16676;" />
-            <Button layoutX="651.0" layoutY="504.0" mnemonicParsing="false" onAction="#signUpClient" style="-fx-background-color: #d16676;" text="Sign Up" textFill="#f5f5c6" />
+            <Button layoutX="651.0" layoutY="504.0" mnemonicParsing="false" onAction="#signUpUser" style="-fx-background-color: #d16676;" text="Sign Up" textFill="#f5f5c6" />
             <Label layoutX="497.0" layoutY="296.0" text="Username:" textFill="#d16676">
                <font>
                   <Font size="15.0" />
@@ -73,7 +73,7 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="paneH" layoutY="52.0" prefHeight="626.0" prefWidth="1360.0" visible="false">
+      <Pane fx:id="paneH" layoutY="52.0" prefHeight="626.0" prefWidth="1360.0">
          <children>
             <Label layoutX="351.0" layoutY="35.0" text="Account Signing Up For Hotel Managers" textFill="#d16676">
                <font>
@@ -86,11 +86,11 @@
             <TextField fx:id="accountNameH" alignment="CENTER" layoutX="465.0" layoutY="294.0" prefHeight="39.0" prefWidth="186.0" promptText="Username" style="-fx-border-color: #d16676;" />
             <PasswordField fx:id="pwH" alignment="CENTER" layoutX="465.0" layoutY="353.0" prefHeight="39.0" prefWidth="186.0" promptText="Password" style="-fx-border-color: #d16676;" />
             <PasswordField fx:id="pwConfirmationH" alignment="CENTER" layoutX="465.0" layoutY="406.0" prefHeight="39.0" prefWidth="186.0" promptText="Password comfirmation" style="-fx-border-color: #d16676;" />
-            <TextField fx:id="hotelNameH" alignment="CENTER" layoutX="878.0" layoutY="131.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Name" style="-fx-border-color: #d16676;" />
+            <TextField fx:id="hotelName" alignment="CENTER" layoutX="878.0" layoutY="131.0" prefHeight="39.0" prefWidth="186.0" promptText="Hotel Name" style="-fx-border-color: #d16676;" />
             <ComboBox fx:id="provinceBox" layoutX="878.0" layoutY="297.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose province" style="-fx-border-color: #d16676;" />
             <ComboBox fx:id="districtBox" layoutX="878.0" layoutY="336.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose district" style="-fx-border-color: #d16676;" />
             <ComboBox fx:id="streetBox" layoutX="878.0" layoutY="376.0" prefHeight="25.0" prefWidth="186.0" promptText="Chose street" style="-fx-border-color: #d16676;" />
-            <TextField fx:id="hotelAddressH" layoutX="878.0" layoutY="416.0" prefHeight="25.0" prefWidth="186.0" promptText="Specific address" style="-fx-border-color: #d16676;" />
+            <TextField fx:id="specificAddress" layoutX="878.0" layoutY="416.0" prefHeight="25.0" prefWidth="186.0" promptText="Specific address" style="-fx-border-color: #d16676;" />
             <Button layoutX="651.0" layoutY="507.0" mnemonicParsing="false" onAction="#signUpHotelManager" style="-fx-background-color: #d16676;" text="Sign Up" textFill="#f5f5c6" />
             <Label layoutX="558.0" layoutY="478.0" text="Information of your hotel will be set as default" textFill="#d16676" />
             <Label layoutX="297.0" layoutY="303.0" prefHeight="21.0" prefWidth="155.0" text="Username :" textFill="#d16676">
@@ -153,7 +153,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="hotelAddress" layoutX="878.0" layoutY="267.0" text="Null" textFill="#d16676" />
+            <Label fx:id="hotelAddressLabel" layoutX="878.0" layoutY="267.0" text="Null" textFill="#d16676" />
          </children>
       </Pane>
    </children>

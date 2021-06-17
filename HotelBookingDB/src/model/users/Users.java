@@ -2,12 +2,11 @@ package model.users;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import controller.LoginController;
-import model.database.DBInterface;
-import model.database.Mysql;
-import sun.security.jgss.LoginConfigImpl;
 
-public class Users implements DBInterface {
+import controller.LoginController;
+import model.database.Mysql;
+
+public class Users {
 
 	private int userID;
 	private String name;
@@ -55,36 +54,64 @@ public class Users implements DBInterface {
 
 	}
 	// -------------------------------------------------------------------------------------------------------------------
-
-	@Override
-	public void insertInstance(Object object) throws SQLException {
-		Users user = (Users) object;
-		String updateStatement = String.format(
-				"INSERT INTO user(name,phone,email,username,password) " + "VALUES ('%s','%s','%s','%s','%s')",
-				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword());
-		Mysql.executeUpdate(updateStatement);
-	}
-
-	@Override
-	public Object queryInstance(int userID) throws SQLException {
-		String queryStatement = "SELECT * FROM user where id = " + userID;
+	public static int signUpUserProcedure(Users user) throws SQLException {
+		String queryStatement = String.format("CALL SignUpUser('%s','%s','%s','%s','%s')",
+				user.getName(),user.getPhoneNumber(),user.getEmail(),user.getUsername(),user.getPassword());
+		System.out.println(String.format("CALL SignUpUser('%s','%s','%s','%s','%s')",
+				user.getName(),user.getPhoneNumber(),user.getEmail(),user.getUsername(),user.getPassword()));
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
-		if (tmp.next() == false) {
+		tmp.next();
+		return tmp.getInt(1);
+	}
+	
+	public static Users loginProcedure(String username,String password) throws SQLException {
+		String queryStatement=String.format("CALL Login('%s','%s')",username,password);
+		System.out.println(String.format("CALL Login('%s','%s')",username,password));
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		Users user = new Users();
+		tmp.next();
+		
+		if(tmp.getInt(1)==-1)
 			return null;
+		
+		try {
+			user = new HotelManager(tmp.getInt("user.id"), tmp.getInt("hotelmanager.id"), tmp.getString("name"),
+					tmp.getString("phone"), tmp.getString("email"),tmp.getString("username"), tmp.getString("password"));
+		} catch (Exception e) {
+			user = new Users(tmp.getInt("user.id"), tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"),
+					tmp.getString("username"), tmp.getString("password"));
+			e.printStackTrace();
 		}
-		return new Users(userID, tmp.getString("name"), tmp.getString("phone"), tmp.getString("email"),
-				tmp.getString("username"), tmp.getString("password"));
+		return user;
 	}
-
-	@Override
-	public void updateInstance(Object object) throws SQLException {
-		Users user = (Users) object;
-		String updateStatement = String.format("UPDATE user Set name= '%s', phone='%s',email='%s',password='%s' WHERE id = %d",
-				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(),LoginController.getUser().getUserID());
-		Mysql.executeUpdate(updateStatement);
-		LoginController.setUser(user);
+	
+	public static Users managerViewUserDetail(int receiptID) throws SQLException {
+		String queryStatement=String.format("CALL ManagerViewUserDetail(%d)",receiptID);
+		System.out.println(String.format("CALL ManagerViewUserDetail(%d)",receiptID));
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		if(!tmp.next())
+			return null;
+		return new Users(tmp.getString("name"),tmp.getString("phone"),tmp.getString("email"));
 	}
+	
+	public static void updateUserInfo(Users user) throws SQLException {
+		String updateStatement=String.format("CALL UpdateUserData(%d,'%s','%s','%s','%s')",
+				LoginController.getUser().getUserID(),user.getName(),user.getPhoneNumber(),user.getEmail(),user.getPassword());
+		System.out.println(String.format("CALL UpdateUserData(%d,'%s','%s','%s','%s')",
+				LoginController.getUser().getUserID(),user.getName(),user.getPhoneNumber(),user.getEmail(),user.getPassword()));
+		Mysql.executeQuery(updateStatement);
+	}
+	
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+	public static int checkPassword(String accountName, String password) throws SQLException {
+		String queryStatement=String.format("SELECT id FROM user WHERE username = '%s' "
+				+ "AND password = '%s'", accountName,password);
+		ResultSet user_id = Mysql.executeQuery(queryStatement);
+		if (user_id.next()) 
+			return user_id.getInt("id");
+		return -1;
+	}
 	// -------------------------------------------------------------------------------------------------------------------
 	public void printInfo() {
 		System.out.println(this.getName() + "/" + this.getPhoneNumber() + "/" + this.getEmail());

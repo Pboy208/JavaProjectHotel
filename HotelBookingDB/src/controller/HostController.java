@@ -28,12 +28,11 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.LocationDB;
 import model.locations.Districts;
 import model.locations.Provinces;
-import model.locations.Street;
+import model.locations.Streets;
 import model.rooms.Hotels;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 
 public class HostController implements Initializable {	
 	private static Hotels hotel;
@@ -70,10 +69,13 @@ public class HostController implements Initializable {
 	// ----------------------------------------------------------
 	private ArrayList<Provinces> provincesList = null;
 	private ArrayList<Districts> districtsList = null;
-	private ArrayList<Street> streetsList = null;
+	private ArrayList<Streets> streetsList = null;
 	private String province="";
 	private String district="";
 	private String street="";
+	private int districtID = 0;
+	private int provinceID = 0;
+	private int streetID = 0;
 	
 	@FXML
 	private ComboBox<String> districtBox;
@@ -82,13 +84,11 @@ public class HostController implements Initializable {
 	@FXML
 	private ComboBox<String> streetBox;
 	@FXML
-	private TextField specificAddress;
-	@FXML
 	private Label hotelAddressLabel;
 	@FXML
 	private TextField hotelNameH;
 	@FXML
-	private TextField hotelAddressH;
+	private TextField specificAddress;
 
 	// ----------------------------------------------------------
 	public void signOut(ActionEvent event) {
@@ -118,26 +118,20 @@ public class HostController implements Initializable {
 		secondPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 	
+	//check
 	public void addHotel(ActionEvent event) throws SQLException {
 		secondPaneAlertLabel.setText("");
-		if (hotelNameH.getText().trim().isEmpty()|| hotelAddressH.getText().trim().isEmpty()) {
+		if (hotelNameH.getText().trim().isEmpty()|| specificAddress.getText().trim().isEmpty()) {
 			secondPaneAlertLabel.setText("Some fields are missing");
 			return;
 		}
 		String hotelName = hotelNameH.getText();
-		String hotelAddress = hotelAddressH.getText();
-		String hotelAddressFull = hotelAddress + "," + street + "," + district + "," + province;
+		String specificAddressString = specificAddress.getText();
+		String hotelAddressFull = specificAddressString + "," + street + "," + district + "," + province;
 		
-		int streetID = LocationDB.queryStreetIDByName(street);
-		if(streetID == -1) {
-			secondPaneAlertLabel.setText("Street invalid");
-			secondPaneAlertLabel.setVisible(true);
-			return ;
-		}
+		int result = Hotels.addHotelProcedure(hotelName, hotelAddressFull,streetID,((HotelManager)LoginController.getUser()).getManagerID());
 		
-		int hotelID = Hotels.insertHotel(hotelName, hotelAddressFull,streetID,((HotelEmployees)LoginController.getUser()).getManagerID());
-		
-		if (hotelID == -1) {
+		if (result==0) {
 			secondPaneAlertLabel.setText("Hotel already exists in the system");
 			secondPaneAlertLabel.setVisible(true);
 			hotelNameH.clear();
@@ -146,10 +140,10 @@ public class HostController implements Initializable {
 		
 		secondPaneAlertLabel.setText("A hotel is added");
 		hotelAddressLabel.setText("Select below fields for address");
-		hotelAddressH.clear();
+		specificAddress.clear();
 		hotelNameH.clear();
-		
 		reloadPage();
+		
 	}
 	public void toMainPane(ActionEvent event) {
 			secondPane.setVisible(false);
@@ -171,12 +165,12 @@ public class HostController implements Initializable {
 		reloadPage();
 		
 		hotelAddressLabel.setText("Select below fields for address");
-		hotelAddressH.textProperty().addListener((observable, oldValue, newValue) -> {
-			hotelAddressLabel.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
+		specificAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+			hotelAddressLabel.setText(specificAddress.getText() + " " + street + " " + district + " " + province);
 		});
-		//-------------------------------- Callback function for locations
+		
 		try {
-			provincesList = LocationDB.queryProvince();
+			provincesList = Provinces.queryProvince();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Problems in query province-signup");
@@ -187,15 +181,16 @@ public class HostController implements Initializable {
 			provincesCollection.add(p.getProvinceName());
 		}
 		provinceBox.getItems().addAll(provincesCollection);
+		
+		//-------------------------------- Callback function for locations
 		provinceBox.getSelectionModel().selectedItemProperty().addListener((v,oldProvince,newProvince)->{
 			province=newProvince;
-			int provinceID=0;
 			for(Provinces p : provincesList) {
 				if(p.getProvinceName().equals(newProvince))
 					provinceID=p.getProvinceID();
 			}
 			try {
-				districtsList = LocationDB.queryDistrict(provinceID);
+				districtsList = Districts.queryDistrict(provinceID);
 				System.out.println(districtsList.size()+" size");
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -207,34 +202,37 @@ public class HostController implements Initializable {
 			}
 			districtBox.getItems().clear();
 			districtBox.getItems().addAll(districtsCollection);
-			hotelAddressLabel.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
+			hotelAddressLabel.setText(specificAddress.getText() + " " + street + " " + district + " " + province);
 			districtBox.getSelectionModel().selectedItemProperty().addListener((v2,oldDistrict,newDistrict)->{
 				district= newDistrict;
 				if (district == null)
 					district="";
-				int districtID=0;
 				for(Districts d : districtsList) {
 					if(d.getDistrictName().equals(newDistrict))
 						districtID=d.getDistrictID();
 				}
 				try {
-					streetsList = LocationDB.queryStreet(districtID);
+					streetsList = Streets.queryStreet(districtID);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					System.out.println("Problems in query street-signup");
 				}
 				ObservableList<String> streetsCollection = FXCollections.observableArrayList();
-				for(Street d : streetsList) {
+				for(Streets d : streetsList) {
 					streetsCollection.add(d.getStreetName());
 				}
 				streetBox.getItems().clear();
 				streetBox.getItems().addAll(streetsCollection);
-				hotelAddressLabel.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
+				hotelAddressLabel.setText(specificAddress.getText() + " " + street + " " + district + " " + province);
 				streetBox.getSelectionModel().selectedItemProperty().addListener((v3,oldStreet,newStreet)->{
 					street = newStreet;
 					if (street == null)
 						street="";
-					hotelAddressLabel.setText(hotelAddressH.getText() + " " + street + " " + district + " " + province);
+					for(Streets s:streetsList) {
+						if(s.getStreetName().equals(newStreet))
+							streetID=s.getStreetID();
+					}
+					hotelAddressLabel.setText(specificAddress.getText() + " " + street + " " + district + " " + province);
 				});
 			});
 		});
@@ -242,8 +240,7 @@ public class HostController implements Initializable {
 	}
 	
 	private void reloadPage(){
-		HotelEmployees user = (HotelEmployees) LoginController.getUser();
-		System.out.println(user.getUserID());
+		HotelManager user = (HotelManager) LoginController.getUser();
 		ArrayList<Hotels> hotels = null;
 		try {
 			hotels = Hotels.queryHotelsByManagerID(user.getManagerID());

@@ -2,7 +2,6 @@ package controller;
 
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import model.database.Mysql;
 import model.users.Users;
 import controller.LoginController;
 import javafx.event.ActionEvent;
@@ -43,7 +42,8 @@ public class LoginController{
 
 	@FXML
 	private Button signUpButton;
-
+	
+	//check
 	public void signInButtonOnAction(ActionEvent event) throws Exception {
 		String passwordString = password.getText();
 		String accountNameString = accountName.getText();
@@ -53,7 +53,7 @@ public class LoginController{
 			return;
 		}
 		
-		user = Mysql.loginProcedure(accountNameString, passwordString);
+		user = Users.loginProcedure(accountNameString, passwordString);
 		if(user ==null) {
 			alertLabel.setText("Wrong user name or password");
 			alertLabel.setVisible(true);

@@ -1,5 +1,11 @@
 package model.locations;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import model.database.Mysql;
+
 public class Provinces {
 
 	int provinceID;
@@ -10,6 +16,19 @@ public class Provinces {
 		this.provinceName=provinceName;
 	}
 	
+	// ------------------------------------------------------------------------------------------------------------------------
+
+	public static ArrayList<Provinces> queryProvince() throws SQLException {
+		ArrayList<Provinces> provincesList= new ArrayList<>();
+		String queryStatement = "SELECT * FROM province";
+		ResultSet provincesSet = Mysql.executeQuery(queryStatement);
+		while(provincesSet.next())
+			provincesList.add(new Provinces(provincesSet.getInt(1),provincesSet.getString(2)));
+
+		return provincesList;
+	}
+	// ------------------------------------------------------------------------------------------------------------------------
+
 	public int getProvinceID() {
 		return provinceID;
 	}

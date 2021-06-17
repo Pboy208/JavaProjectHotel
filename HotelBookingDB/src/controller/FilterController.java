@@ -36,7 +36,7 @@ import model.receipts.Receipts;
 import model.rooms.Filters;
 import model.rooms.Hotels;
 import model.rooms.Rooms;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 
 public class FilterController implements Initializable {
 
@@ -227,8 +227,8 @@ public class FilterController implements Initializable {
 		Date checkinDate = new Date(checkinTime.getValue().getYear() - 1900, checkinTime.getValue().getMonthValue() - 1,
 				checkinTime.getValue().getDayOfMonth());
 		@SuppressWarnings("deprecation")
-		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
-				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
+		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,checkoutTime.getValue().getMonthValue() - 1,
+				checkoutTime.getValue().getDayOfMonth());
 
 		int numberOfRoomAvailable = Rooms.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate, checkoutDate);
 		if (numberOfRoomAvailable < numberOfRoomInt) {
@@ -237,12 +237,11 @@ public class FilterController implements Initializable {
 		}
 
 		int total = Rooms.queryPaymentForReceipts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
-		System.out.println("total money: " + total);
 		totalPrice.setText("Total payment : " + String.format("%,d", total));
 		confirmBooking.setVisible(true);
 
 	}
-
+	//check
 	public void confirmBooking(ActionEvent event) throws SQLException {
 		Hotels hotel = recommendHotels.getSelectionModel().getSelectedItem();
 		int numberOfRoomInt = 0;
@@ -260,7 +259,7 @@ public class FilterController implements Initializable {
 		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
 				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
 
-		Receipts.insertReciepts(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate);
+		Receipts.addReceipt(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate,LoginController.getUser().getUserID());
 		alert.setText("Booking is succesfully done");
 
 		int numberOfRoomAvailable = Rooms.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate, checkoutDate);
@@ -277,26 +276,23 @@ public class FilterController implements Initializable {
 		checkoutTime.setValue(null);
 		numberOfRoom.clear();
 	}
-
+	//check
 	public void searchButton(ActionEvent e) throws SQLException {
 		int array[] = new int[12];
 		Filters filter = new Filters();
 		// ----------------------------------------- Destination part
 		if (destination.getText().trim().isEmpty()) {
-			System.out.println("Null Destination");
-			filter.setDestination(null);
+			filter.setDestination("");
 		} else {
-			System.out.println("Destination " + destination.getText());
 			filter.setDestination(destination.getText());
 		}
 		// ----------------------------------------- HotelName part
 		if (hotelName.getText().trim().isEmpty()) {
-			System.out.println("Null Hotel Name");
-			filter.setHotelName(null);
+			filter.setHotelName("");
 		} else {
-			System.out.println("Hotel " + hotelName.getText());
 			filter.setHotelName(hotelName.getText());
 		}
+		
 		// ----------------------------------------- Extension part
 		RadioButton[] rbs = { radio1, radio2, radio3, radio4, radio5, radio6, radio7, radio8, radio9, radio10, radio11,
 				radio12 };
@@ -312,16 +308,19 @@ public class FilterController implements Initializable {
 					filter.setStar(i+1);
 				}
 			}
-		}//else star = 0;
+		} else filter.setStar(0);
 		// ----------------------------------------- Gui part
 		
-		ArrayList<Hotels> recommendedHotelsList = Filters.queryHotelsByFilter(filter);
-		
+		ArrayList<Hotels> recommendedHotelsList = Filters.filterSearching(filter); 
+
 		if (recommendedHotelsList == null) {
 			Label noResult = new Label("No hotel meets your filter");
 			recommendHotels.setPlaceholder(noResult);
+			ObservableList<Hotels> tableListNULL = FXCollections.observableArrayList();
+			recommendHotels.setItems(tableListNULL);
 			return;
 		}
+		
 		ObservableList<Hotels> tableList = FXCollections.observableArrayList(recommendedHotelsList);
 		nameHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("name"));
 		addressHotel.setCellValueFactory(new PropertyValueFactory<Hotels, String>("address"));
@@ -334,7 +333,7 @@ public class FilterController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		if(LoginController.getUser() instanceof HotelEmployees)
+		if(LoginController.getUser() instanceof HotelManager)
 			hostInfo.setVisible(true);
 		
 		recommendHotels.setPlaceholder(new Label("Please fill in your filter"));

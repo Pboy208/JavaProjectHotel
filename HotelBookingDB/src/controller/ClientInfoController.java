@@ -29,10 +29,9 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.AccountsDB;
 import model.library.Functions;
 import model.receipts.Receipts;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 import model.users.Users;
 
 public class ClientInfoController implements Initializable {
@@ -97,7 +96,7 @@ public class ClientInfoController implements Initializable {
 		new SceneChanging().changeScene(event, "Login.fxml");
 		LoginController.signOut();
 	}
-
+	//check
 	public void saveChange(ActionEvent event) throws SQLException {
 		alert.setText("");
 		boolean visibleFlag = false;
@@ -116,8 +115,7 @@ public class ClientInfoController implements Initializable {
 				return;
 			}
 		}
-		
-		
+
 		String newName = name.getText();
 		String newEmail = email.getText();
 		String newPhone = phone.getText();
@@ -143,21 +141,23 @@ public class ClientInfoController implements Initializable {
 			String oldPwString = oldPW.getText();
 			String newPWString = newPW.getText();
 			String newPWConfirmString = newPWConfirm.getText();
-			if (AccountsDB.checkPassword(user.getUsername(), oldPwString) == -1) {
+			if (Users.checkPassword(user.getUsername(), oldPwString) == -1) {
 				alert.setText("Current password is incorrect");
-				return;
-			}
-			if (!newPWString.equals(newPWConfirmString)) {
-				alert.setText("Password confirmation is not match");
 				return;
 			}
 			if (user.getPassword().equals(newPWString)) {
 				alert.setText("New password must be different than current password");
 				return;
 			}
+			if (!newPWString.equals(newPWConfirmString)) {
+				alert.setText("Password confirmation is not match");
+				return;
+			}
 			user.setPassword(newPWString);
 		}
-		new Users().updateInstance(user);
+		
+		Users.updateUserInfo(user);
+		LoginController.setUser(user);
 		alert.setText("Information changed");
 	}
 
@@ -168,7 +168,7 @@ public class ClientInfoController implements Initializable {
 		newPW.setVisible(!newPW.isVisible());
 		newPWConfirm.setVisible(!newPWConfirm.isVisible());
 	}
-
+	//check
 	public void cancelReceipt(ActionEvent event) throws SQLException {
 		alert.setText("");
 		viewDetailsLabel.setText("");
@@ -190,18 +190,10 @@ public class ClientInfoController implements Initializable {
 			viewDetailsLabel.setText("The receipt has already been cancelled");
 			return;
 		}
-
-		Receipts.cancelReciepts(chosenReceipt.getReceiptID());
 		
-		Receipts.updateReceiptStatusForUser(LoginController.getUser());
+		Receipts.cancelReceiptUser(chosenReceipt.getReceiptID());
 		
 		ArrayList<Receipts> receipts = Receipts.queryReceiptsForUser(LoginController.getUser());
-		
-		if (receipts == null) {
-			Label noResult = new Label("You have no room");
-			receiptsListTable.setPlaceholder(noResult);
-			return;
-		}
 		ObservableList<Receipts> roomsList = FXCollections.observableArrayList(receipts);
 		receiptsListTable.setItems(roomsList);
 		viewDetailsLabel.setText("Booking cancelled");
@@ -213,25 +205,26 @@ public class ClientInfoController implements Initializable {
 		detailPane.setVisible(false);
 		infoPane.setEffect(null);
 	}
-
+	//check
 	public void viewDetails(ActionEvent event) throws SQLException {
+		// -------------------------------------------------------------- Pop up
+				infoPane.setEffect(new GaussianBlur(20));
+				detailPane.setVisible(true);
+				detailPane.toFront();
+				detailPane.setBorder(new Border(
+						new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+				detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		// --------------------------------------------------------------
 		alert.setText("");
 		viewDetailsLabel.setText("");
 		Receipts chosenReceipt = receiptsListTable.getSelectionModel().getSelectedItem();
 		if (chosenReceipt == null) {
 			viewDetailsLabel.setText("Choose a receipt");
 			return;
-		}
-		Receipts chosenReceipts = (Receipts) new Receipts().queryInstance(chosenReceipt.getReceiptID());
-		// --------------------------------------------------------------
-		infoPane.setEffect(new GaussianBlur(20));
-		detailPane.setVisible(true);
-		detailPane.toFront();
-		detailPane.setBorder(new Border(
-				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-		detailPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		// --------------------------------------------------------------
-		HotelEmployees employee = HotelEmployees.queryEmployeeInfoByHotelID(chosenReceipts.getHotelID());
+		}	
+		
+		HotelManager employee = HotelManager.userViewManagerDetail(chosenReceipt.getReceiptID());
+		
 		try {
 			employeeName.setText("Employee's Name: " + employee.getName());
 			employeeEmail.setText("Employee's Email: " + employee.getEmail());
@@ -254,9 +247,8 @@ public class ClientInfoController implements Initializable {
 		phone.setText(user.getPhoneNumber());
 		// -------------------------------------------------------
 		reloadPage();
-
 	}
-
+	
 	private void reloadPage() {
 		Users user = LoginController.getUser();
 		try {
@@ -264,7 +256,6 @@ public class ClientInfoController implements Initializable {
 		} catch (SQLException e) {
 			System.out.println("This user don't have any receipt to udpate status");
 			e.printStackTrace();
-			System.out.println("damn it");
 		}
 		System.out.println("Done update receipt list");
 		ArrayList<Receipts> receipts = null;

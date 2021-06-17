@@ -5,18 +5,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
-import model.database.DBInterface;
-import model.database.HotelQualityDB;
 import model.database.Mysql;
 
-public class Hotels implements DBInterface{
+public class Hotels {
 	private int star;
 	private int hotelID;
 	private float rating;
 	private String address;
 	private String provinceID;
 	private String districtID;
-	private String streetID;
+	private int streetID;
 	private String name;
 	private int[] extensions;
 	private int minPrice;
@@ -42,41 +40,45 @@ public class Hotels implements DBInterface{
 		setExtensions(extensions);
 		setMinPrice(price);
 	}
+	public Hotels(String name,String address,int streetID) {
+		setStreetID(streetID);
+		setAddress(address);
+		setName(name);
+	}
 	public Hotels() {
-		// TODO Auto-generated constructor stub
-	}
-
-	// ----------------------------------------------------------------------------------------------------------------------------------------------
-	
-	public static int checkExistName(String name) throws SQLException {
-		String queryStatement = "SELECT * FROM hotel WHERE name ='" + name + "'";
-		ResultSet count = Mysql.executeQuery(queryStatement);
-				
-		if (count.next() == false)
-			return 0;
-		return 1;
-	}
-
-	public static int insertHotel(String name, String address,int streetID,int managerID) throws SQLException {
-		if (checkExistName(name) == 1)
-			return -1;
 		
-		String insertStatement = String.format("INSERT INTO hotel(name,address,star,street_id,manager_id) "
-				+ "VALUES ('%s','%s',1,%d,%d)",name,address,streetID,managerID);
-		Mysql.executeUpdate(insertStatement);
-		
-		String queryStatement = String.format("SELECT id FROM hotel WHERE name = '%s' AND manager_id = %d",name,managerID);
+	}
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	public static int addHotelProcedure(String name, String address,int streetID,int managerID) throws SQLException {
+		String queryStatement=String.format("CALL InsertHotel('%s','%s',%d,%d,@OUTPUTPAREMETER)",name,address,streetID,managerID);
+		System.out.println(String.format("CALL InsertHotel('%s','%s',%d,%d,OUTPUTPAREMETER)",name,address,streetID,managerID));
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
-		
 		tmp.next();
-		int hotelID = tmp.getInt(1);
 		
-		Filters.insertExtensions(hotelID);
-		
-		return hotelID;
+		return tmp.getInt(1);
 	}
-
-	public static ArrayList<Hotels> queryHotelInfo(int[] hotelIDs) throws SQLException {
+	
+	public static void managerUpdateHotelInfo(int hotelID,int star,int price,String filterString) throws SQLException {
+		String updateStatement=String.format("CALL ManagerUpdateDetail(%d,%d,%d,'%s')",
+				hotelID,star,price,filterString);
+		System.out.println(String.format("CALL ManagerUpdateDetail(%d,%d,%d,'%s')",
+				hotelID,star,price,filterString));
+		Mysql.executeUpdate(updateStatement);
+	}
+	
+	// ----------------------------------------------------------------------------------------------------------------------------------------------
+	private static float queryOverallScore(int hotelID) throws SQLException {
+		String queryStatement = "SELECT overall_score FROM hotelquality where id = " + hotelID;
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		if(!tmp.next()) {
+			return -1;
+		}
+		float result = tmp.getFloat("overall_score");
+		return result;
+	}
+	
+	public static ArrayList<Hotels> queryHotelInfo(ArrayList<Integer> hotelIDs) throws SQLException {
 
 		String queryStatement = "SELECT * FROM hotel WHERE id = ";
 		
@@ -87,12 +89,12 @@ public class Hotels implements DBInterface{
 			ResultSet tmp = Mysql.executeQuery(fullQueryStatement);
 			tmp.next();
 			
-			Float overallScore = HotelQualityDB.queryOverallScore(tmp.getInt(1));
+			Float overallScore = queryOverallScore(tmp.getInt(1));
 			
 			if (overallScore == -1)
 				overallScore = 0f;
 			
-			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6), tmp.getInt(7), overallScore);
+			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(4), tmp.getInt(5), overallScore);
 
 			hotels.add(tmpHotel);
 		}
@@ -118,7 +120,7 @@ public class Hotels implements DBInterface{
 		ArrayList<Integer> hotelIDs = queryHotelIDByManagerID(managerID);
 		
 		for(Integer id:hotelIDs) {
-			Hotels aHotel = (Hotels) (new Hotels()).queryInstance(id);
+			Hotels aHotel = queryHotelByID(id);
 			hotels.add(aHotel);
 		}
 	
@@ -131,14 +133,8 @@ public class Hotels implements DBInterface{
 		tmp.next();
 		return tmp.getInt(1);
 	}
-	
-	@Override
-	public void insertInstance(Object object) throws SQLException {
-		return;
-	}
 
-	@Override
-	public Object queryInstance(int hotelID) throws SQLException {
+	public static Hotels queryHotelByID(int hotelID) throws SQLException {
 		String queryStatement = "SELECT * FROM hotel WHERE id = " + hotelID;
 		ResultSet tmp = Mysql.executeQuery(queryStatement);
 		
@@ -146,23 +142,15 @@ public class Hotels implements DBInterface{
 			return null;
 		else {
 			Filters.queryExtensions(hotelID);
-			Float overallScore = HotelQualityDB.queryOverallScore(hotelID);
+			Float overallScore = queryOverallScore(hotelID);
 			if (overallScore == -1)
 				overallScore = 0f;
-			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(6),tmp.getInt(7), overallScore);
+			Hotels tmpHotel = new Hotels(tmp.getInt(1), tmp.getString(2), tmp.getString(3), tmp.getInt(4),tmp.getInt(5), overallScore);
 			tmpHotel.setExtensions(Filters.queryExtensions(hotelID));
 			return tmpHotel;
 		}
 	}
-	
-	@Override
-	public void updateInstance(Object object) throws SQLException {
-		Hotels hotel = (Hotels)object; 
-		String updateStatement = String.format("UPDATE hotel SET star= %d , price = %d WHERE id= %d",hotel.getStar(),hotel.getMinPrice(),hotel.getHotelID());
-		Mysql.executeUpdate(updateStatement);
-		Filters.updateExtensions(hotel.getHotelID(), hotel.getExtensions());
-	}
-	
+
 	
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -250,12 +238,12 @@ public class Hotels implements DBInterface{
 		this.districtID = district_id;
 	}
 
-	public String getStreetID() {
+	public int getStreetID() {
 		return streetID;
 	}
 
-	public void setStreetID(String streetID) {
-		this.streetID = streetID;
+	public void setStreetID(int streetID2) {
+		this.streetID = streetID2;
 	}
 
 }
