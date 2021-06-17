@@ -16,13 +16,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import model.database.Mysql;
 import model.library.Functions;
 import model.locations.Districts;
 import model.locations.Provinces;
 import model.locations.Streets;
 import model.rooms.Hotels;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 import model.users.Users;
 
 public class SignUpController implements Initializable {
@@ -176,7 +175,7 @@ public class SignUpController implements Initializable {
 
 		Users user = new Users(name, phone, email, accountName, passwordConfirm);
 
-		int result = Mysql.signUpUserProcedure(user);
+		int result = Users.signUpUserProcedure(user);
 		if (result == 1) {
 			alertLabel.setText("Account already exists");
 			alertLabel.setVisible(true);
@@ -240,10 +239,10 @@ public class SignUpController implements Initializable {
 			return;
 		}
 
-		HotelEmployees newManager = new HotelEmployees(0, 0, name, phone, email, accountName, passwordConfirm);
+		HotelManager newManager = new HotelManager(0, 0, name, phone, email, accountName, passwordConfirm);
 		Hotels newHotel = new Hotels(hotelNameString, hotelAddressFull, streetID);
 
-		int result = Mysql.signUpHotelManagerProcedure(newManager, newHotel);
+		int result = HotelManager.signUpHotelManagerProcedure(newManager, newHotel);
 
 		if (result == 0) {
 			alertLabel.setText("Hotel already exists in the system");

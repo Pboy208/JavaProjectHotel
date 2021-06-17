@@ -28,12 +28,11 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.Mysql;
 import model.locations.Districts;
 import model.locations.Provinces;
 import model.locations.Streets;
 import model.rooms.Hotels;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 
 public class HostController implements Initializable {	
 	private static Hotels hotel;
@@ -130,9 +129,9 @@ public class HostController implements Initializable {
 		String specificAddressString = specificAddress.getText();
 		String hotelAddressFull = specificAddressString + "," + street + "," + district + "," + province;
 		
-		int result = Mysql.addHotelProcedure(hotelName, hotelAddressFull,streetID,((HotelEmployees)LoginController.getUser()).getManagerID());
+		int result = Hotels.addHotelProcedure(hotelName, hotelAddressFull,streetID,((HotelManager)LoginController.getUser()).getManagerID());
 		
-		if (result==-1) {
+		if (result==0) {
 			secondPaneAlertLabel.setText("Hotel already exists in the system");
 			secondPaneAlertLabel.setVisible(true);
 			hotelNameH.clear();
@@ -241,8 +240,7 @@ public class HostController implements Initializable {
 	}
 	
 	private void reloadPage(){
-		HotelEmployees user = (HotelEmployees) LoginController.getUser();
-		System.out.println(user.getUserID());
+		HotelManager user = (HotelManager) LoginController.getUser();
 		ArrayList<Hotels> hotels = null;
 		try {
 			hotels = Hotels.queryHotelsByManagerID(user.getManagerID());

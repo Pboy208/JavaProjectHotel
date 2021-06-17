@@ -29,10 +29,9 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.Mysql;
 import model.library.Functions;
 import model.receipts.Receipts;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 import model.users.Users;
 
 public class ClientInfoController implements Initializable {
@@ -157,7 +156,7 @@ public class ClientInfoController implements Initializable {
 			user.setPassword(newPWString);
 		}
 		
-		Mysql.updateUserInfo(user);
+		Users.updateUserInfo(user);
 		LoginController.setUser(user);
 		alert.setText("Information changed");
 	}
@@ -192,7 +191,7 @@ public class ClientInfoController implements Initializable {
 			return;
 		}
 		
-		Mysql.cancelReceiptUser(chosenReceipt.getReceiptID());
+		Receipts.cancelReceiptUser(chosenReceipt.getReceiptID());
 		
 		ArrayList<Receipts> receipts = Receipts.queryReceiptsForUser(LoginController.getUser());
 		ObservableList<Receipts> roomsList = FXCollections.observableArrayList(receipts);
@@ -224,7 +223,7 @@ public class ClientInfoController implements Initializable {
 			return;
 		}	
 		
-		HotelEmployees employee = Mysql.userViewManagerDetail(chosenReceipt.getReceiptID());
+		HotelManager employee = HotelManager.userViewManagerDetail(chosenReceipt.getReceiptID());
 		
 		try {
 			employeeName.setText("Employee's Name: " + employee.getName());

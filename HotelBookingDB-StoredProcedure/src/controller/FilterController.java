@@ -32,11 +32,11 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.Mysql;
+import model.receipts.Receipts;
 import model.rooms.Filters;
 import model.rooms.Hotels;
 import model.rooms.Rooms;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 
 public class FilterController implements Initializable {
 
@@ -259,7 +259,7 @@ public class FilterController implements Initializable {
 		Date checkoutDate = new Date(checkoutTime.getValue().getYear() - 1900,
 				checkoutTime.getValue().getMonthValue() - 1, checkoutTime.getValue().getDayOfMonth());
 
-		Mysql.addReceipt(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate,LoginController.getUser().getUserID());
+		Receipts.addReceipt(numberOfRoomInt, hotel.getHotelID(), checkinDate, checkoutDate,LoginController.getUser().getUserID());
 		alert.setText("Booking is succesfully done");
 
 		int numberOfRoomAvailable = Rooms.queryNumberOfAvailableRooms(hotel.getHotelID(), checkinDate, checkoutDate);
@@ -311,7 +311,7 @@ public class FilterController implements Initializable {
 		} else filter.setStar(0);
 		// ----------------------------------------- Gui part
 		
-		ArrayList<Hotels> recommendedHotelsList = Mysql.filterSearching(filter); 
+		ArrayList<Hotels> recommendedHotelsList = Filters.filterSearching(filter); 
 
 		if (recommendedHotelsList == null) {
 			Label noResult = new Label("No hotel meets your filter");
@@ -333,7 +333,7 @@ public class FilterController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		if(LoginController.getUser() instanceof HotelEmployees)
+		if(LoginController.getUser() instanceof HotelManager)
 			hostInfo.setVisible(true);
 		
 		recommendHotels.setPlaceholder(new Label("Please fill in your filter"));

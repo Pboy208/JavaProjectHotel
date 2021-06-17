@@ -29,13 +29,12 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.database.Mysql;
 import model.library.Functions;
 import model.receipts.Receipts;
 import model.rooms.Filters;
 import model.rooms.Hotels;
 import model.rooms.Rooms;
-import model.users.HotelEmployees;
+import model.users.HotelManager;
 import model.users.Users;
 
 public class HotelInfoController implements Initializable {
@@ -159,7 +158,7 @@ public class HotelInfoController implements Initializable {
 		// -------------------------------------- Price
 		int currentPrice = Functions.priceToInt(price.getText());
 		// -------------------------------------- Update hotel info
-		Mysql.managerUpdateHotelInfo(HostController.getHotel().getHotelID(), starInt, currentPrice, Filters.filterToStringForUpdate(extensions));
+		Hotels.managerUpdateHotelInfo(HostController.getHotel().getHotelID(), starInt, currentPrice, Filters.filterToStringForUpdate(extensions));
 		alert.setText("Information changed");
 	}
 
@@ -186,7 +185,7 @@ public class HotelInfoController implements Initializable {
 			alertViewDetails.setText("The receipt has already been cancelled");
 			return;
 		}
-		Mysql.cancelReceiptHotel(chosenReceipt.getReceiptID());
+		Receipts.cancelReceiptHotel(chosenReceipt.getReceiptID());
 		
 		ArrayList<Receipts> receipts = Receipts.queryReceiptsForHotel(LoginController.getUser());
 		ObservableList<Receipts> receiptList = FXCollections.observableArrayList(receipts);
@@ -212,7 +211,7 @@ public class HotelInfoController implements Initializable {
 			return;
 		}
 
-		Users guest = Mysql.managerViewUserDetail(chosenReceipt.getReceiptID());
+		Users guest = Users.managerViewUserDetail(chosenReceipt.getReceiptID());
 		
 		guestName.setText("Guest's Name: " + guest.getName());
 		guestEmail.setText("Guest's Email: " + guest.getEmail());
@@ -230,7 +229,7 @@ public class HotelInfoController implements Initializable {
 	//check
 	public void addRoom(ActionEvent event) throws SQLException {
 		alertAdjustRoom.setText("");
-		Mysql.managerAddRoom(HostController.getHotel().getHotelID());
+		Rooms.managerAddRoom(HostController.getHotel().getHotelID());
 		alertAdjustRoom.setText("1 room is added");
 		refreshRoom();
 	}
@@ -239,7 +238,7 @@ public class HotelInfoController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
 		// ------------------------------------- User part
-		HotelEmployees user = (HotelEmployees) LoginController.getUser();
+		HotelManager user = (HotelManager) LoginController.getUser();
 		// ------------------------------------- Star
 		ObservableList<String> starList = FXCollections.observableArrayList();
 		for (int i = 0; i < 5; i++) {

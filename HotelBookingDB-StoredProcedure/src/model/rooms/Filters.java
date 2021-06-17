@@ -2,6 +2,7 @@ package model.rooms;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.database.Mysql;
 
@@ -19,6 +20,30 @@ public class Filters {
 
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	public static ArrayList<Hotels> filterSearching(Filters filter) throws SQLException {
+		String queryStatement=String.format("CALL FilteredSearch('%s','%s',%d,'%s')",
+				filter.getDestination(),filter.getHotelName(),filter.getStar(),filter.filterToStringForQuery());
+		System.out.println(String.format("CALL FilteredSearch('%s','%s',%d,'%s')",
+				filter.getDestination(),filter.getHotelName(),filter.getStar(),filter.filterToStringForQuery()));
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		
+		ArrayList<Integer> hotel_IDs = new ArrayList<>();
+		
+		while (tmp.next()) {
+			hotel_IDs.add(tmp.getInt(1));
+		}
+		
+		if (hotel_IDs.size() == 0) {
+			System.out.println("array of hotel = NULL/ There is no hotel meets this filter");
+			return null;
+		}
+
+		ArrayList<Hotels> hotels = Hotels.queryHotelInfo(hotel_IDs);
+		return hotels;
+	}
+	
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	

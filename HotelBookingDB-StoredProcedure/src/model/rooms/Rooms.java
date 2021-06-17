@@ -18,6 +18,14 @@ public class Rooms{
 		setRoomID(roomID);
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	public static void managerAddRoom(int hotelID) throws SQLException {
+		String updateStatement=String.format("CALL ManagerAddRoom(%d)",hotelID);
+		System.out.println(String.format("CALL ManagerAddRoom(%d)",hotelID));
+		Mysql.executeUpdate(updateStatement);
+	}
+	
 	//--------------------------------------------------------------------------------------------------------------------------
 	public void printInfo() {
 		System.out.println(roomID + "/" + hotelID );

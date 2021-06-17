@@ -49,7 +49,7 @@ public class Receipts {
 
 		switch (status) {
 		case -1:
-			this.statusProperty = new SimpleStringProperty("finish");
+			this.statusProperty = new SimpleStringProperty("Cancelled");
 			break;
 		case 0:
 			this.statusProperty = new SimpleStringProperty("Waiting for checkin");
@@ -58,7 +58,7 @@ public class Receipts {
 			this.statusProperty = new SimpleStringProperty("Waiting for checkout");
 			break;
 		case 2:
-			this.statusProperty = new SimpleStringProperty("Cancelled");
+			this.statusProperty = new SimpleStringProperty("Finish");
 			break;
 		}
 
@@ -84,6 +84,29 @@ public class Receipts {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	public static void addReceipt(int numberOfRoom,int hotelID,Date checkinDate,Date checkoutDate,int userID) throws SQLException {
+		String updateStatement=String.format("CALL ConfirmBooking(%d,%d,'%s','%s',%d)",
+				numberOfRoom,hotelID,checkinDate,checkoutDate,userID);
+		System.out.println(String.format("CALL ConfirmBooking(%d,%d,'%s','%s',%d)",
+				numberOfRoom,hotelID,checkinDate,checkoutDate,userID));
+		Mysql.executeQuery(updateStatement);
+	}
+	
+	public static void cancelReceiptUser(int receiptID) throws SQLException {
+		String queryStatement = String.format("CALL CancelReceiptUser(%d,%d)",receiptID,LoginController.getUser().getUserID());
+		System.out.println(String.format("CALL CancelReceiptUser(%d,%d)",receiptID,LoginController.getUser().getUserID()));
+		Mysql.executeQuery(queryStatement);
+	}
+	
+	public static void cancelReceiptHotel(int receiptID) throws SQLException {
+		String queryStatement = String.format("CALL CancelReceiptHotel(%d,%d)",receiptID,HostController.getHotel().getHotelID());
+		System.out.println(String.format("CALL CancelReceiptHotel(%d,%d)",receiptID,HostController.getHotel().getHotelID()));
+		Mysql.executeQuery(queryStatement);
+	}
+	
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	
 	public static ArrayList<Receipts> queryReceiptsForHotel(Object object) throws SQLException {
 		ArrayList<Receipts> tmpReceipts = new ArrayList<>();
@@ -163,7 +186,7 @@ public class Receipts {
 			}
 		} else { // waiting for checkout
 			if (receipt.getCheckoutDate().before(dateNow)) {
-				String updateStatement = "UPDATE receipt SET status = -1 WHERE id =  "+ receipt.getReceiptID();
+				String updateStatement = "UPDATE receipt SET status = 2 WHERE id =  "+ receipt.getReceiptID();
 				Mysql.executeUpdate(updateStatement);
 			}
 		}

@@ -48,7 +48,25 @@ public class Hotels {
 	public Hotels() {
 		
 	}
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+	public static int addHotelProcedure(String name, String address,int streetID,int managerID) throws SQLException {
+		String queryStatement=String.format("CALL InsertHotel('%s','%s',%d,%d,@OUTPUTPAREMETER)",name,address,streetID,managerID);
+		System.out.println(String.format("CALL InsertHotel('%s','%s',%d,%d,OUTPUTPAREMETER)",name,address,streetID,managerID));
+		ResultSet tmp = Mysql.executeQuery(queryStatement);
+		tmp.next();
+		
+		return tmp.getInt(1);
+	}
+	
+	public static void managerUpdateHotelInfo(int hotelID,int star,int price,String filterString) throws SQLException {
+		String updateStatement=String.format("CALL ManagerUpdateDetail(%d,%d,%d,'%s')",
+				hotelID,star,price,filterString);
+		System.out.println(String.format("CALL ManagerUpdateDetail(%d,%d,%d,'%s')",
+				hotelID,star,price,filterString));
+		Mysql.executeUpdate(updateStatement);
+	}
+	
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
 	private static float queryOverallScore(int hotelID) throws SQLException {
 		String queryStatement = "SELECT overall_score FROM hotelquality where id = " + hotelID;
