@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxWidth="1.7976931348623157E308" prefHeight="680.0" prefWidth="1360.0" style="-fx-max-width: 100%;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UnsignedUserPageController">
+   <children>
+      <ImageView fitHeight="680.0" fitWidth="1360.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../img/Filter.png" />
+         </image>
+      </ImageView>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#back" text="Back" />
+      <Pane fx:id="searchPane" layoutX="45.0" layoutY="50.0" prefHeight="610.0" prefWidth="1279.0" style="-fx-border-color: #d16676;">
+         <children>
+            <ImageView fitHeight="610.0" fitWidth="1279.0" pickOnBounds="true">
+               <cursor>
+                  <Cursor fx:constant="NONE" />
+               </cursor>
+               <image>
+                  <Image url="@../../img/null.png" />
+               </image>
+            </ImageView>
+            <Pane prefHeight="610.0" prefWidth="223.0">
+               <children>
+                  <TextField fx:id="destination" alignment="CENTER" layoutX="24.0" layoutY="92.0" prefHeight="26.0" prefWidth="174.0" promptText="Your Destination" />
+                  <TextField fx:id="hotelName" alignment="CENTER" layoutX="25.0" layoutY="133.0" prefHeight="26.0" prefWidth="174.0" promptText="Hotel Name" />
+                  <ScrollPane hbarPolicy="NEVER" layoutX="32.0" layoutY="239.0" prefHeight="105.0" prefWidth="160.0" vbarPolicy="ALWAYS">
+                     <content>
+                        <VBox prefHeight="211.0" prefWidth="143.0">
+                           <children>
+                              <RadioButton fx:id="radio1" mnemonicParsing="false" text="Breakfast" />
+                              <RadioButton fx:id="radio2" mnemonicParsing="false" text="Free Wifi" />
+                              <RadioButton fx:id="radio3" mnemonicParsing="false" text="Car Parking" />
+                              <RadioButton fx:id="radio4" mnemonicParsing="false" prefHeight="18.0" prefWidth="146.0" text="Airport Transportation" />
+                              <RadioButton fx:id="radio5" mnemonicParsing="false" text="Restaurant" />
+                              <RadioButton fx:id="radio6" mnemonicParsing="false" text="Deposit Box" />
+                              <RadioButton fx:id="radio7" mnemonicParsing="false" text="Baby Service" />
+                              <RadioButton fx:id="radio8" mnemonicParsing="false" text="Bar" />
+                              <RadioButton fx:id="radio9" mnemonicParsing="false" text="Laundry" />
+                              <RadioButton fx:id="radio10" mnemonicParsing="false" text="Tour " />
+                              <RadioButton fx:id="radio11" mnemonicParsing="false" text="Spa" />
+                              <RadioButton fx:id="radio12" mnemonicParsing="false" text="Pool" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  <ComboBox fx:id="star" layoutX="44.0" layoutY="375.0" prefHeight="26.0" prefWidth="136.0" promptText="Hotel Star" />
+                  <Button layoutX="84.0" layoutY="417.0" mnemonicParsing="false" onAction="#searchButton" text="Search " />
+               </children>
+            </Pane>
+            <TableView fx:id="recommendHotels" layoutX="223.0" layoutY="21.0" prefHeight="537.0" prefWidth="1033.0">
+               <columns>
+                  <TableColumn fx:id="nameHotel" prefWidth="284.0" text="Hotel Name" />
+                  <TableColumn fx:id="addressHotel" prefWidth="491.20001220703125" text="Address" />
+                  <TableColumn fx:id="starHotel" prefWidth="78.39990234375" text="Star" />
+                  <TableColumn fx:id="ratingHotel" minWidth="0.0" prefWidth="74.4000244140625" text="Rating" />
+                  <TableColumn fx:id="priceHotel" minWidth="0.0" prefWidth="106.4000244140625" text="Price" />
+               </columns>
+            </TableView>
+            <Label layoutX="529.0" layoutY="575.0" text="Do you want to take notification about our events and coupons?" />
+            <Button layoutX="882.0" layoutY="571.0" mnemonicParsing="false" onAction="#toSecondPane" text="Click here" />
+            <Label layoutX="609.0" text="You will need an account to book!" />
+         </children>
+      </Pane>
+      <Pane fx:id="secondPane" layoutX="526.0" layoutY="277.0" prefHeight="126.0" prefWidth="308.0" visible="false">
+         <children>
+            <TextField fx:id="email" layoutX="24.0" layoutY="35.0" prefHeight="25.0" prefWidth="261.0" promptText="Insert your email here" />
+            <Button layoutX="99.0" layoutY="79.0" mnemonicParsing="false" onAction="#signUpForNews" text="Sign Up For News" />
+            <Button layoutX="283.0" layoutY="2.0" mnemonicParsing="false" onAction="#toSearchPane" text="x" />
+            <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER" layoutX="56.0" layoutY="104.0" prefHeight="17.0" prefWidth="197.0" textAlignment="CENTER" textFill="RED" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
